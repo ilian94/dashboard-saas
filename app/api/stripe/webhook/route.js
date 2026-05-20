@@ -5,7 +5,7 @@ import { createClient } from '@supabase/supabase-js';
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
-  process.env.SUPABASE_SECRET_KEY
+  process.env.SUPABASE_SERVICE_KEY
 );
 
 const PLAN_MAP = {
@@ -28,9 +28,7 @@ export async function POST(req) {
   if (event.type === 'checkout.session.completed') {
     const session = event.data.object;
     const userId = session.metadata.userId;
-    const priceId = session.line_items?.data[0]?.price?.id;
 
-    // Récupérer le priceId depuis la subscription
     const subscription = await stripe.subscriptions.retrieve(session.subscription, {
       expand: ['items.data.price'],
     });
