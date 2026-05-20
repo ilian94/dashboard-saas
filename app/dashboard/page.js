@@ -7,11 +7,18 @@ const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY
 );
 
+const PLAN_LABELS = {
+  starter: { label: "Starter Plan", color: "text-blue-400", bg: "bg-blue-400/10 border-blue-400/30", minutes: 500 },
+  scale: { label: "Scale Plan", color: "text-purple-400", bg: "bg-purple-400/10 border-purple-400/30", minutes: 2000 },
+  business: { label: "Business Plan", color: "text-yellow-400", bg: "bg-yellow-400/10 border-yellow-400/30", minutes: 6000 },
+};
+
 export default function Dashboard() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [calls, setCalls] = useState([]);
   const [googleConnected, setGoogleConnected] = useState(false);
+  const [clientData, setClientData] = useState(null);
 
   const fetchCalls = useCallback(async (userId) => {
     const { data } = await supabase
@@ -23,14 +30,16 @@ export default function Dashboard() {
     if (data) setCalls(data);
   }, []);
 
-  const fetchGoogleStatus = useCallback(async (userId) => {
-    const { data, error } = await supabase
+  const fetchClientData = useCallback(async (userId) => {
+    const { data } = await supabase
       .from("clients")
-      .select("google_connected")
+      .select("google_connected, plan, twilio_number, business_name")
       .eq("user_id", userId)
       .maybeSingle();
-    console.log("Google status:", data, error);
-    if (data?.google_connected) setGoogleConnected(true);
+    if (data) {
+      setClientData(data);
+      if (data.google_connected) setGoogleConnected(true);
+    }
   }, []);
 
   useEffect(() => {
@@ -38,10 +47,7 @@ export default function Dashboard() {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) { window.location.href = "/login"; return; }
       setUser(session.user);
-      await Promise.all([
-        fetchCalls(session.user.id),
-        fetchGoogleStatus(session.user.id),
-      ]);
+      await Promise.all([fetchCalls(session.user.id), fetchClientData(session.user.id)]);
       setLoading(false);
     };
     checkUser();
@@ -51,7 +57,10 @@ export default function Dashboard() {
       setGoogleConnected(true);
       window.history.replaceState({}, "", "/dashboard");
     }
-  }, [fetchCalls, fetchGoogleStatus]);
+    if (params.get("success") === "true") {
+      window.history.replaceState({}, "", "/dashboard");
+    }
+  }, [fetchCalls, fetchClientData]);
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
@@ -65,12 +74,19 @@ export default function Dashboard() {
   );
 
   const rdvCount = calls.filter(c => c.rdv_pris).length;
+  const totalDuration = calls.reduce((acc, c) => acc + (c.duration || 0), 0);
+  const plan = clientData?.plan ? PLAN_LABELS[clientData.plan] : null;
 
   return (
     <div className="min-h-screen bg-zinc-950 text-white">
       <nav className="flex items-center justify-between px-8 py-4 border-b border-zinc-800">
         <span className="font-bold text-lg">VoiceBot AI</span>
         <div className="flex items-center gap-4">
+          {plan && (
+            <span className={`text-xs px-3 py-1 rounded-full border font-semibold ${plan.bg} ${plan.color}`}>
+              {plan.label}
+            </span>
+          )}
           <span className="text-sm text-zinc-400">{user.email}</span>
           <button onClick={handleLogout} className="text-sm px-4 py-2 border border-zinc-700 rounded-lg hover:bg-zinc-800 transition">
             Déconnexion
@@ -79,13 +95,50 @@ export default function Dashboard() {
       </nav>
 
       <main className="max-w-5xl mx-auto px-6 py-10 flex flex-col gap-8">
-        <h1 className="text-2xl font-bold">Tableau de bord</h1>
+        <div className="flex items-center justify-between">
+          <h1 className="text-2xl font-bold">
+            {clientData?.business_name ? `Bonjour, ${clientData.business_name} 👋` : "Tableau de bord"}
+          </h1>
+          {!plan && (
+            <a href="/pricing" className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 rounded-lg text-sm font-semibold transition">
+              Choisir un plan →
+            </a>
+          )}
+        </div>
+
+        {!plan && (
+          <div className="bg-indigo-500/10 border border-indigo-500/30 rounded-2xl p-5 flex items-center justify-between">
+            <div>
+              <p className="font-semibold text-indigo-300">Aucun plan actif</p>
+              <p className="text-sm text-zinc-400 mt-1">Souscrivez à un plan pour activer votre VoiceBot.</p>
+            </div>
+            <a href="/pricing" className="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-500 rounded-lg text-sm font-semibold transition">
+              Voir les plans
+            </a>
+          </div>
+        )}
+
+        {plan && (
+          <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 flex items-center justify-between">
+            <div>
+              <h2 className="font-semibold text-lg">Mon abonnement</h2>
+              <p className={`text-sm mt-1 font-semibold ${plan.color}`}>{plan.label}</p>
+              <p className="text-xs text-zinc-500 mt-1">{plan.minutes} minutes/mois incluses</p>
+            </div>
+            <div className="text-right">
+              {clientData?.twilio_number && (
+                <p className="text-sm text-zinc-300 font-mono">{clientData.twilio_number}</p>
+              )}
+              <p className="text-xs text-zinc-500 mt-1">Numéro Twilio</p>
+            </div>
+          </div>
+        )}
 
         <div className="grid grid-cols-3 gap-4">
           {[
             { label: "Appels reçus", value: calls.length },
             { label: "RDV pris", value: rdvCount },
-            { label: "Leads qualifiés", value: calls.length - rdvCount },
+            { label: "Minutes totales", value: Math.round(totalDuration / 60) },
           ].map(s => (
             <div key={s.label} className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6">
               <div className="text-3xl font-bold mb-1">{s.value}</div>
