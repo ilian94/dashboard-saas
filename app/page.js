@@ -49,7 +49,7 @@ export default function Home() {
         <div style={{ display: 'inline-block', background: '#111', border: '1px solid #222', borderRadius: '100px', padding: '6px 16px', fontSize: '0.8rem', color: '#888', marginBottom: '32px', letterSpacing: '0.02em' }}>
           ✦ Powered by Claude AI
         </div>
-        <h1 style={{ fontSize: 'clamp(2.8rem, 6vw, 5rem)', fontWeight: 800, lineHeight: 1.05, letterSpacing: '-0.04em', marginBottom: '24px', background: 'linear-gradient(135deg, #ffffff 0%, #666 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+        <h1 style={{ fontSize: 'clamp(2.8rem, 6vw, 5rem)', fontWeight: 800, lineHeight: 1.1, letterSpacing: '-0.04em', marginBottom: '24px', background: 'linear-gradient(135deg, #ffffff 0%, #666 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
           Never miss a client call again
         </h1>
         <p style={{ fontSize: '1.15rem', color: '#555', lineHeight: 1.7, maxWidth: '560px', margin: '0 auto 48px' }}>
