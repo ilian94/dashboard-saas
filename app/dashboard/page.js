@@ -97,30 +97,46 @@ export default function Dashboard() {
       title: 'Receive your phone number',
       done: !!clientData?.twilio_number,
       desc: clientData?.twilio_number
-        ? `Your dedicated number is ${clientData.twilio_number}. Share it with your clients.`
+        ? `Your dedicated number is ${clientData.twilio_number}. Share it with your clients or use it for call forwarding.`
         : 'Once your plan is active, we will assign you a dedicated phone number within 24 hours.',
-      action: null,
     },
     {
       number: '04',
-      title: 'Test your VoiceBot',
-      done: calls.length > 0,
-      desc: 'Call your dedicated number and have a conversation with your VoiceBot. It will greet callers, answer questions, and book appointments automatically.',
-      action: null,
+      title: 'Forward your business number to VoiceBot',
+      done: false,
+      desc: "Redirect your existing business number to your VoiceBot number so every call is handled automatically. Here's how:",
+      extra: (
+        <div style={{ marginTop: '16px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+          {[
+            { label: 'Mobile (FR) — Orange, SFR, Bouygues', value: `Dial **21*${clientData?.twilio_number || '+1XXXXXXXXXX'}# on your phone` },
+            { label: 'Landline / Box', value: 'Go to your operator settings or call your provider to enable unconditional call forwarding' },
+            { label: 'VoIP / Ringover / Aircall', value: 'Go to your account settings → Call forwarding → Enter your VoiceBot number' },
+          ].map(item => (
+            <div key={item.label} style={{ background: C.bg, border: `1px solid ${C.border}`, borderRadius: '10px', padding: '12px 16px' }}>
+              <p style={{ fontSize: '0.75rem', color: C.label, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '4px' }}>{item.label}</p>
+              <p style={{ fontSize: '0.85rem', color: '#e5e7eb', fontFamily: item.value.startsWith('Dial') ? 'monospace' : 'inherit' }}>{item.value}</p>
+            </div>
+          ))}
+        </div>
+      ),
     },
     {
       number: '05',
+      title: 'Test your VoiceBot',
+      done: calls.length > 0,
+      desc: 'Call your dedicated number and have a conversation with your VoiceBot. It will greet callers, answer questions, and book appointments automatically.',
+    },
+    {
+      number: '06',
       title: "You're live",
       done: calls.length > 0 && !!plan && googleConnected && !!clientData?.twilio_number,
       desc: 'Your VoiceBot is now handling calls 24/7. Check your dashboard to see call logs, summaries, and booked appointments.',
-      action: null,
     },
   ];
 
   return (
     <div style={{ minHeight: '100vh', background: C.bg, color: 'white', fontFamily: 'system-ui, sans-serif', display: 'flex' }}>
 
-      {/* SIDEBAR */}
       <aside style={{ width: '220px', minHeight: '100vh', background: C.sidebar, borderRight: `1px solid ${C.border}`, display: 'flex', flexDirection: 'column', padding: '24px 12px', position: 'fixed', top: 0, left: 0 }}>
         <div style={{ padding: '0 12px', marginBottom: '32px' }}>
           <span style={{ fontWeight: 700, fontSize: '1rem', letterSpacing: '-0.02em' }}>VoiceBot AI</span>
@@ -149,10 +165,8 @@ export default function Dashboard() {
         </div>
       </aside>
 
-      {/* MAIN */}
       <main style={{ marginLeft: '220px', flex: 1, padding: '48px 40px', display: 'flex', flexDirection: 'column', gap: '24px', maxWidth: '900px' }}>
 
-        {/* DASHBOARD */}
         {activePage === 'dashboard' && (
           <>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -164,7 +178,6 @@ export default function Dashboard() {
               </div>
               {!plan && <a href="/pricing" style={{ padding: '9px 20px', background: '#4f46e5', color: 'white', textDecoration: 'none', borderRadius: '9px', fontSize: '0.875rem', fontWeight: 600 }}>Choose a plan →</a>}
             </div>
-
             {!plan && (
               <div style={{ background: 'rgba(79,70,229,0.08)', border: '1px solid rgba(79,70,229,0.2)', borderRadius: '16px', padding: '20px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 <div>
@@ -174,7 +187,6 @@ export default function Dashboard() {
                 <a href="/pricing" style={{ padding: '9px 20px', background: '#4f46e5', color: 'white', textDecoration: 'none', borderRadius: '9px', fontSize: '0.875rem', fontWeight: 600, whiteSpace: 'nowrap' }}>View plans</a>
               </div>
             )}
-
             {plan && (
               <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', padding: '24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 <div>
@@ -190,7 +202,6 @@ export default function Dashboard() {
                 )}
               </div>
             )}
-
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px' }}>
               {[
                 { label: 'Calls received', value: calls.length, icon: <IconPhone /> },
@@ -204,7 +215,6 @@ export default function Dashboard() {
                 </div>
               ))}
             </div>
-
             <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', padding: '24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <div>
                 <p style={{ fontSize: '0.75rem', color: C.text, textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600, marginBottom: '6px' }}>Google Calendar</p>
@@ -219,7 +229,6 @@ export default function Dashboard() {
           </>
         )}
 
-        {/* CALLS */}
         {activePage === 'calls' && (
           <>
             <div>
@@ -252,7 +261,6 @@ export default function Dashboard() {
           </>
         )}
 
-        {/* SETUP GUIDE */}
         {activePage === 'setup' && (
           <>
             <div>
@@ -272,6 +280,7 @@ export default function Dashboard() {
                     <p style={{ fontWeight: 700, fontSize: '1rem', marginBottom: '6px', color: step.done ? '#4ade80' : 'white' }}>{step.title}</p>
                     <p style={{ fontSize: '0.875rem', color: C.text, lineHeight: 1.6 }}>{step.desc}</p>
                     {step.action}
+                    {step.extra}
                   </div>
                 </div>
               ))}
@@ -279,7 +288,6 @@ export default function Dashboard() {
           </>
         )}
 
-        {/* SETTINGS */}
         {activePage === 'settings' && (
           <>
             <div>
@@ -305,7 +313,6 @@ export default function Dashboard() {
           </>
         )}
 
-        {/* BILLING */}
         {activePage === 'billing' && (
           <>
             <div>
