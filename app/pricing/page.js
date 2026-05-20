@@ -12,19 +12,19 @@ const plans = [
   {
     name: 'Starter Plan',
     price: '$229',
-    priceId: 'price_1TZHRlFU1aQQIlmG5UCfoT0Q',
+    priceId: 'price_1TZI4xFbv1QHIqBxM1ogpacl',
     features: ['500 call minutes/month', '1 Twilio number', 'Google Calendar integration', 'AI call summary', 'Email support'],
   },
   {
     name: 'Scale Plan',
     price: '$459',
-    priceId: 'price_1TZHUKFU1aQQIlmGbhj7pGvn',
+    priceId: 'price_1TZI51Fbv1QHIqBxfvYIkKRh',
     features: ['2000 call minutes/month', '3 Twilio numbers', 'Google Calendar integration', 'AI call summary', 'Priority support'],
   },
   {
     name: 'Business Plan',
     price: '$879',
-    priceId: 'price_1TZHVcFU1aQQIlmGiUkw8gbO',
+    priceId: 'price_1TZI51Fbv1QHIqBxmfldnApH',
     features: ['6000 call minutes/month', '10 Twilio numbers', 'Google Calendar integration', 'AI call summary', 'Dedicated account manager', 'Advanced analytics'],
   },
 ];
