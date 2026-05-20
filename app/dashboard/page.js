@@ -23,6 +23,7 @@ const IconSettings = () => <svg width="16" height="16" viewBox="0 0 24 24" fill=
 const IconBilling = () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>;
 const IconLogout = () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>;
 const IconCheck = () => <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>;
+const IconSetup = () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 8 12 12 14 14"/></svg>;
 
 export default function Dashboard() {
   const [user, setUser] = useState(null);
@@ -71,8 +72,49 @@ export default function Dashboard() {
   const navItems = [
     { id: 'dashboard', label: 'Dashboard', icon: <IconHome /> },
     { id: 'calls', label: 'Calls', icon: <IconPhone /> },
+    { id: 'setup', label: 'Setup guide', icon: <IconSetup /> },
     { id: 'settings', label: 'Settings', icon: <IconSettings /> },
     { id: 'billing', label: 'Billing', icon: <IconBilling /> },
+  ];
+
+  const setupSteps = [
+    {
+      number: '01',
+      title: 'Choose a plan',
+      done: !!plan,
+      desc: 'Subscribe to one of our plans to activate your VoiceBot. You can upgrade or cancel anytime.',
+      action: !plan ? <a href="/pricing" style={{ display: 'inline-block', marginTop: '12px', padding: '8px 18px', background: '#4f46e5', color: 'white', textDecoration: 'none', borderRadius: '8px', fontSize: '0.85rem', fontWeight: 600 }}>View plans →</a> : null,
+    },
+    {
+      number: '02',
+      title: 'Connect Google Calendar',
+      done: googleConnected,
+      desc: 'Link your Google Calendar so your VoiceBot can automatically book appointments in real time.',
+      action: !googleConnected ? <a href="/api/google/auth" style={{ display: 'inline-block', marginTop: '12px', padding: '8px 18px', background: '#1a73e8', color: 'white', textDecoration: 'none', borderRadius: '8px', fontSize: '0.85rem', fontWeight: 600 }}>Connect Google →</a> : null,
+    },
+    {
+      number: '03',
+      title: 'Receive your phone number',
+      done: !!clientData?.twilio_number,
+      desc: clientData?.twilio_number
+        ? `Your dedicated number is ${clientData.twilio_number}. Share it with your clients.`
+        : 'Once your plan is active, we will assign you a dedicated phone number within 24 hours.',
+      action: null,
+    },
+    {
+      number: '04',
+      title: 'Test your VoiceBot',
+      done: calls.length > 0,
+      desc: 'Call your dedicated number and have a conversation with your VoiceBot. It will greet callers, answer questions, and book appointments automatically.',
+      action: null,
+    },
+    {
+      number: '05',
+      title: "You're live",
+      done: calls.length > 0 && !!plan && googleConnected && !!clientData?.twilio_number,
+      desc: 'Your VoiceBot is now handling calls 24/7. Check your dashboard to see call logs, summaries, and booked appointments.',
+      action: null,
+    },
   ];
 
   return (
@@ -110,6 +152,7 @@ export default function Dashboard() {
       {/* MAIN */}
       <main style={{ marginLeft: '220px', flex: 1, padding: '48px 40px', display: 'flex', flexDirection: 'column', gap: '24px', maxWidth: '900px' }}>
 
+        {/* DASHBOARD */}
         {activePage === 'dashboard' && (
           <>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -176,6 +219,7 @@ export default function Dashboard() {
           </>
         )}
 
+        {/* CALLS */}
         {activePage === 'calls' && (
           <>
             <div>
@@ -208,6 +252,34 @@ export default function Dashboard() {
           </>
         )}
 
+        {/* SETUP GUIDE */}
+        {activePage === 'setup' && (
+          <>
+            <div>
+              <h1 style={{ fontSize: '1.5rem', fontWeight: 800, letterSpacing: '-0.03em', marginBottom: '4px' }}>Setup guide</h1>
+              <p style={{ fontSize: '0.85rem', color: C.text }}>Follow these steps to get your VoiceBot up and running.</p>
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+              {setupSteps.map((step, i) => (
+                <div key={i} style={{ background: C.card, border: `1px solid ${step.done ? 'rgba(74,222,128,0.2)' : C.border}`, borderRadius: '16px', padding: '24px', display: 'flex', gap: '20px', alignItems: 'flex-start' }}>
+                  <div style={{ width: '36px', height: '36px', borderRadius: '50%', background: step.done ? 'rgba(74,222,128,0.12)' : C.bg, border: `1px solid ${step.done ? 'rgba(74,222,128,0.3)' : C.border}`, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                    {step.done
+                      ? <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#4ade80" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                      : <span style={{ fontSize: '0.7rem', fontWeight: 700, color: C.text }}>{step.number}</span>
+                    }
+                  </div>
+                  <div style={{ flex: 1 }}>
+                    <p style={{ fontWeight: 700, fontSize: '1rem', marginBottom: '6px', color: step.done ? '#4ade80' : 'white' }}>{step.title}</p>
+                    <p style={{ fontSize: '0.875rem', color: C.text, lineHeight: 1.6 }}>{step.desc}</p>
+                    {step.action}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </>
+        )}
+
+        {/* SETTINGS */}
         {activePage === 'settings' && (
           <>
             <div>
@@ -233,6 +305,7 @@ export default function Dashboard() {
           </>
         )}
 
+        {/* BILLING */}
         {activePage === 'billing' && (
           <>
             <div>
