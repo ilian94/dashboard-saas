@@ -69,13 +69,11 @@ export default function Home() {
 
       <footer style={{ borderTop: `1px solid ${C.border}`, padding: '32px 60px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
         <span style={{ fontWeight: 700, fontSize: '0.9rem' }}>VoiceBot AI</span>
-        <div style={{ display: 'flex', gap: '24px' }}>
-          <Link href="/pricing" style={{ color: C.textMuted, textDecoration: 'none', fontSize: '0.85rem' }}>Pricing</Link>
-          <Link href="/login" style={{ color: C.textMuted, textDecoration: 'none', fontSize: '0.85rem' }}>Sign in</Link>
-          <Link href="/register" style={{ color: C.textMuted, textDecoration: 'none', fontSize: '0.85rem' }}>Sign up</Link>
-        </div>
-        <span style={{ color: C.textMuted, fontSize: '0.8rem' }}>© 2026 VoiceBot AI</span>
-      </footer>
-    </div>
-  );
-}
+        <div style={{ display: 'flex', gap: '24px', flexWrap: 'wrap' }}>
+  <Link href="/pricing" style={{ color: C.textMuted, textDecoration: 'none', fontSize: '0.85rem' }}>Pricing</Link>
+  <Link href="/login" style={{ color: C.textMuted, textDecoration: 'none', fontSize: '0.85rem' }}>Sign in</Link>
+  <Link href="/register" style={{ color: C.textMuted, textDecoration: 'none', fontSize: '0.85rem' }}>Sign up</Link>
+  <Link href="/privacy" style={{ color: C.textMuted, textDecoration: 'none', fontSize: '0.85rem' }}>Privacy</Link>
+  <Link href="/terms" style={{ color: C.textMuted, textDecoration: 'none', fontSize: '0.85rem' }}>Terms</Link>
+  <Link href="/refund" style={{ color: C.textMuted, textDecoration: 'none', fontSize: '0.85rem' }}>Refund</Link>
+</div>
