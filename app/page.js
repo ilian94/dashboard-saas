@@ -11,9 +11,22 @@ const features = [
   { icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6b7280" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>, title: '5-Minute Setup', desc: "Connect your calendar, activate your number, done. No technical skills required." },
 ];
 
+const faqs = [
+  { q: 'How does VoiceBot AI work?', a: 'VoiceBot AI uses Claude AI to answer your incoming calls in real time. When a client calls your number, the bot picks up instantly, understands what they need, and books appointments directly into your Google Calendar.' },
+  { q: 'Does it work with my existing phone number?', a: 'Yes. You keep your existing business number and simply forward calls to your VoiceBot number. Setup takes less than 5 minutes — no porting required.' },
+  { q: 'What languages does it support?', a: 'VoiceBot AI currently supports English. Additional languages are coming soon.' },
+  { q: 'What happens when I exceed my monthly minutes?', a: 'When your monthly minutes are used up, the VoiceBot will stop answering calls until the next billing cycle. You can upgrade your plan at any time to get more minutes.' },
+  { q: 'Can I cancel anytime?', a: 'Yes, you can cancel your subscription at any time from your dashboard. Your service will remain active until the end of the current billing period.' },
+  { q: 'How long does setup take?', a: 'Most businesses are live within 5 minutes. You just need to connect your Google Calendar, receive your dedicated number, and forward your existing business line to it.' },
+  { q: 'Is there a money-back guarantee?', a: 'Yes. We offer a 7-day money-back guarantee for all first-time subscribers. No questions asked.' },
+  { q: 'Can I customize what the bot says?', a: 'Custom scripts and personas are coming in a future update. Currently the bot uses a professional, friendly tone optimized for appointment booking.' },
+];
+
 export default function Home() {
   return (
     <div style={{ minHeight: '100vh', background: C.bg, color: 'white', fontFamily: 'system-ui, sans-serif' }}>
+
+      {/* NAV */}
       <nav style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '20px 60px', borderBottom: `1px solid ${C.border}`, position: 'sticky', top: 0, background: `rgba(15,17,23,0.85)`, backdropFilter: 'blur(12px)', zIndex: 100 }}>
         <span style={{ fontWeight: 700, fontSize: '1.1rem', letterSpacing: '-0.02em' }}>VoiceBot AI</span>
         <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
@@ -22,6 +35,7 @@ export default function Home() {
         </div>
       </nav>
 
+      {/* HERO */}
       <section style={{ textAlign: 'center', padding: '120px 20px 100px', maxWidth: '860px', margin: '0 auto' }}>
         <div style={{ display: 'inline-block', background: C.card, border: `1px solid ${C.border}`, borderRadius: '100px', padding: '6px 16px', fontSize: '0.8rem', color: C.text, marginBottom: '32px', letterSpacing: '0.02em' }}>
           ✦ Powered by Claude AI
@@ -38,6 +52,7 @@ export default function Home() {
         </div>
       </section>
 
+      {/* STATS */}
       <section style={{ borderTop: `1px solid ${C.border}`, borderBottom: `1px solid ${C.border}`, padding: '40px 60px', display: 'flex', justifyContent: 'center', gap: '80px', flexWrap: 'wrap' }}>
         {[{ value: '24/7', label: 'Always available' }, { value: '< 2s', label: 'Response time' }, { value: '100%', label: 'Calls handled' }].map(s => (
           <div key={s.label} style={{ textAlign: 'center' }}>
@@ -47,7 +62,27 @@ export default function Home() {
         ))}
       </section>
 
-      <section style={{ maxWidth: '1100px', margin: '0 auto', padding: '100px 40px' }}>
+      {/* HOW IT WORKS */}
+      <section style={{ maxWidth: '900px', margin: '0 auto', padding: '100px 40px' }}>
+        <h2 style={{ textAlign: 'center', fontSize: '2.2rem', fontWeight: 800, letterSpacing: '-0.03em', marginBottom: '16px' }}>Up and running in 3 steps</h2>
+        <p style={{ textAlign: 'center', color: C.text, marginBottom: '64px', fontSize: '1rem' }}>No developers needed. No complex setup.</p>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '24px' }}>
+          {[
+            { step: '01', title: 'Create your account', desc: 'Sign up in 30 seconds. Choose a plan that fits your call volume.' },
+            { step: '02', title: 'Connect Google Calendar', desc: 'Link your calendar so the bot can book appointments in real time — automatically.' },
+            { step: '03', title: 'Forward your number', desc: 'Redirect your existing business number to your VoiceBot. Done. You\'re live.' },
+          ].map(s => (
+            <div key={s.step} style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', padding: '32px' }}>
+              <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#4f46e5', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '16px' }}>Step {s.step}</div>
+              <h3 style={{ fontSize: '1.1rem', fontWeight: 700, marginBottom: '10px', letterSpacing: '-0.01em' }}>{s.title}</h3>
+              <p style={{ fontSize: '0.875rem', color: C.text, lineHeight: 1.65 }}>{s.desc}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* FEATURES */}
+      <section style={{ maxWidth: '1100px', margin: '0 auto', padding: '0 40px 100px' }}>
         <h2 style={{ textAlign: 'center', fontSize: '2.2rem', fontWeight: 800, letterSpacing: '-0.03em', marginBottom: '16px' }}>Everything you need</h2>
         <p style={{ textAlign: 'center', color: C.text, marginBottom: '64px', fontSize: '1rem' }}>An AI voice assistant that handles your calls like a real team member.</p>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '20px' }}>
@@ -61,19 +96,76 @@ export default function Home() {
         </div>
       </section>
 
+      {/* COMPARISON */}
+      <section style={{ maxWidth: '900px', margin: '0 auto', padding: '0 40px 100px' }}>
+        <h2 style={{ textAlign: 'center', fontSize: '2.2rem', fontWeight: 800, letterSpacing: '-0.03em', marginBottom: '16px' }}>VoiceBot AI vs. a receptionist</h2>
+        <p style={{ textAlign: 'center', color: C.text, marginBottom: '48px', fontSize: '1rem' }}>Same job. A fraction of the cost.</p>
+        <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '20px', overflow: 'hidden' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', borderBottom: `1px solid ${C.border}` }}>
+            <div style={{ padding: '16px 24px', color: C.text, fontSize: '0.85rem', fontWeight: 600 }}></div>
+            <div style={{ padding: '16px 24px', textAlign: 'center', fontWeight: 700, borderLeft: `1px solid ${C.border}`, borderRight: `1px solid ${C.border}` }}>VoiceBot AI</div>
+            <div style={{ padding: '16px 24px', textAlign: 'center', color: C.text, fontWeight: 600 }}>Human receptionist</div>
+          </div>
+          {[
+            { feature: 'Monthly cost', voicebot: 'From $229/mo', human: '$3,000–$5,000/mo' },
+            { feature: 'Availability', voicebot: '24/7/365', human: 'Business hours only' },
+            { feature: 'Response time', voicebot: '< 2 seconds', human: '1–5 rings' },
+            { feature: 'Simultaneous calls', voicebot: 'Unlimited', human: '1 at a time' },
+            { feature: 'Calendar booking', voicebot: 'Automatic', human: 'Manual' },
+            { feature: 'Call summaries', voicebot: 'AI-generated', human: 'Manual notes' },
+            { feature: 'Setup time', voicebot: '5 minutes', human: 'Weeks of hiring' },
+          ].map((row, i) => (
+            <div key={row.feature} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', borderBottom: i < 6 ? `1px solid ${C.border}` : 'none' }}>
+              <div style={{ padding: '16px 24px', color: C.text, fontSize: '0.9rem' }}>{row.feature}</div>
+              <div style={{ padding: '16px 24px', textAlign: 'center', fontSize: '0.9rem', fontWeight: 600, color: '#4ade80', borderLeft: `1px solid ${C.border}`, borderRight: `1px solid ${C.border}` }}>{row.voicebot}</div>
+              <div style={{ padding: '16px 24px', textAlign: 'center', fontSize: '0.9rem', color: C.text }}>{row.human}</div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* CTA INTERMÉDIAIRE */}
+      <section style={{ textAlign: 'center', padding: '60px 20px', borderTop: `1px solid ${C.border}`, borderBottom: `1px solid ${C.border}`, background: C.card }}>
+        <h2 style={{ fontSize: '1.8rem', fontWeight: 800, letterSpacing: '-0.03em', marginBottom: '12px' }}>Start handling every call automatically</h2>
+        <p style={{ color: C.text, marginBottom: '32px', fontSize: '1rem' }}>7-day money-back guarantee. No credit card required to sign up.</p>
+        <Link href="/register" style={{ background: 'white', color: 'black', textDecoration: 'none', fontWeight: 700, fontSize: '1rem', padding: '14px 32px', borderRadius: '10px' }}>Start for free →</Link>
+      </section>
+
+      {/* FAQ */}
+      <section style={{ maxWidth: '720px', margin: '0 auto', padding: '100px 40px' }}>
+        <h2 style={{ textAlign: 'center', fontSize: '2.2rem', fontWeight: 800, letterSpacing: '-0.03em', marginBottom: '16px' }}>Frequently asked questions</h2>
+        <p style={{ textAlign: 'center', color: C.text, marginBottom: '64px', fontSize: '1rem' }}>Everything you need to know about VoiceBot AI.</p>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+          {faqs.map((faq, i) => (
+            <div key={i} style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '14px', padding: '24px' }}>
+              <h3 style={{ fontSize: '1rem', fontWeight: 700, marginBottom: '10px', letterSpacing: '-0.01em' }}>{faq.q}</h3>
+              <p style={{ fontSize: '0.875rem', color: C.text, lineHeight: 1.7 }}>{faq.a}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* CTA FINAL */}
       <section style={{ textAlign: 'center', padding: '80px 20px 120px', borderTop: `1px solid ${C.border}` }}>
         <h2 style={{ fontSize: '2.5rem', fontWeight: 800, letterSpacing: '-0.04em', marginBottom: '16px' }}>Ready to automate<br />your calls?</h2>
         <p style={{ color: C.text, marginBottom: '40px', fontSize: '1rem' }}>Join professionals who never miss a client again.</p>
         <Link href="/register" style={{ background: 'white', color: 'black', textDecoration: 'none', fontWeight: 700, fontSize: '1rem', padding: '14px 36px', borderRadius: '10px' }}>Get started now →</Link>
       </section>
 
+      {/* FOOTER */}
       <footer style={{ borderTop: `1px solid ${C.border}`, padding: '32px 60px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
         <span style={{ fontWeight: 700, fontSize: '0.9rem' }}>VoiceBot AI</span>
         <div style={{ display: 'flex', gap: '24px', flexWrap: 'wrap' }}>
-  <Link href="/pricing" style={{ color: C.textMuted, textDecoration: 'none', fontSize: '0.85rem' }}>Pricing</Link>
-  <Link href="/login" style={{ color: C.textMuted, textDecoration: 'none', fontSize: '0.85rem' }}>Sign in</Link>
-  <Link href="/register" style={{ color: C.textMuted, textDecoration: 'none', fontSize: '0.85rem' }}>Sign up</Link>
-  <Link href="/privacy" style={{ color: C.textMuted, textDecoration: 'none', fontSize: '0.85rem' }}>Privacy</Link>
-  <Link href="/terms" style={{ color: C.textMuted, textDecoration: 'none', fontSize: '0.85rem' }}>Terms</Link>
-  <Link href="/refund" style={{ color: C.textMuted, textDecoration: 'none', fontSize: '0.85rem' }}>Refund</Link>
-</div>
+          <Link href="/pricing" style={{ color: C.textMuted, textDecoration: 'none', fontSize: '0.85rem' }}>Pricing</Link>
+          <Link href="/login" style={{ color: C.textMuted, textDecoration: 'none', fontSize: '0.85rem' }}>Sign in</Link>
+          <Link href="/register" style={{ color: C.textMuted, textDecoration: 'none', fontSize: '0.85rem' }}>Sign up</Link>
+          <Link href="/privacy" style={{ color: C.textMuted, textDecoration: 'none', fontSize: '0.85rem' }}>Privacy</Link>
+          <Link href="/terms" style={{ color: C.textMuted, textDecoration: 'none', fontSize: '0.85rem' }}>Terms</Link>
+          <Link href="/refund" style={{ color: C.textMuted, textDecoration: 'none', fontSize: '0.85rem' }}>Refund</Link>
+        </div>
+        <span style={{ color: C.textMuted, fontSize: '0.8rem' }}>© 2026 VoiceBot AI</span>
+      </footer>
+
+    </div>
+  );
+}
