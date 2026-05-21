@@ -23,7 +23,7 @@ const IconCheck = () => <svg width="12" height="12" viewBox="0 0 24 24" fill="no
 const IconSetup = () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 8 12 12 14 14"/></svg>;
 const IconX = () => <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>;
 
-function OnboardingBanner({ plan, googleConnected, twilioNumber, onDismiss, isMobile }) {
+function OnboardingBanner({ plan, googleConnected, twilioNumber, onDismiss }) {
   const steps = [
     { label: 'Account created', done: true, action: null },
     { label: 'Choose a plan', done: !!plan, action: !plan ? <a href="/pricing" style={{ fontSize: '0.78rem', fontWeight: 600, color: '#818cf8', textDecoration: 'none', whiteSpace: 'nowrap' }}>Choose →</a> : null },
@@ -33,10 +33,8 @@ function OnboardingBanner({ plan, googleConnected, twilioNumber, onDismiss, isMo
   ];
 
   const completedCount = steps.filter(s => s.done).length;
-  const allDone = completedCount === steps.length;
   const progress = Math.round((completedCount / steps.length) * 100);
-
-  if (allDone) return null;
+  if (completedCount === steps.length) return null;
 
   return (
     <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', padding: '20px', position: 'relative' }}>
@@ -47,28 +45,109 @@ function OnboardingBanner({ plan, googleConnected, twilioNumber, onDismiss, isMo
         </div>
         <button onClick={onDismiss} style={{ background: 'none', border: 'none', color: C.text, cursor: 'pointer', padding: '4px' }}><IconX /></button>
       </div>
-
-      {/* Progress bar */}
       <div style={{ height: '4px', background: C.border, borderRadius: '100px', marginBottom: '16px', overflow: 'hidden' }}>
         <div style={{ height: '100%', width: `${progress}%`, background: 'linear-gradient(90deg, #4f46e5, #4ade80)', borderRadius: '100px', transition: 'width 0.4s ease' }} />
       </div>
-
-      {/* Steps */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
         {steps.map((step, i) => (
           <div key={i} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
               <div style={{ width: '20px', height: '20px', borderRadius: '50%', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', background: step.done ? 'rgba(74,222,128,0.12)' : C.bg, border: `1px solid ${step.done ? 'rgba(74,222,128,0.3)' : C.border}` }}>
-                {step.done
-                  ? <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#4ade80" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                  : <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: C.border, display: 'block' }} />
-                }
+                {step.done ? <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#4ade80" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg> : <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: C.border, display: 'block' }} />}
               </div>
-              <span style={{ fontSize: '0.85rem', color: step.done ? '#e5e7eb' : C.text, fontWeight: step.done ? 500 : 400, textDecoration: step.done ? 'none' : 'none' }}>{step.label}</span>
+              <span style={{ fontSize: '0.85rem', color: step.done ? '#e5e7eb' : C.text, fontWeight: step.done ? 500 : 400 }}>{step.label}</span>
             </div>
             {step.action}
           </div>
         ))}
+      </div>
+    </div>
+  );
+}
+
+function ScriptSettings({ clientPlan, userId }) {
+  const [script, setScript] = useState({ business_name: '', services: '', questions: '', tone: '' });
+  const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
+
+  useEffect(() => {
+    const loadScript = async () => {
+      const { data } = await supabase.from('clients').select('bot_script').eq('user_id', userId).maybeSingle();
+      if (data?.bot_script) setScript({ business_name: '', services: '', questions: '', tone: '', ...data.bot_script });
+    };
+    loadScript();
+  }, [userId]);
+
+  const handleSave = async () => {
+    setSaving(true);
+    const scriptToSave = clientPlan === 'scale'
+      ? { business_name: script.business_name }
+      : { business_name: script.business_name, services: script.services, questions: script.questions, tone: script.tone };
+    await supabase.from('clients').update({ bot_script: scriptToSave }).eq('user_id', userId);
+    setSaving(false);
+    setSaved(true);
+    setTimeout(() => setSaved(false), 2000);
+  };
+
+  const inputStyle = { width: '100%', padding: '10px 14px', borderRadius: '10px', border: `1px solid ${C.border}`, background: C.bg, color: 'white', fontSize: '0.875rem', outline: 'none', boxSizing: 'border-box' };
+  const labelStyle = { fontSize: '0.78rem', fontWeight: 600, color: C.label, textTransform: 'uppercase', letterSpacing: '0.05em', display: 'block', marginBottom: '6px' };
+
+  if (!clientPlan || clientPlan === 'starter') {
+    return (
+      <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', padding: '20px' }}>
+        <p style={{ fontSize: '0.75rem', color: C.text, textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600, marginBottom: '12px' }}>VoiceBot Script</p>
+        <div style={{ background: 'rgba(79,70,229,0.08)', border: '1px solid rgba(79,70,229,0.2)', borderRadius: '12px', padding: '16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px', flexWrap: 'wrap' }}>
+          <div>
+            <p style={{ fontWeight: 600, color: '#818cf8', marginBottom: '4px', fontSize: '0.9rem' }}>Available on Scale & Business</p>
+            <p style={{ fontSize: '0.82rem', color: C.text }}>Upgrade to customize your VoiceBot's script and personality.</p>
+          </div>
+          <a href="/pricing" style={{ padding: '8px 16px', background: '#4f46e5', color: 'white', textDecoration: 'none', borderRadius: '8px', fontSize: '0.82rem', fontWeight: 600, whiteSpace: 'nowrap' }}>Upgrade →</a>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', padding: '20px' }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px' }}>
+        <div>
+          <p style={{ fontSize: '0.75rem', color: C.text, textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600, marginBottom: '4px' }}>VoiceBot Script</p>
+          <p style={{ fontSize: '0.82rem', color: C.text }}>Customize how your VoiceBot talks to callers.</p>
+        </div>
+        {clientPlan === 'scale' && <span style={{ fontSize: '0.7rem', padding: '3px 10px', borderRadius: '100px', border: `1px solid rgba(167,139,250,0.3)`, color: '#a78bfa', fontWeight: 600 }}>Scale</span>}
+        {clientPlan === 'business' && <span style={{ fontSize: '0.7rem', padding: '3px 10px', borderRadius: '100px', border: `1px solid rgba(251,191,36,0.3)`, color: '#fbbf24', fontWeight: 600 }}>Business</span>}
+      </div>
+
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+        <div>
+          <label style={labelStyle}>Business name</label>
+          <input value={script.business_name} onChange={e => setScript({ ...script, business_name: e.target.value })} placeholder="e.g. Smith Dental Clinic" style={inputStyle} />
+          <p style={{ fontSize: '0.75rem', color: C.text, marginTop: '4px' }}>Used in the greeting: "Thank you for calling [business name]"</p>
+        </div>
+
+        {clientPlan === 'business' && (
+          <>
+            <div>
+              <label style={labelStyle}>Services offered</label>
+              <input value={script.services} onChange={e => setScript({ ...script, services: e.target.value })} placeholder="e.g. dental cleanings, consultations, emergency appointments" style={inputStyle} />
+              <p style={{ fontSize: '0.75rem', color: C.text, marginTop: '4px' }}>What the bot can help callers with.</p>
+            </div>
+            <div>
+              <label style={labelStyle}>Questions to ask callers</label>
+              <input value={script.questions} onChange={e => setScript({ ...script, questions: e.target.value })} placeholder="e.g. their name, preferred date, type of service needed" style={inputStyle} />
+              <p style={{ fontSize: '0.75rem', color: C.text, marginTop: '4px' }}>Information to collect before booking.</p>
+            </div>
+            <div>
+              <label style={labelStyle}>Tone & personality</label>
+              <input value={script.tone} onChange={e => setScript({ ...script, tone: e.target.value })} placeholder="e.g. warm and professional, concise, friendly" style={inputStyle} />
+              <p style={{ fontSize: '0.75rem', color: C.text, marginTop: '4px' }}>How the bot should sound.</p>
+            </div>
+          </>
+        )}
+
+        <button onClick={handleSave} disabled={saving} style={{ padding: '10px 20px', background: saved ? 'rgba(34,197,94,0.12)' : 'white', color: saved ? '#4ade80' : 'black', border: saved ? '1px solid rgba(34,197,94,0.3)' : 'none', borderRadius: '10px', fontWeight: 700, fontSize: '0.875rem', cursor: 'pointer', alignSelf: 'flex-start', transition: 'all 0.2s' }}>
+          {saving ? 'Saving...' : saved ? '✓ Saved' : 'Save changes'}
+        </button>
       </div>
     </div>
   );
@@ -101,7 +180,6 @@ export default function Dashboard() {
     if (data) {
       setClientData(data);
       if (data.google_connected) setGoogleConnected(true);
-      // Afficher l'onboarding si pas encore tout complété
       const dismissed = localStorage.getItem('onboarding_dismissed');
       const fullySetup = data.plan && data.google_connected && data.twilio_number;
       if (!dismissed && !fullySetup) setShowOnboarding(true);
@@ -123,11 +201,7 @@ export default function Dashboard() {
   }, [fetchCalls, fetchClientData]);
 
   const handleLogout = async () => { await supabase.auth.signOut(); window.location.href = "/login"; };
-
-  const handleDismissOnboarding = () => {
-    localStorage.setItem('onboarding_dismissed', 'true');
-    setShowOnboarding(false);
-  };
+  const handleDismissOnboarding = () => { localStorage.setItem('onboarding_dismissed', 'true'); setShowOnboarding(false); };
 
   if (loading) return (
     <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: C.bg }}>
@@ -148,23 +222,12 @@ export default function Dashboard() {
   ];
 
   const setupSteps = [
-    {
-      number: '01', title: 'Choose a plan', done: !!plan,
-      desc: 'Subscribe to one of our plans to activate your VoiceBot. You can upgrade or cancel anytime.',
-      action: !plan ? <a href="/pricing" style={{ display: 'inline-block', marginTop: '12px', padding: '8px 18px', background: '#4f46e5', color: 'white', textDecoration: 'none', borderRadius: '8px', fontSize: '0.85rem', fontWeight: 600 }}>View plans →</a> : null,
-    },
-    {
-      number: '02', title: 'Connect Google Calendar', done: googleConnected,
-      desc: 'Link your Google Calendar so your VoiceBot can automatically book appointments in real time.',
-      action: !googleConnected ? <a href="/api/google/auth" style={{ display: 'inline-block', marginTop: '12px', padding: '8px 18px', background: '#1a73e8', color: 'white', textDecoration: 'none', borderRadius: '8px', fontSize: '0.85rem', fontWeight: 600 }}>Connect Google →</a> : null,
-    },
-    {
-      number: '03', title: 'Receive your phone number', done: !!clientData?.twilio_number,
-      desc: clientData?.twilio_number ? `Your dedicated number is ${clientData.twilio_number}. Share it with your clients or use it for call forwarding.` : 'Once your plan is active, we will assign you a dedicated phone number within 24 hours.',
-    },
+    { number: '01', title: 'Choose a plan', done: !!plan, desc: 'Subscribe to one of our plans to activate your VoiceBot. You can upgrade or cancel anytime.', action: !plan ? <a href="/pricing" style={{ display: 'inline-block', marginTop: '12px', padding: '8px 18px', background: '#4f46e5', color: 'white', textDecoration: 'none', borderRadius: '8px', fontSize: '0.85rem', fontWeight: 600 }}>View plans →</a> : null },
+    { number: '02', title: 'Connect Google Calendar', done: googleConnected, desc: 'Link your Google Calendar so your VoiceBot can automatically book appointments in real time.', action: !googleConnected ? <a href="/api/google/auth" style={{ display: 'inline-block', marginTop: '12px', padding: '8px 18px', background: '#1a73e8', color: 'white', textDecoration: 'none', borderRadius: '8px', fontSize: '0.85rem', fontWeight: 600 }}>Connect Google →</a> : null },
+    { number: '03', title: 'Receive your phone number', done: !!clientData?.twilio_number, desc: clientData?.twilio_number ? `Your dedicated number is ${clientData.twilio_number}.` : 'Once your plan is active, we will assign you a dedicated phone number within 24 hours.' },
     {
       number: '04', title: 'Forward your business number to VoiceBot', done: false,
-      desc: "Redirect your existing business number to your VoiceBot number so every call is handled automatically. Here's how:",
+      desc: "Redirect your existing business number to your VoiceBot number so every call is handled automatically.",
       extra: (
         <div style={{ marginTop: '16px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
           {[
@@ -180,14 +243,8 @@ export default function Dashboard() {
         </div>
       ),
     },
-    {
-      number: '05', title: 'Test your VoiceBot', done: calls.length > 0,
-      desc: 'Call your dedicated number and have a conversation with your VoiceBot. It will greet callers, answer questions, and book appointments automatically.',
-    },
-    {
-      number: '06', title: "You're live", done: calls.length > 0 && !!plan && googleConnected && !!clientData?.twilio_number,
-      desc: 'Your VoiceBot is now handling calls 24/7. Check your dashboard to see call logs, summaries, and booked appointments.',
-    },
+    { number: '05', title: 'Test your VoiceBot', done: calls.length > 0, desc: 'Call your dedicated number and have a conversation with your VoiceBot.' },
+    { number: '06', title: "You're live", done: calls.length > 0 && !!plan && googleConnected && !!clientData?.twilio_number, desc: 'Your VoiceBot is now handling calls 24/7.' },
   ];
 
   const pageContent = (
@@ -197,24 +254,13 @@ export default function Dashboard() {
         <>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <div>
-              <h1 style={{ fontSize: isMobile ? '1.3rem' : '1.5rem', fontWeight: 800, letterSpacing: '-0.03em', marginBottom: '4px' }}>
-                {clientData?.business_name ? `Welcome, ${clientData.business_name}` : 'Dashboard'}
-              </h1>
+              <h1 style={{ fontSize: isMobile ? '1.3rem' : '1.5rem', fontWeight: 800, letterSpacing: '-0.03em', marginBottom: '4px' }}>{clientData?.business_name ? `Welcome, ${clientData.business_name}` : 'Dashboard'}</h1>
               <p style={{ fontSize: '0.85rem', color: C.text }}>Here's what's happening with your VoiceBot.</p>
             </div>
             {!plan && <a href="/pricing" style={{ padding: '8px 14px', background: '#4f46e5', color: 'white', textDecoration: 'none', borderRadius: '9px', fontSize: '0.8rem', fontWeight: 600, whiteSpace: 'nowrap' }}>Choose a plan →</a>}
           </div>
 
-          {/* ONBOARDING BANNER */}
-          {showOnboarding && (
-            <OnboardingBanner
-              plan={clientData?.plan}
-              googleConnected={googleConnected}
-              twilioNumber={clientData?.twilio_number}
-              onDismiss={handleDismissOnboarding}
-              isMobile={isMobile}
-            />
-          )}
+          {showOnboarding && <OnboardingBanner plan={clientData?.plan} googleConnected={googleConnected} twilioNumber={clientData?.twilio_number} onDismiss={handleDismissOnboarding} />}
 
           {!plan && !showOnboarding && (
             <div style={{ background: 'rgba(79,70,229,0.08)', border: '1px solid rgba(79,70,229,0.2)', borderRadius: '16px', padding: '20px', display: 'flex', flexDirection: isMobile ? 'column' : 'row', alignItems: isMobile ? 'flex-start' : 'center', justifyContent: 'space-between', gap: '12px' }}>
@@ -312,10 +358,7 @@ export default function Dashboard() {
             {setupSteps.map((step, i) => (
               <div key={i} style={{ background: C.card, border: `1px solid ${step.done ? 'rgba(74,222,128,0.2)' : C.border}`, borderRadius: '16px', padding: '20px', display: 'flex', gap: '16px', alignItems: 'flex-start' }}>
                 <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: step.done ? 'rgba(74,222,128,0.12)' : C.bg, border: `1px solid ${step.done ? 'rgba(74,222,128,0.3)' : C.border}`, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                  {step.done
-                    ? <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#4ade80" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                    : <span style={{ fontSize: '0.7rem', fontWeight: 700, color: C.text }}>{step.number}</span>
-                  }
+                  {step.done ? <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#4ade80" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg> : <span style={{ fontSize: '0.7rem', fontWeight: 700, color: C.text }}>{step.number}</span>}
                 </div>
                 <div style={{ flex: 1 }}>
                   <p style={{ fontWeight: 700, fontSize: '0.95rem', marginBottom: '6px', color: step.done ? '#4ade80' : 'white' }}>{step.title}</p>
@@ -335,6 +378,8 @@ export default function Dashboard() {
             <h1 style={{ fontSize: isMobile ? '1.3rem' : '1.5rem', fontWeight: 800, letterSpacing: '-0.03em', marginBottom: '4px' }}>Settings</h1>
             <p style={{ fontSize: '0.85rem', color: C.text }}>Manage your account and integrations.</p>
           </div>
+
+          {/* GOOGLE CALENDAR */}
           <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', padding: '20px', display: 'flex', flexDirection: isMobile ? 'column' : 'row', alignItems: isMobile ? 'flex-start' : 'center', justifyContent: 'space-between', gap: '12px' }}>
             <div>
               <p style={{ fontSize: '0.75rem', color: C.text, textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600, marginBottom: '6px' }}>Google Calendar</p>
@@ -346,6 +391,11 @@ export default function Dashboard() {
               : <span style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '9px 16px', background: 'rgba(34,197,94,0.08)', border: '1px solid rgba(34,197,94,0.2)', borderRadius: '9px', color: '#4ade80', fontSize: '0.875rem', fontWeight: 600 }}><IconCheck /> Connected</span>
             }
           </div>
+
+          {/* VOICEBOT SCRIPT */}
+          <ScriptSettings clientPlan={clientData?.plan} userId={user?.id} />
+
+          {/* ACCOUNT */}
           <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', padding: '20px' }}>
             <p style={{ fontSize: '0.75rem', color: C.text, textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600, marginBottom: '16px' }}>Account</p>
             <p style={{ fontSize: '0.875rem', color: C.label, marginBottom: '4px' }}>Email</p>
@@ -403,8 +453,7 @@ export default function Dashboard() {
           {navItems.map(item => (
             <button key={item.id} onClick={() => setActivePage(item.id)}
               style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px', padding: '6px 12px', border: 'none', background: 'transparent', color: activePage === item.id ? 'white' : C.text, cursor: 'pointer', fontSize: '0.65rem', fontWeight: activePage === item.id ? 600 : 400 }}>
-              {item.icon}
-              {item.label}
+              {item.icon}{item.label}
             </button>
           ))}
         </div>
