@@ -108,9 +108,9 @@ export default function Dashboard() {
       extra: (
         <div style={{ marginTop: '16px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
           {[
-            { label: 'Mobile (FR) — Orange, SFR, Bouygues', value: `Dial **21*${clientData?.twilio_number || '+1XXXXXXXXXX'}# on your phone` },
-            { label: 'Landline / Box', value: 'Go to your operator settings or call your provider to enable unconditional call forwarding' },
-            { label: 'VoIP / Ringover / Aircall', value: 'Go to your account settings → Call forwarding → Enter your VoiceBot number' },
+            { label: 'Mobile carrier (AT&T, Verizon, T-Mobile)', value: `Dial **21*${clientData?.twilio_number || '+1XXXXXXXXXX'}# from your phone` },
+            { label: 'Landline / VoIP', value: 'Contact your provider and ask to enable unconditional call forwarding to your VoiceBot number' },
+            { label: 'Business phone system (RingCentral, Dialpad, Nextiva)', value: 'Go to your admin settings → Call forwarding → Enter your VoiceBot number' },
           ].map(item => (
             <div key={item.label} style={{ background: C.bg, border: `1px solid ${C.border}`, borderRadius: '10px', padding: '12px 16px' }}>
               <p style={{ fontSize: '0.75rem', color: C.label, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '4px' }}>{item.label}</p>
