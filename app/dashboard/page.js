@@ -1,11 +1,8 @@
 "use client";
 import { useEffect, useState, useCallback } from "react";
-import { createClient } from "@supabase/supabase-js";
+import { createClient } from "@/lib/supabase/client";
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL,
-  process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY
-);
+const supabase = createClient();
 
 const C = { bg: '#0f1117', sidebar: '#0d1117', card: '#161b27', border: '#1e2433', text: '#6b7280', label: '#9ca3af' };
 
@@ -53,10 +50,10 @@ export default function Dashboard() {
 
   useEffect(() => {
     const checkUser = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) { window.location.href = "/login"; return; }
-      setUser(session.user);
-      await Promise.all([fetchCalls(session.user.id), fetchClientData(session.user.id)]);
+  const { data: { user: authUser } } = await supabase.auth.getUser();
+  if (!authUser) { window.location.href = "/login"; return; }
+  setUser(authUser);
+      await Promise.all([fetchCalls(authUser.id), fetchClientData(authUser.id)]);
       setLoading(false);
     };
     checkUser();
@@ -169,7 +166,7 @@ export default function Dashboard() {
             </div>
           )}
 
-          <div style={{ display: 'grid', gridTemplateColumns: isMobile ? 'repeat(3, 1fr)' : 'repeat(3, 1fr)', gap: '12px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '12px' }}>
             {[
               { label: 'Calls received', value: calls.length, icon: <IconPhone /> },
               { label: 'Appointments', value: rdvCount, icon: <IconCalendar /> },
@@ -319,17 +316,13 @@ export default function Dashboard() {
   if (isMobile) {
     return (
       <div style={{ minHeight: '100vh', background: C.bg, color: 'white', fontFamily: 'system-ui, sans-serif' }}>
-        {/* MOBILE TOP BAR */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px 20px', borderBottom: `1px solid ${C.border}`, background: C.sidebar, position: 'sticky', top: 0, zIndex: 100 }}>
           <span style={{ fontWeight: 700, fontSize: '1rem' }}>VoiceBot AI</span>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
             {plan && <span style={{ fontSize: '0.7rem', padding: '3px 10px', borderRadius: '100px', border: `1px solid ${C.border}`, color: plan.color, fontWeight: 600 }}>{plan.label}</span>}
           </div>
         </div>
-
         {pageContent}
-
-        {/* MOBILE BOTTOM NAV */}
         <div style={{ position: 'fixed', bottom: 0, left: 0, right: 0, background: C.sidebar, borderTop: `1px solid ${C.border}`, display: 'flex', justifyContent: 'space-around', padding: '8px 0 20px', zIndex: 100 }}>
           {navItems.map(item => (
             <button key={item.id} onClick={() => setActivePage(item.id)}
@@ -345,7 +338,6 @@ export default function Dashboard() {
 
   return (
     <div style={{ minHeight: '100vh', background: C.bg, color: 'white', fontFamily: 'system-ui, sans-serif', display: 'flex' }}>
-      {/* DESKTOP SIDEBAR */}
       <aside style={{ width: '220px', minHeight: '100vh', background: C.sidebar, borderRight: `1px solid ${C.border}`, display: 'flex', flexDirection: 'column', padding: '24px 12px', position: 'fixed', top: 0, left: 0 }}>
         <div style={{ padding: '0 12px', marginBottom: '32px' }}>
           <span style={{ fontWeight: 700, fontSize: '1rem', letterSpacing: '-0.02em' }}>VoiceBot AI</span>

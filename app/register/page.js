@@ -1,9 +1,9 @@
 "use client";
 import { useState } from "react";
-import { createClient } from "@supabase/supabase-js";
+import { createClient } from "@/lib/supabase/client";
 import Link from "next/link";
 
-const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL, process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY);
+const supabase = createClient();
 const C = { bg: '#0f1117', card: '#161b27', border: '#1e2433', input: '#0f1117', text: '#6b7280', label: '#9ca3af' };
 
 export default function Register() {
@@ -19,7 +19,6 @@ export default function Register() {
     if (data.user) {
       await supabase.from("clients").insert([{ user_id: data.user.id, email: form.email, business_name: form.company }]);
       
-      // Envoyer l'email de bienvenue
       await fetch('/api/email/welcome', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
