@@ -7,10 +7,16 @@ export async function POST(req) {
   try {
     const { priceId, userId, userEmail } = await req.json();
 
+    console.log('Checkout attempt:', { priceId, userId, userEmail });
+
+    if (!priceId || !userId) {
+      return NextResponse.json({ error: 'Missing priceId or userId' }, { status: 400 });
+    }
+
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
       mode: 'subscription',
-      customer_email: userEmail,
+      ...(userEmail && { customer_email: userEmail }),
       line_items: [{ price: priceId, quantity: 1 }],
       success_url: `${process.env.NEXT_PUBLIC_APP_URL}/dashboard?success=true`,
       cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/pricing?canceled=true`,
@@ -19,6 +25,7 @@ export async function POST(req) {
 
     return NextResponse.json({ url: session.url });
   } catch (error) {
+    console.error('Stripe checkout error:', error.message);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
