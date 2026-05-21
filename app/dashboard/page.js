@@ -32,6 +32,14 @@ export default function Dashboard() {
   const [googleConnected, setGoogleConnected] = useState(false);
   const [clientData, setClientData] = useState(null);
   const [activePage, setActivePage] = useState('dashboard');
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768);
+    check();
+    window.addEventListener('resize', check);
+    return () => window.removeEventListener('resize', check);
+  }, []);
 
   const fetchCalls = useCallback(async (userId) => {
     const { data } = await supabase.from("calls").select("*").eq("user_id", userId).order("created_at", { ascending: false }).limit(20);
@@ -70,47 +78,37 @@ export default function Dashboard() {
   const plan = clientData?.plan ? PLAN_LABELS[clientData.plan] : null;
 
   const navItems = [
-    { id: 'dashboard', label: 'Dashboard', icon: <IconHome /> },
+    { id: 'dashboard', label: 'Home', icon: <IconHome /> },
     { id: 'calls', label: 'Calls', icon: <IconPhone /> },
-    { id: 'setup', label: 'Setup guide', icon: <IconSetup /> },
+    { id: 'setup', label: 'Setup', icon: <IconSetup /> },
     { id: 'settings', label: 'Settings', icon: <IconSettings /> },
     { id: 'billing', label: 'Billing', icon: <IconBilling /> },
   ];
 
   const setupSteps = [
     {
-      number: '01',
-      title: 'Choose a plan',
-      done: !!plan,
+      number: '01', title: 'Choose a plan', done: !!plan,
       desc: 'Subscribe to one of our plans to activate your VoiceBot. You can upgrade or cancel anytime.',
       action: !plan ? <a href="/pricing" style={{ display: 'inline-block', marginTop: '12px', padding: '8px 18px', background: '#4f46e5', color: 'white', textDecoration: 'none', borderRadius: '8px', fontSize: '0.85rem', fontWeight: 600 }}>View plans →</a> : null,
     },
     {
-      number: '02',
-      title: 'Connect Google Calendar',
-      done: googleConnected,
+      number: '02', title: 'Connect Google Calendar', done: googleConnected,
       desc: 'Link your Google Calendar so your VoiceBot can automatically book appointments in real time.',
       action: !googleConnected ? <a href="/api/google/auth" style={{ display: 'inline-block', marginTop: '12px', padding: '8px 18px', background: '#1a73e8', color: 'white', textDecoration: 'none', borderRadius: '8px', fontSize: '0.85rem', fontWeight: 600 }}>Connect Google →</a> : null,
     },
     {
-      number: '03',
-      title: 'Receive your phone number',
-      done: !!clientData?.twilio_number,
-      desc: clientData?.twilio_number
-        ? `Your dedicated number is ${clientData.twilio_number}. Share it with your clients or use it for call forwarding.`
-        : 'Once your plan is active, we will assign you a dedicated phone number within 24 hours.',
+      number: '03', title: 'Receive your phone number', done: !!clientData?.twilio_number,
+      desc: clientData?.twilio_number ? `Your dedicated number is ${clientData.twilio_number}. Share it with your clients or use it for call forwarding.` : 'Once your plan is active, we will assign you a dedicated phone number within 24 hours.',
     },
     {
-      number: '04',
-      title: 'Forward your business number to VoiceBot',
-      done: false,
+      number: '04', title: 'Forward your business number to VoiceBot', done: false,
       desc: "Redirect your existing business number to your VoiceBot number so every call is handled automatically. Here's how:",
       extra: (
         <div style={{ marginTop: '16px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
           {[
-            { label: 'Mobile carrier (AT&T, Verizon, T-Mobile)', value: `Dial **21*${clientData?.twilio_number || '+1XXXXXXXXXX'}# from your phone` },
+            { label: 'Mobile (AT&T, Verizon, T-Mobile)', value: `Dial **21*${clientData?.twilio_number || '+1XXXXXXXXXX'}# from your phone` },
             { label: 'Landline / VoIP', value: 'Contact your provider and ask to enable unconditional call forwarding to your VoiceBot number' },
-            { label: 'Business phone system (RingCentral, Dialpad, Nextiva)', value: 'Go to your admin settings → Call forwarding → Enter your VoiceBot number' },
+            { label: 'Business phone (RingCentral, Dialpad, Nextiva)', value: 'Go to your admin settings → Call forwarding → Enter your VoiceBot number' },
           ].map(item => (
             <div key={item.label} style={{ background: C.bg, border: `1px solid ${C.border}`, borderRadius: '10px', padding: '12px 16px' }}>
               <p style={{ fontSize: '0.75rem', color: C.label, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '4px' }}>{item.label}</p>
@@ -121,22 +119,233 @@ export default function Dashboard() {
       ),
     },
     {
-      number: '05',
-      title: 'Test your VoiceBot',
-      done: calls.length > 0,
+      number: '05', title: 'Test your VoiceBot', done: calls.length > 0,
       desc: 'Call your dedicated number and have a conversation with your VoiceBot. It will greet callers, answer questions, and book appointments automatically.',
     },
     {
-      number: '06',
-      title: "You're live",
-      done: calls.length > 0 && !!plan && googleConnected && !!clientData?.twilio_number,
+      number: '06', title: "You're live", done: calls.length > 0 && !!plan && googleConnected && !!clientData?.twilio_number,
       desc: 'Your VoiceBot is now handling calls 24/7. Check your dashboard to see call logs, summaries, and booked appointments.',
     },
   ];
 
+  const pageContent = (
+    <main style={{ flex: 1, padding: isMobile ? '24px 16px' : '48px 40px', display: 'flex', flexDirection: 'column', gap: '20px', maxWidth: '900px', paddingBottom: isMobile ? '80px' : '48px' }}>
+
+      {activePage === 'dashboard' && (
+        <>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <div>
+              <h1 style={{ fontSize: isMobile ? '1.3rem' : '1.5rem', fontWeight: 800, letterSpacing: '-0.03em', marginBottom: '4px' }}>
+                {clientData?.business_name ? `Welcome, ${clientData.business_name}` : 'Dashboard'}
+              </h1>
+              <p style={{ fontSize: '0.85rem', color: C.text }}>Here's what's happening with your VoiceBot.</p>
+            </div>
+            {!plan && <a href="/pricing" style={{ padding: '8px 14px', background: '#4f46e5', color: 'white', textDecoration: 'none', borderRadius: '9px', fontSize: '0.8rem', fontWeight: 600, whiteSpace: 'nowrap' }}>Choose a plan →</a>}
+          </div>
+
+          {!plan && (
+            <div style={{ background: 'rgba(79,70,229,0.08)', border: '1px solid rgba(79,70,229,0.2)', borderRadius: '16px', padding: '20px', display: 'flex', flexDirection: isMobile ? 'column' : 'row', alignItems: isMobile ? 'flex-start' : 'center', justifyContent: 'space-between', gap: '12px' }}>
+              <div>
+                <p style={{ fontWeight: 600, color: '#818cf8', marginBottom: '4px' }}>No active plan</p>
+                <p style={{ fontSize: '0.85rem', color: C.text }}>Subscribe to a plan to activate your VoiceBot.</p>
+              </div>
+              <a href="/pricing" style={{ padding: '9px 20px', background: '#4f46e5', color: 'white', textDecoration: 'none', borderRadius: '9px', fontSize: '0.875rem', fontWeight: 600, whiteSpace: 'nowrap' }}>View plans</a>
+            </div>
+          )}
+
+          {plan && (
+            <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', padding: '20px', display: 'flex', flexDirection: isMobile ? 'column' : 'row', alignItems: isMobile ? 'flex-start' : 'center', justifyContent: 'space-between', gap: '12px' }}>
+              <div>
+                <p style={{ fontSize: '0.75rem', color: C.text, textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600, marginBottom: '6px' }}>Current plan</p>
+                <p style={{ fontWeight: 700, fontSize: '1.1rem', color: plan.color }}>{plan.label}</p>
+                <p style={{ fontSize: '0.8rem', color: C.text, marginTop: '4px' }}>{plan.minutes.toLocaleString()} minutes/month included</p>
+              </div>
+              {clientData?.twilio_number && (
+                <div style={{ textAlign: isMobile ? 'left' : 'right' }}>
+                  <p style={{ fontSize: '0.75rem', color: C.text, textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600, marginBottom: '6px' }}>Phone number</p>
+                  <p style={{ fontFamily: 'monospace', fontSize: '1rem', color: '#e5e7eb', fontWeight: 600 }}>{clientData.twilio_number}</p>
+                </div>
+              )}
+            </div>
+          )}
+
+          <div style={{ display: 'grid', gridTemplateColumns: isMobile ? 'repeat(3, 1fr)' : 'repeat(3, 1fr)', gap: '12px' }}>
+            {[
+              { label: 'Calls received', value: calls.length, icon: <IconPhone /> },
+              { label: 'Appointments', value: rdvCount, icon: <IconCalendar /> },
+              { label: 'Minutes', value: Math.round(totalDuration / 60), icon: <IconClock /> },
+            ].map(s => (
+              <div key={s.label} style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '14px', padding: isMobile ? '16px 12px' : '24px' }}>
+                <div style={{ color: C.text, marginBottom: '8px' }}>{s.icon}</div>
+                <div style={{ fontSize: isMobile ? '1.6rem' : '2.2rem', fontWeight: 800, letterSpacing: '-0.04em', lineHeight: 1, marginBottom: '4px' }}>{s.value}</div>
+                <div style={{ fontSize: '0.75rem', color: C.text }}>{s.label}</div>
+              </div>
+            ))}
+          </div>
+
+          <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', padding: '20px', display: 'flex', flexDirection: isMobile ? 'column' : 'row', alignItems: isMobile ? 'flex-start' : 'center', justifyContent: 'space-between', gap: '12px' }}>
+            <div>
+              <p style={{ fontSize: '0.75rem', color: C.text, textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600, marginBottom: '6px' }}>Google Calendar</p>
+              <p style={{ fontWeight: 600, fontSize: '1rem', marginBottom: '4px' }}>{googleConnected ? 'Connected' : 'Not connected'}</p>
+              <p style={{ fontSize: '0.85rem', color: C.text }}>{googleConnected ? 'Appointments are booked automatically.' : 'Connect your calendar for automatic scheduling.'}</p>
+            </div>
+            {!googleConnected
+              ? <a href="/api/google/auth" style={{ padding: '9px 20px', background: '#1a73e8', color: 'white', textDecoration: 'none', borderRadius: '9px', fontSize: '0.875rem', fontWeight: 600, whiteSpace: 'nowrap' }}>Connect Google</a>
+              : <span style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '9px 16px', background: 'rgba(34,197,94,0.08)', border: '1px solid rgba(34,197,94,0.2)', borderRadius: '9px', color: '#4ade80', fontSize: '0.875rem', fontWeight: 600 }}><IconCheck /> Connected</span>
+            }
+          </div>
+        </>
+      )}
+
+      {activePage === 'calls' && (
+        <>
+          <div>
+            <h1 style={{ fontSize: isMobile ? '1.3rem' : '1.5rem', fontWeight: 800, letterSpacing: '-0.03em', marginBottom: '4px' }}>Calls</h1>
+            <p style={{ fontSize: '0.85rem', color: C.text }}>All calls handled by your VoiceBot.</p>
+          </div>
+          <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', padding: '20px' }}>
+            {calls.length === 0 ? (
+              <div style={{ textAlign: 'center', padding: '40px 0' }}>
+                <div style={{ color: C.border, marginBottom: '12px', display: 'flex', justifyContent: 'center' }}><IconPhone /></div>
+                <p style={{ fontSize: '0.875rem', color: C.text }}>No calls yet. Your VoiceBot is ready.</p>
+              </div>
+            ) : (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                {calls.map(call => (
+                  <div key={call.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 14px', background: C.bg, border: `1px solid ${C.border}`, borderRadius: '12px' }}>
+                    <div>
+                      <p style={{ fontSize: '0.875rem', fontWeight: 600, marginBottom: '3px' }}>{call.caller_number}</p>
+                      <p style={{ fontSize: '0.8rem', color: C.text }}>{call.summary}</p>
+                    </div>
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '6px' }}>
+                      <span style={{ fontSize: '0.75rem', color: C.text }}>{call.duration}s</span>
+                      {call.rdv_pris && <span style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '0.75rem', color: '#4ade80', background: 'rgba(34,197,94,0.08)', padding: '2px 8px', borderRadius: '100px' }}><IconCheck /> Booked</span>}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </>
+      )}
+
+      {activePage === 'setup' && (
+        <>
+          <div>
+            <h1 style={{ fontSize: isMobile ? '1.3rem' : '1.5rem', fontWeight: 800, letterSpacing: '-0.03em', marginBottom: '4px' }}>Setup guide</h1>
+            <p style={{ fontSize: '0.85rem', color: C.text }}>Follow these steps to get your VoiceBot up and running.</p>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            {setupSteps.map((step, i) => (
+              <div key={i} style={{ background: C.card, border: `1px solid ${step.done ? 'rgba(74,222,128,0.2)' : C.border}`, borderRadius: '16px', padding: '20px', display: 'flex', gap: '16px', alignItems: 'flex-start' }}>
+                <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: step.done ? 'rgba(74,222,128,0.12)' : C.bg, border: `1px solid ${step.done ? 'rgba(74,222,128,0.3)' : C.border}`, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                  {step.done
+                    ? <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#4ade80" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                    : <span style={{ fontSize: '0.7rem', fontWeight: 700, color: C.text }}>{step.number}</span>
+                  }
+                </div>
+                <div style={{ flex: 1 }}>
+                  <p style={{ fontWeight: 700, fontSize: '0.95rem', marginBottom: '6px', color: step.done ? '#4ade80' : 'white' }}>{step.title}</p>
+                  <p style={{ fontSize: '0.85rem', color: C.text, lineHeight: 1.6 }}>{step.desc}</p>
+                  {step.action}
+                  {step.extra}
+                </div>
+              </div>
+            ))}
+          </div>
+        </>
+      )}
+
+      {activePage === 'settings' && (
+        <>
+          <div>
+            <h1 style={{ fontSize: isMobile ? '1.3rem' : '1.5rem', fontWeight: 800, letterSpacing: '-0.03em', marginBottom: '4px' }}>Settings</h1>
+            <p style={{ fontSize: '0.85rem', color: C.text }}>Manage your account and integrations.</p>
+          </div>
+          <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', padding: '20px', display: 'flex', flexDirection: isMobile ? 'column' : 'row', alignItems: isMobile ? 'flex-start' : 'center', justifyContent: 'space-between', gap: '12px' }}>
+            <div>
+              <p style={{ fontSize: '0.75rem', color: C.text, textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600, marginBottom: '6px' }}>Google Calendar</p>
+              <p style={{ fontWeight: 600, fontSize: '1rem', marginBottom: '4px' }}>{googleConnected ? 'Connected' : 'Not connected'}</p>
+              <p style={{ fontSize: '0.85rem', color: C.text }}>{googleConnected ? 'Appointments are booked automatically.' : 'Connect your calendar for automatic scheduling.'}</p>
+            </div>
+            {!googleConnected
+              ? <a href="/api/google/auth" style={{ padding: '9px 20px', background: '#1a73e8', color: 'white', textDecoration: 'none', borderRadius: '9px', fontSize: '0.875rem', fontWeight: 600 }}>Connect Google</a>
+              : <span style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '9px 16px', background: 'rgba(34,197,94,0.08)', border: '1px solid rgba(34,197,94,0.2)', borderRadius: '9px', color: '#4ade80', fontSize: '0.875rem', fontWeight: 600 }}><IconCheck /> Connected</span>
+            }
+          </div>
+          <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', padding: '20px' }}>
+            <p style={{ fontSize: '0.75rem', color: C.text, textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600, marginBottom: '16px' }}>Account</p>
+            <p style={{ fontSize: '0.875rem', color: C.label, marginBottom: '4px' }}>Email</p>
+            <p style={{ fontSize: '0.95rem', color: '#e5e7eb', fontWeight: 500 }}>{user.email}</p>
+            <button onClick={handleLogout} style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#f87171', background: 'none', border: 'none', cursor: 'pointer', fontSize: '0.875rem', padding: 0, marginTop: '20px', fontWeight: 600 }}>
+              <IconLogout /> Sign out
+            </button>
+          </div>
+        </>
+      )}
+
+      {activePage === 'billing' && (
+        <>
+          <div>
+            <h1 style={{ fontSize: isMobile ? '1.3rem' : '1.5rem', fontWeight: 800, letterSpacing: '-0.03em', marginBottom: '4px' }}>Billing</h1>
+            <p style={{ fontSize: '0.85rem', color: C.text }}>Manage your subscription.</p>
+          </div>
+          <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', padding: '20px' }}>
+            {plan ? (
+              <div style={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', alignItems: isMobile ? 'flex-start' : 'center', justifyContent: 'space-between', gap: '12px' }}>
+                <div>
+                  <p style={{ fontSize: '0.75rem', color: C.text, textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600, marginBottom: '6px' }}>Current plan</p>
+                  <p style={{ fontWeight: 700, fontSize: '1.2rem', color: plan.color, marginBottom: '4px' }}>{plan.label}</p>
+                  <p style={{ fontSize: '0.85rem', color: C.text }}>{plan.minutes.toLocaleString()} minutes/month included</p>
+                </div>
+                <a href="/pricing" style={{ padding: '9px 20px', background: C.bg, border: `1px solid ${C.border}`, color: '#e5e7eb', textDecoration: 'none', borderRadius: '9px', fontSize: '0.875rem', fontWeight: 600 }}>Upgrade plan</a>
+              </div>
+            ) : (
+              <div style={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', alignItems: isMobile ? 'flex-start' : 'center', justifyContent: 'space-between', gap: '12px' }}>
+                <div>
+                  <p style={{ fontWeight: 600, color: '#818cf8', marginBottom: '4px' }}>No active plan</p>
+                  <p style={{ fontSize: '0.85rem', color: C.text }}>Subscribe to activate your VoiceBot.</p>
+                </div>
+                <a href="/pricing" style={{ padding: '9px 20px', background: '#4f46e5', color: 'white', textDecoration: 'none', borderRadius: '9px', fontSize: '0.875rem', fontWeight: 600 }}>View plans →</a>
+              </div>
+            )}
+          </div>
+        </>
+      )}
+
+    </main>
+  );
+
+  if (isMobile) {
+    return (
+      <div style={{ minHeight: '100vh', background: C.bg, color: 'white', fontFamily: 'system-ui, sans-serif' }}>
+        {/* MOBILE TOP BAR */}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px 20px', borderBottom: `1px solid ${C.border}`, background: C.sidebar, position: 'sticky', top: 0, zIndex: 100 }}>
+          <span style={{ fontWeight: 700, fontSize: '1rem' }}>VoiceBot AI</span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            {plan && <span style={{ fontSize: '0.7rem', padding: '3px 10px', borderRadius: '100px', border: `1px solid ${C.border}`, color: plan.color, fontWeight: 600 }}>{plan.label}</span>}
+          </div>
+        </div>
+
+        {pageContent}
+
+        {/* MOBILE BOTTOM NAV */}
+        <div style={{ position: 'fixed', bottom: 0, left: 0, right: 0, background: C.sidebar, borderTop: `1px solid ${C.border}`, display: 'flex', justifyContent: 'space-around', padding: '8px 0 20px', zIndex: 100 }}>
+          {navItems.map(item => (
+            <button key={item.id} onClick={() => setActivePage(item.id)}
+              style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px', padding: '6px 12px', border: 'none', background: 'transparent', color: activePage === item.id ? 'white' : C.text, cursor: 'pointer', fontSize: '0.65rem', fontWeight: activePage === item.id ? 600 : 400 }}>
+              {item.icon}
+              {item.label}
+            </button>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div style={{ minHeight: '100vh', background: C.bg, color: 'white', fontFamily: 'system-ui, sans-serif', display: 'flex' }}>
-
+      {/* DESKTOP SIDEBAR */}
       <aside style={{ width: '220px', minHeight: '100vh', background: C.sidebar, borderRight: `1px solid ${C.border}`, display: 'flex', flexDirection: 'column', padding: '24px 12px', position: 'fixed', top: 0, left: 0 }}>
         <div style={{ padding: '0 12px', marginBottom: '32px' }}>
           <span style={{ fontWeight: 700, fontSize: '1rem', letterSpacing: '-0.02em' }}>VoiceBot AI</span>
@@ -164,185 +373,9 @@ export default function Dashboard() {
           </div>
         </div>
       </aside>
-
-      <main style={{ marginLeft: '220px', flex: 1, padding: '48px 40px', display: 'flex', flexDirection: 'column', gap: '24px', maxWidth: '900px' }}>
-
-        {activePage === 'dashboard' && (
-          <>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <div>
-                <h1 style={{ fontSize: '1.5rem', fontWeight: 800, letterSpacing: '-0.03em', marginBottom: '4px' }}>
-                  {clientData?.business_name ? `Welcome, ${clientData.business_name}` : 'Dashboard'}
-                </h1>
-                <p style={{ fontSize: '0.85rem', color: C.text }}>Here's what's happening with your VoiceBot.</p>
-              </div>
-              {!plan && <a href="/pricing" style={{ padding: '9px 20px', background: '#4f46e5', color: 'white', textDecoration: 'none', borderRadius: '9px', fontSize: '0.875rem', fontWeight: 600 }}>Choose a plan →</a>}
-            </div>
-            {!plan && (
-              <div style={{ background: 'rgba(79,70,229,0.08)', border: '1px solid rgba(79,70,229,0.2)', borderRadius: '16px', padding: '20px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                <div>
-                  <p style={{ fontWeight: 600, color: '#818cf8', marginBottom: '4px' }}>No active plan</p>
-                  <p style={{ fontSize: '0.85rem', color: C.text }}>Subscribe to a plan to activate your VoiceBot.</p>
-                </div>
-                <a href="/pricing" style={{ padding: '9px 20px', background: '#4f46e5', color: 'white', textDecoration: 'none', borderRadius: '9px', fontSize: '0.875rem', fontWeight: 600, whiteSpace: 'nowrap' }}>View plans</a>
-              </div>
-            )}
-            {plan && (
-              <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', padding: '24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                <div>
-                  <p style={{ fontSize: '0.75rem', color: C.text, textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600, marginBottom: '6px' }}>Current plan</p>
-                  <p style={{ fontWeight: 700, fontSize: '1.1rem', color: plan.color }}>{plan.label}</p>
-                  <p style={{ fontSize: '0.8rem', color: C.text, marginTop: '4px' }}>{plan.minutes.toLocaleString()} minutes/month included</p>
-                </div>
-                {clientData?.twilio_number && (
-                  <div style={{ textAlign: 'right' }}>
-                    <p style={{ fontSize: '0.75rem', color: C.text, textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600, marginBottom: '6px' }}>Phone number</p>
-                    <p style={{ fontFamily: 'monospace', fontSize: '1rem', color: '#e5e7eb', fontWeight: 600 }}>{clientData.twilio_number}</p>
-                  </div>
-                )}
-              </div>
-            )}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px' }}>
-              {[
-                { label: 'Calls received', value: calls.length, icon: <IconPhone /> },
-                { label: 'Appointments booked', value: rdvCount, icon: <IconCalendar /> },
-                { label: 'Total minutes', value: Math.round(totalDuration / 60), icon: <IconClock /> },
-              ].map(s => (
-                <div key={s.label} style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', padding: '24px' }}>
-                  <div style={{ color: C.text, marginBottom: '12px' }}>{s.icon}</div>
-                  <div style={{ fontSize: '2.2rem', fontWeight: 800, letterSpacing: '-0.04em', lineHeight: 1, marginBottom: '6px' }}>{s.value}</div>
-                  <div style={{ fontSize: '0.8rem', color: C.text }}>{s.label}</div>
-                </div>
-              ))}
-            </div>
-            <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', padding: '24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <div>
-                <p style={{ fontSize: '0.75rem', color: C.text, textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600, marginBottom: '6px' }}>Google Calendar</p>
-                <p style={{ fontWeight: 600, fontSize: '1rem', marginBottom: '4px' }}>{googleConnected ? 'Connected' : 'Not connected'}</p>
-                <p style={{ fontSize: '0.85rem', color: C.text }}>{googleConnected ? 'Appointments are booked automatically.' : 'Connect your calendar for automatic scheduling.'}</p>
-              </div>
-              {!googleConnected
-                ? <a href="/api/google/auth" style={{ padding: '9px 20px', background: '#1a73e8', color: 'white', textDecoration: 'none', borderRadius: '9px', fontSize: '0.875rem', fontWeight: 600, whiteSpace: 'nowrap' }}>Connect Google</a>
-                : <span style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '9px 16px', background: 'rgba(34,197,94,0.08)', border: '1px solid rgba(34,197,94,0.2)', borderRadius: '9px', color: '#4ade80', fontSize: '0.875rem', fontWeight: 600 }}><IconCheck /> Connected</span>
-              }
-            </div>
-          </>
-        )}
-
-        {activePage === 'calls' && (
-          <>
-            <div>
-              <h1 style={{ fontSize: '1.5rem', fontWeight: 800, letterSpacing: '-0.03em', marginBottom: '4px' }}>Calls</h1>
-              <p style={{ fontSize: '0.85rem', color: C.text }}>All calls handled by your VoiceBot.</p>
-            </div>
-            <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', padding: '24px' }}>
-              {calls.length === 0 ? (
-                <div style={{ textAlign: 'center', padding: '60px 0' }}>
-                  <div style={{ color: C.border, marginBottom: '12px', display: 'flex', justifyContent: 'center' }}><IconPhone /></div>
-                  <p style={{ fontSize: '0.875rem', color: C.text }}>No calls yet. Your VoiceBot is ready.</p>
-                </div>
-              ) : (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                  {calls.map(call => (
-                    <div key={call.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 16px', background: C.bg, border: `1px solid ${C.border}`, borderRadius: '12px' }}>
-                      <div>
-                        <p style={{ fontSize: '0.875rem', fontWeight: 600, marginBottom: '3px' }}>{call.caller_number}</p>
-                        <p style={{ fontSize: '0.8rem', color: C.text }}>{call.summary}</p>
-                      </div>
-                      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '6px' }}>
-                        <span style={{ fontSize: '0.75rem', color: C.text }}>{call.duration}s</span>
-                        {call.rdv_pris && <span style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '0.75rem', color: '#4ade80', background: 'rgba(34,197,94,0.08)', padding: '2px 8px', borderRadius: '100px' }}><IconCheck /> Booked</span>}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          </>
-        )}
-
-        {activePage === 'setup' && (
-          <>
-            <div>
-              <h1 style={{ fontSize: '1.5rem', fontWeight: 800, letterSpacing: '-0.03em', marginBottom: '4px' }}>Setup guide</h1>
-              <p style={{ fontSize: '0.85rem', color: C.text }}>Follow these steps to get your VoiceBot up and running.</p>
-            </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-              {setupSteps.map((step, i) => (
-                <div key={i} style={{ background: C.card, border: `1px solid ${step.done ? 'rgba(74,222,128,0.2)' : C.border}`, borderRadius: '16px', padding: '24px', display: 'flex', gap: '20px', alignItems: 'flex-start' }}>
-                  <div style={{ width: '36px', height: '36px', borderRadius: '50%', background: step.done ? 'rgba(74,222,128,0.12)' : C.bg, border: `1px solid ${step.done ? 'rgba(74,222,128,0.3)' : C.border}`, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                    {step.done
-                      ? <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#4ade80" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                      : <span style={{ fontSize: '0.7rem', fontWeight: 700, color: C.text }}>{step.number}</span>
-                    }
-                  </div>
-                  <div style={{ flex: 1 }}>
-                    <p style={{ fontWeight: 700, fontSize: '1rem', marginBottom: '6px', color: step.done ? '#4ade80' : 'white' }}>{step.title}</p>
-                    <p style={{ fontSize: '0.875rem', color: C.text, lineHeight: 1.6 }}>{step.desc}</p>
-                    {step.action}
-                    {step.extra}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </>
-        )}
-
-        {activePage === 'settings' && (
-          <>
-            <div>
-              <h1 style={{ fontSize: '1.5rem', fontWeight: 800, letterSpacing: '-0.03em', marginBottom: '4px' }}>Settings</h1>
-              <p style={{ fontSize: '0.85rem', color: C.text }}>Manage your account and integrations.</p>
-            </div>
-            <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', padding: '24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <div>
-                <p style={{ fontSize: '0.75rem', color: C.text, textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600, marginBottom: '6px' }}>Google Calendar</p>
-                <p style={{ fontWeight: 600, fontSize: '1rem', marginBottom: '4px' }}>{googleConnected ? 'Connected' : 'Not connected'}</p>
-                <p style={{ fontSize: '0.85rem', color: C.text }}>{googleConnected ? 'Appointments are booked automatically.' : 'Connect your calendar for automatic scheduling.'}</p>
-              </div>
-              {!googleConnected
-                ? <a href="/api/google/auth" style={{ padding: '9px 20px', background: '#1a73e8', color: 'white', textDecoration: 'none', borderRadius: '9px', fontSize: '0.875rem', fontWeight: 600 }}>Connect Google</a>
-                : <span style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '9px 16px', background: 'rgba(34,197,94,0.08)', border: '1px solid rgba(34,197,94,0.2)', borderRadius: '9px', color: '#4ade80', fontSize: '0.875rem', fontWeight: 600 }}><IconCheck /> Connected</span>
-              }
-            </div>
-            <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', padding: '24px' }}>
-              <p style={{ fontSize: '0.75rem', color: C.text, textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600, marginBottom: '16px' }}>Account</p>
-              <p style={{ fontSize: '0.875rem', color: C.label, marginBottom: '4px' }}>Email</p>
-              <p style={{ fontSize: '0.95rem', color: '#e5e7eb', fontWeight: 500 }}>{user.email}</p>
-            </div>
-          </>
-        )}
-
-        {activePage === 'billing' && (
-          <>
-            <div>
-              <h1 style={{ fontSize: '1.5rem', fontWeight: 800, letterSpacing: '-0.03em', marginBottom: '4px' }}>Billing</h1>
-              <p style={{ fontSize: '0.85rem', color: C.text }}>Manage your subscription.</p>
-            </div>
-            <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', padding: '24px' }}>
-              {plan ? (
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                  <div>
-                    <p style={{ fontSize: '0.75rem', color: C.text, textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600, marginBottom: '6px' }}>Current plan</p>
-                    <p style={{ fontWeight: 700, fontSize: '1.2rem', color: plan.color, marginBottom: '4px' }}>{plan.label}</p>
-                    <p style={{ fontSize: '0.85rem', color: C.text }}>{plan.minutes.toLocaleString()} minutes/month included</p>
-                  </div>
-                  <a href="/pricing" style={{ padding: '9px 20px', background: C.bg, border: `1px solid ${C.border}`, color: '#e5e7eb', textDecoration: 'none', borderRadius: '9px', fontSize: '0.875rem', fontWeight: 600 }}>Upgrade plan</a>
-                </div>
-              ) : (
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                  <div>
-                    <p style={{ fontWeight: 600, color: '#818cf8', marginBottom: '4px' }}>No active plan</p>
-                    <p style={{ fontSize: '0.85rem', color: C.text }}>Subscribe to activate your VoiceBot.</p>
-                  </div>
-                  <a href="/pricing" style={{ padding: '9px 20px', background: '#4f46e5', color: 'white', textDecoration: 'none', borderRadius: '9px', fontSize: '0.875rem', fontWeight: 600 }}>View plans →</a>
-                </div>
-              )}
-            </div>
-          </>
-        )}
-
-      </main>
+      <div style={{ marginLeft: '220px', flex: 1 }}>
+        {pageContent}
+      </div>
     </div>
   );
 }
