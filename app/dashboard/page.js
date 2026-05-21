@@ -21,6 +21,58 @@ const IconBilling = () => <svg width="16" height="16" viewBox="0 0 24 24" fill="
 const IconLogout = () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>;
 const IconCheck = () => <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>;
 const IconSetup = () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 8 12 12 14 14"/></svg>;
+const IconX = () => <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>;
+
+function OnboardingBanner({ plan, googleConnected, twilioNumber, onDismiss, isMobile }) {
+  const steps = [
+    { label: 'Account created', done: true, action: null },
+    { label: 'Choose a plan', done: !!plan, action: !plan ? <a href="/pricing" style={{ fontSize: '0.78rem', fontWeight: 600, color: '#818cf8', textDecoration: 'none', whiteSpace: 'nowrap' }}>Choose →</a> : null },
+    { label: 'Connect Google Calendar', done: googleConnected, action: !googleConnected ? <a href="/api/google/auth" style={{ fontSize: '0.78rem', fontWeight: 600, color: '#60a5fa', textDecoration: 'none', whiteSpace: 'nowrap' }}>Connect →</a> : null },
+    { label: 'Phone number assigned', done: !!twilioNumber, action: !twilioNumber && !!plan ? <span style={{ fontSize: '0.78rem', color: C.text }}>Pending...</span> : null },
+    { label: 'Forward your number', done: false, action: twilioNumber ? <a href="#" onClick={(e) => { e.preventDefault(); onDismiss(); }} style={{ fontSize: '0.78rem', fontWeight: 600, color: '#4ade80', textDecoration: 'none', whiteSpace: 'nowrap' }}>Mark done →</a> : null },
+  ];
+
+  const completedCount = steps.filter(s => s.done).length;
+  const allDone = completedCount === steps.length;
+  const progress = Math.round((completedCount / steps.length) * 100);
+
+  if (allDone) return null;
+
+  return (
+    <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', padding: '20px', position: 'relative' }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
+        <div>
+          <p style={{ fontWeight: 700, fontSize: '0.95rem', marginBottom: '2px' }}>Get started with VoiceBot AI</p>
+          <p style={{ fontSize: '0.8rem', color: C.text }}>{completedCount} of {steps.length} steps completed</p>
+        </div>
+        <button onClick={onDismiss} style={{ background: 'none', border: 'none', color: C.text, cursor: 'pointer', padding: '4px' }}><IconX /></button>
+      </div>
+
+      {/* Progress bar */}
+      <div style={{ height: '4px', background: C.border, borderRadius: '100px', marginBottom: '16px', overflow: 'hidden' }}>
+        <div style={{ height: '100%', width: `${progress}%`, background: 'linear-gradient(90deg, #4f46e5, #4ade80)', borderRadius: '100px', transition: 'width 0.4s ease' }} />
+      </div>
+
+      {/* Steps */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+        {steps.map((step, i) => (
+          <div key={i} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <div style={{ width: '20px', height: '20px', borderRadius: '50%', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', background: step.done ? 'rgba(74,222,128,0.12)' : C.bg, border: `1px solid ${step.done ? 'rgba(74,222,128,0.3)' : C.border}` }}>
+                {step.done
+                  ? <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#4ade80" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                  : <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: C.border, display: 'block' }} />
+                }
+              </div>
+              <span style={{ fontSize: '0.85rem', color: step.done ? '#e5e7eb' : C.text, fontWeight: step.done ? 500 : 400, textDecoration: step.done ? 'none' : 'none' }}>{step.label}</span>
+            </div>
+            {step.action}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
 
 export default function Dashboard() {
   const [user, setUser] = useState(null);
@@ -30,6 +82,7 @@ export default function Dashboard() {
   const [clientData, setClientData] = useState(null);
   const [activePage, setActivePage] = useState('dashboard');
   const [isMobile, setIsMobile] = useState(false);
+  const [showOnboarding, setShowOnboarding] = useState(false);
 
   useEffect(() => {
     const check = () => setIsMobile(window.innerWidth < 768);
@@ -45,14 +98,21 @@ export default function Dashboard() {
 
   const fetchClientData = useCallback(async (userId) => {
     const { data } = await supabase.from("clients").select("google_connected, plan, twilio_number, business_name").eq("user_id", userId).maybeSingle();
-    if (data) { setClientData(data); if (data.google_connected) setGoogleConnected(true); }
+    if (data) {
+      setClientData(data);
+      if (data.google_connected) setGoogleConnected(true);
+      // Afficher l'onboarding si pas encore tout complété
+      const dismissed = localStorage.getItem('onboarding_dismissed');
+      const fullySetup = data.plan && data.google_connected && data.twilio_number;
+      if (!dismissed && !fullySetup) setShowOnboarding(true);
+    }
   }, []);
 
   useEffect(() => {
     const checkUser = async () => {
-  const { data: { user: authUser } } = await supabase.auth.getUser();
-  if (!authUser) { window.location.href = "/login"; return; }
-  setUser(authUser);
+      const { data: { user: authUser } } = await supabase.auth.getUser();
+      if (!authUser) { window.location.href = "/login"; return; }
+      setUser(authUser);
       await Promise.all([fetchCalls(authUser.id), fetchClientData(authUser.id)]);
       setLoading(false);
     };
@@ -63,6 +123,11 @@ export default function Dashboard() {
   }, [fetchCalls, fetchClientData]);
 
   const handleLogout = async () => { await supabase.auth.signOut(); window.location.href = "/login"; };
+
+  const handleDismissOnboarding = () => {
+    localStorage.setItem('onboarding_dismissed', 'true');
+    setShowOnboarding(false);
+  };
 
   if (loading) return (
     <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: C.bg }}>
@@ -140,7 +205,18 @@ export default function Dashboard() {
             {!plan && <a href="/pricing" style={{ padding: '8px 14px', background: '#4f46e5', color: 'white', textDecoration: 'none', borderRadius: '9px', fontSize: '0.8rem', fontWeight: 600, whiteSpace: 'nowrap' }}>Choose a plan →</a>}
           </div>
 
-          {!plan && (
+          {/* ONBOARDING BANNER */}
+          {showOnboarding && (
+            <OnboardingBanner
+              plan={clientData?.plan}
+              googleConnected={googleConnected}
+              twilioNumber={clientData?.twilio_number}
+              onDismiss={handleDismissOnboarding}
+              isMobile={isMobile}
+            />
+          )}
+
+          {!plan && !showOnboarding && (
             <div style={{ background: 'rgba(79,70,229,0.08)', border: '1px solid rgba(79,70,229,0.2)', borderRadius: '16px', padding: '20px', display: 'flex', flexDirection: isMobile ? 'column' : 'row', alignItems: isMobile ? 'flex-start' : 'center', justifyContent: 'space-between', gap: '12px' }}>
               <div>
                 <p style={{ fontWeight: 600, color: '#818cf8', marginBottom: '4px' }}>No active plan</p>
