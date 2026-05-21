@@ -1,16 +1,16 @@
 'use client';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { createClient } from '@supabase/supabase-js';
+import { createClient } from '@/lib/supabase/client';
 import Link from 'next/link';
 
-const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL, process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY);
+const supabase = createClient();
 const C = { bg: '#0f1117', card: '#161b27', cardPopular: '#161b35', border: '#1e2433', borderPopular: '#4f46e5', text: '#6b7280' };
 
 const plans = [
   { name: 'Starter', price: '$229', desc: 'Perfect for small businesses.', priceId: 'price_1TZI4xFbv1QHIqBxM1ogpacl', features: ['500 call minutes/month', '1 phone number', 'Google Calendar sync', 'AI call summaries', 'Email support'] },
-  { name: 'Scale', price: '$459', desc: 'For growing teams.', priceId: 'price_1TZI51Fbv1QHIqBxfvYIkKRh', features: ['2,000 call minutes/month', '3 phone numbers', 'Google Calendar sync', 'AI call summaries', 'Priority support'], popular: true },
-  { name: 'Business', price: '$879', desc: 'For high-volume operations.', priceId: 'price_1TZI51Fbv1QHIqBxmfldnApH', features: ['6,000 call minutes/month', '10 phone numbers', 'Google Calendar sync', 'AI call summaries', 'Dedicated account manager', 'Advanced analytics'] },
+  { name: 'Scale', price: '$459', desc: 'For growing teams.', priceId: 'price_1TZI51Fbv1QHIqBxfvYIkKRh', features: ['2,000 call minutes/month', '3 phone numbers', 'Google Calendar sync', 'AI call summaries', 'Custom business name', 'Priority support'], popular: true },
+  { name: 'Business', price: '$879', desc: 'For high-volume operations.', priceId: 'price_1TZI51Fbv1QHIqBxmfldnApH', features: ['6,000 call minutes/month', '10 phone numbers', 'Google Calendar sync', 'AI call summaries', 'Full script customization', 'Dedicated account manager', 'Advanced analytics'] },
 ];
 
 export default function PricingPage() {
