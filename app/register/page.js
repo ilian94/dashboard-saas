@@ -18,6 +18,14 @@ export default function Register() {
     if (err) { setError(err.message); setLoading(false); return; }
     if (data.user) {
       await supabase.from("clients").insert([{ user_id: data.user.id, email: form.email, business_name: form.company }]);
+      
+      // Envoyer l'email de bienvenue
+      await fetch('/api/email/welcome', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: form.email, businessName: form.company }),
+      });
+
       window.location.href = "/dashboard";
     } else { setError("Check your email to confirm your account."); setLoading(false); }
   };
