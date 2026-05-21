@@ -97,32 +97,34 @@ export default function Home() {
       </section>
 
       {/* COMPARISON */}
-      <section style={{ maxWidth: '900px', margin: '0 auto', padding: '0 40px 100px' }}>
-        <h2 style={{ textAlign: 'center', fontSize: '2.2rem', fontWeight: 800, letterSpacing: '-0.03em', marginBottom: '16px' }}>VoiceBot AI vs. a receptionist</h2>
-        <p style={{ textAlign: 'center', color: C.text, marginBottom: '48px', fontSize: '1rem' }}>Same job. A fraction of the cost.</p>
-        <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '20px', overflow: 'hidden' }}>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', borderBottom: `1px solid ${C.border}` }}>
-            <div style={{ padding: '16px 24px', color: C.text, fontSize: '0.85rem', fontWeight: 600 }}></div>
-            <div style={{ padding: '16px 24px', textAlign: 'center', fontWeight: 700, borderLeft: `1px solid ${C.border}`, borderRight: `1px solid ${C.border}` }}>VoiceBot AI</div>
-            <div style={{ padding: '16px 24px', textAlign: 'center', color: C.text, fontWeight: 600 }}>Human receptionist</div>
-          </div>
-          {[
-            { feature: 'Monthly cost', voicebot: 'From $229/mo', human: '$3,000–$5,000/mo' },
-            { feature: 'Availability', voicebot: '24/7/365', human: 'Business hours only' },
-            { feature: 'Response time', voicebot: '< 2 seconds', human: '1–5 rings' },
-            { feature: 'Simultaneous calls', voicebot: 'Unlimited', human: '1 at a time' },
-            { feature: 'Calendar booking', voicebot: 'Automatic', human: 'Manual' },
-            { feature: 'Call summaries', voicebot: 'AI-generated', human: 'Manual notes' },
-            { feature: 'Setup time', voicebot: '5 minutes', human: 'Weeks of hiring' },
-          ].map((row, i) => (
-            <div key={row.feature} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', borderBottom: i < 6 ? `1px solid ${C.border}` : 'none' }}>
-              <div style={{ padding: '16px 24px', color: C.text, fontSize: '0.9rem' }}>{row.feature}</div>
-              <div style={{ padding: '16px 24px', textAlign: 'center', fontSize: '0.9rem', fontWeight: 600, color: '#4ade80', borderLeft: `1px solid ${C.border}`, borderRight: `1px solid ${C.border}` }}>{row.voicebot}</div>
-              <div style={{ padding: '16px 24px', textAlign: 'center', fontSize: '0.9rem', color: C.text }}>{row.human}</div>
-            </div>
-          ))}
-        </div>
-      </section>
+<section style={{ maxWidth: '900px', margin: '0 auto', padding: '0 20px 100px' }}>
+  <h2 style={{ textAlign: 'center', fontSize: '2.2rem', fontWeight: 800, letterSpacing: '-0.03em', marginBottom: '16px' }}>VoiceBot AI vs. a receptionist</h2>
+  <p style={{ textAlign: 'center', color: C.text, marginBottom: '48px', fontSize: '1rem' }}>Same job. A fraction of the cost.</p>
+  <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '20px', overflow: 'hidden' }}>
+    {/* HEADER */}
+    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', borderBottom: `1px solid ${C.border}` }}>
+      <div style={{ padding: '14px 12px', color: C.text, fontSize: '0.8rem', fontWeight: 600 }}></div>
+      <div style={{ padding: '14px 12px', textAlign: 'center', fontWeight: 700, fontSize: '0.9rem', borderLeft: `1px solid ${C.border}`, borderRight: `1px solid ${C.border}` }}>VoiceBot AI</div>
+      <div style={{ padding: '14px 12px', textAlign: 'center', color: C.text, fontWeight: 600, fontSize: '0.9rem' }}>Human receptionist</div>
+    </div>
+    {/* ROWS */}
+    {[
+      { feature: 'Monthly cost', voicebot: 'From $229/mo', human: '$3,000–$5,000/mo' },
+      { feature: 'Availability', voicebot: '24/7/365', human: 'Business hours only' },
+      { feature: 'Response time', voicebot: '< 2 seconds', human: '1–5 rings' },
+      { feature: 'Simultaneous calls', voicebot: 'Unlimited', human: '1 at a time' },
+      { feature: 'Calendar booking', voicebot: 'Automatic', human: 'Manual' },
+      { feature: 'Call summaries', voicebot: 'AI-generated', human: 'Manual notes' },
+      { feature: 'Setup time', voicebot: '5 minutes', human: 'Weeks of hiring' },
+    ].map((row, i) => (
+      <div key={row.feature} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', borderBottom: i < 6 ? `1px solid ${C.border}` : 'none' }}>
+        <div style={{ padding: '14px 12px', color: C.text, fontSize: '0.82rem', display: 'flex', alignItems: 'center' }}>{row.feature}</div>
+        <div style={{ padding: '14px 12px', textAlign: 'center', fontSize: '0.82rem', fontWeight: 700, color: '#4ade80', borderLeft: `1px solid ${C.border}`, borderRight: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{row.voicebot}</div>
+        <div style={{ padding: '14px 12px', textAlign: 'center', fontSize: '0.82rem', color: C.text, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{row.human}</div>
+      </div>
+    ))}
+  </div>
+</section>
 
       {/* CTA INTERMÉDIAIRE */}
       <section style={{ textAlign: 'center', padding: '60px 20px', borderTop: `1px solid ${C.border}`, borderBottom: `1px solid ${C.border}`, background: C.card }}>
