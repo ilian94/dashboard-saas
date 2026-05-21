@@ -19,11 +19,25 @@ export default function PricingPage() {
 
   const handleSubscribe = async (priceId, planName) => {
     setLoading(planName);
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) { router.push('/login'); return; }
-    const res = await fetch('/api/stripe/checkout', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ priceId, userId: user.id, userEmail: user.email }) });
-    const { url } = await res.json();
-    if (url) window.location.href = url;
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      console.log('User:', user);
+      if (!user) {
+        router.push('/register');
+        setLoading(null);
+        return;
+      }
+      const res = await fetch('/api/stripe/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ priceId, userId: user.id, userEmail: user.email }),
+      });
+      const data = await res.json();
+      console.log('Checkout response:', data);
+      if (data.url) window.location.href = data.url;
+    } catch (err) {
+      console.error('Error:', err);
+    }
     setLoading(null);
   };
 
