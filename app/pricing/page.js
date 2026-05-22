@@ -9,8 +9,7 @@ const C = { bg: '#0f1117', card: '#161b27', cardPopular: '#161b35', border: '#1e
 
 const plans = [
   { name: 'Starter', key: 'starter', price: '$229', desc: 'Perfect for small businesses.', priceId: 'price_1TZI4xFbv1QHIqBxM1ogpacl', features: ['500 call minutes/month', '1 phone number', 'Google Calendar sync', 'AI call summaries', 'Email support', 'Extra minutes from $25'] },
-  { name: 'Scale', key: 'scale', price: '$459', desc: 'For growing teams.', priceId: 'price_1TZI51Fbv1QHIqBxfvYIkKRh', features: ['2,000 call minutes/month', '1 phone number', 'Google Calendar sync', 'AI call summaries', 'Email support', 'Custom business name', 'Extra minutes from $25'], popular: true },
-  { name: 'Business', key: 'business', price: '$879', desc: 'For high-volume operations.', priceId: 'price_1TZI51Fbv1QHIqBxmfldnApH', features: ['6,000 call minutes/month', '1 phone number included', 'Google Calendar sync', 'AI call summaries', 'Email support', 'Custom business name', 'Full script customization', 'SMS confirmation after booking', 'Call recording', 'Unlimited additional numbers ($15/mo each)', 'Extra minutes from $20'] },
+{ name: 'Scale', key: 'scale', price: '$459', desc: 'For growing teams.', priceId: 'price_1TZI51Fbv1QHIqBxfvYIkKRh', features: ['2,000 call minutes/month', '1 phone number', 'Google Calendar sync', 'AI call summaries', 'Email support', 'Custom business name', 'Call recording', 'Extra minutes from $25'], popular: true },  { name: 'Business', key: 'business', price: '$879', desc: 'For high-volume operations.', priceId: 'price_1TZI51Fbv1QHIqBxmfldnApH', features: ['6,000 call minutes/month', '1 phone number included', 'Google Calendar sync', 'AI call summaries', 'Email support', 'Custom business name', 'Full script customization', 'SMS confirmation after booking', 'Call recording', 'Unlimited additional numbers ($15/mo each)', 'Extra minutes from $20'] },
 ];
 
 const PLAN_RANK = { starter: 1, scale: 2, business: 3 };
