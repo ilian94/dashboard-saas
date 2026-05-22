@@ -1,5 +1,9 @@
+"use client";
 import Link from 'next/link';
+import { useEffect, useState } from 'react';
+import { createClient } from '@/lib/supabase/client';
 
+const supabase = createClient();
 const C = { bg: '#0f1117', card: '#161b27', border: '#1e2433', text: '#6b7280', textMuted: '#374151' };
 
 const features = [
@@ -23,6 +27,21 @@ const faqs = [
 ];
 
 export default function Home() {
+  const [user, setUser] = useState(null);
+  const [clientData, setClientData] = useState(null);
+
+  useEffect(() => {
+    const loadUser = async () => {
+      const { data: { user: authUser } } = await supabase.auth.getUser();
+      if (authUser) {
+        setUser(authUser);
+        const { data } = await supabase.from('clients').select('business_name').eq('user_id', authUser.id).maybeSingle();
+        if (data) setClientData(data);
+      }
+    };
+    loadUser();
+  }, []);
+
   return (
     <div style={{ minHeight: '100vh', background: C.bg, color: 'white', fontFamily: 'system-ui, sans-serif' }}>
 
@@ -30,8 +49,17 @@ export default function Home() {
       <nav style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '20px 60px', borderBottom: `1px solid ${C.border}`, position: 'sticky', top: 0, background: `rgba(15,17,23,0.85)`, backdropFilter: 'blur(12px)', zIndex: 100 }}>
         <span style={{ fontWeight: 700, fontSize: '1.1rem', letterSpacing: '-0.02em' }}>VoiceBot AI</span>
         <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
-          <Link href="/login" style={{ color: C.text, textDecoration: 'none', fontSize: '0.9rem', padding: '8px 16px' }}>Sign in</Link>
-          <Link href="/pricing" style={{ background: 'white', color: 'black', textDecoration: 'none', fontSize: '0.9rem', fontWeight: 600, padding: '8px 18px', borderRadius: '8px' }}>Get started</Link>
+          {user ? (
+            <>
+              <span style={{ color: C.text, fontSize: '0.85rem' }}>{clientData?.business_name || user.email}</span>
+              <Link href="/dashboard" style={{ background: 'white', color: 'black', textDecoration: 'none', fontSize: '0.9rem', fontWeight: 600, padding: '8px 18px', borderRadius: '8px' }}>Dashboard →</Link>
+            </>
+          ) : (
+            <>
+              <Link href="/login" style={{ color: C.text, textDecoration: 'none', fontSize: '0.9rem', padding: '8px 16px' }}>Sign in</Link>
+              <Link href="/pricing" style={{ background: 'white', color: 'black', textDecoration: 'none', fontSize: '0.9rem', fontWeight: 600, padding: '8px 18px', borderRadius: '8px' }}>Get started</Link>
+            </>
+          )}
         </div>
       </nav>
 
@@ -97,34 +125,32 @@ export default function Home() {
       </section>
 
       {/* COMPARISON */}
-<section style={{ maxWidth: '900px', margin: '0 auto', padding: '0 20px 100px' }}>
-  <h2 style={{ textAlign: 'center', fontSize: '2.2rem', fontWeight: 800, letterSpacing: '-0.03em', marginBottom: '16px' }}>VoiceBot AI vs. a receptionist</h2>
-  <p style={{ textAlign: 'center', color: C.text, marginBottom: '48px', fontSize: '1rem' }}>Same job. A fraction of the cost.</p>
-  <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '20px', overflow: 'hidden' }}>
-    {/* HEADER */}
-    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', borderBottom: `1px solid ${C.border}` }}>
-      <div style={{ padding: '14px 12px', color: C.text, fontSize: '0.8rem', fontWeight: 600 }}></div>
-      <div style={{ padding: '14px 12px', textAlign: 'center', fontWeight: 700, fontSize: '0.9rem', borderLeft: `1px solid ${C.border}`, borderRight: `1px solid ${C.border}` }}>VoiceBot AI</div>
-      <div style={{ padding: '14px 12px', textAlign: 'center', color: C.text, fontWeight: 600, fontSize: '0.9rem' }}>Human receptionist</div>
-    </div>
-    {/* ROWS */}
-    {[
-      { feature: 'Monthly cost', voicebot: 'From $229/mo', human: '$3,000–$5,000/mo' },
-      { feature: 'Availability', voicebot: '24/7/365', human: 'Business hours only' },
-      { feature: 'Response time', voicebot: '< 2 seconds', human: '1–5 rings' },
-      { feature: 'Simultaneous calls', voicebot: 'Unlimited', human: '1 at a time' },
-      { feature: 'Calendar booking', voicebot: 'Automatic', human: 'Manual' },
-      { feature: 'Call summaries', voicebot: 'AI-generated', human: 'Manual notes' },
-      { feature: 'Setup time', voicebot: '5 minutes', human: 'Weeks of hiring' },
-    ].map((row, i) => (
-      <div key={row.feature} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', borderBottom: i < 6 ? `1px solid ${C.border}` : 'none' }}>
-        <div style={{ padding: '14px 12px', color: C.text, fontSize: '0.82rem', display: 'flex', alignItems: 'center' }}>{row.feature}</div>
-        <div style={{ padding: '14px 12px', textAlign: 'center', fontSize: '0.82rem', fontWeight: 700, color: '#4ade80', borderLeft: `1px solid ${C.border}`, borderRight: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{row.voicebot}</div>
-        <div style={{ padding: '14px 12px', textAlign: 'center', fontSize: '0.82rem', color: C.text, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{row.human}</div>
-      </div>
-    ))}
-  </div>
-</section>
+      <section style={{ maxWidth: '900px', margin: '0 auto', padding: '0 20px 100px' }}>
+        <h2 style={{ textAlign: 'center', fontSize: '2.2rem', fontWeight: 800, letterSpacing: '-0.03em', marginBottom: '16px' }}>VoiceBot AI vs. a receptionist</h2>
+        <p style={{ textAlign: 'center', color: C.text, marginBottom: '48px', fontSize: '1rem' }}>Same job. A fraction of the cost.</p>
+        <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '20px', overflow: 'hidden' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', borderBottom: `1px solid ${C.border}` }}>
+            <div style={{ padding: '14px 12px', color: C.text, fontSize: '0.8rem', fontWeight: 600 }}></div>
+            <div style={{ padding: '14px 12px', textAlign: 'center', fontWeight: 700, fontSize: '0.9rem', borderLeft: `1px solid ${C.border}`, borderRight: `1px solid ${C.border}` }}>VoiceBot AI</div>
+            <div style={{ padding: '14px 12px', textAlign: 'center', color: C.text, fontWeight: 600, fontSize: '0.9rem' }}>Human receptionist</div>
+          </div>
+          {[
+            { feature: 'Monthly cost', voicebot: 'From $229/mo', human: '$3,000–$5,000/mo' },
+            { feature: 'Availability', voicebot: '24/7/365', human: 'Business hours only' },
+            { feature: 'Response time', voicebot: '< 2 seconds', human: '1–5 rings' },
+            { feature: 'Simultaneous calls', voicebot: 'Unlimited', human: '1 at a time' },
+            { feature: 'Calendar booking', voicebot: 'Automatic', human: 'Manual' },
+            { feature: 'Call summaries', voicebot: 'AI-generated', human: 'Manual notes' },
+            { feature: 'Setup time', voicebot: '5 minutes', human: 'Weeks of hiring' },
+          ].map((row, i) => (
+            <div key={row.feature} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', borderBottom: i < 6 ? `1px solid ${C.border}` : 'none' }}>
+              <div style={{ padding: '14px 12px', color: C.text, fontSize: '0.82rem', display: 'flex', alignItems: 'center' }}>{row.feature}</div>
+              <div style={{ padding: '14px 12px', textAlign: 'center', fontSize: '0.82rem', fontWeight: 700, color: '#4ade80', borderLeft: `1px solid ${C.border}`, borderRight: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{row.voicebot}</div>
+              <div style={{ padding: '14px 12px', textAlign: 'center', fontSize: '0.82rem', color: C.text, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{row.human}</div>
+            </div>
+          ))}
+        </div>
+      </section>
 
       {/* CTA INTERMÉDIAIRE */}
       <section style={{ textAlign: 'center', padding: '60px 20px', borderTop: `1px solid ${C.border}`, borderBottom: `1px solid ${C.border}`, background: C.card }}>
