@@ -22,6 +22,7 @@ const IconLogout = () => <svg width="16" height="16" viewBox="0 0 24 24" fill="n
 const IconCheck = () => <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>;
 const IconSetup = () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 8 12 12 14 14"/></svg>;
 const IconX = () => <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>;
+const IconReport = () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>;
 
 function OnboardingBanner({ plan, googleConnected, twilioNumber, onDismiss }) {
   const steps = [
@@ -117,14 +118,12 @@ function ScriptSettings({ clientPlan, userId }) {
         {clientPlan === 'scale' && <span style={{ fontSize: '0.7rem', padding: '3px 10px', borderRadius: '100px', border: `1px solid rgba(167,139,250,0.3)`, color: '#a78bfa', fontWeight: 600 }}>Scale</span>}
         {clientPlan === 'business' && <span style={{ fontSize: '0.7rem', padding: '3px 10px', borderRadius: '100px', border: `1px solid rgba(251,191,36,0.3)`, color: '#fbbf24', fontWeight: 600 }}>Business</span>}
       </div>
-
       <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
         <div>
           <label style={labelStyle}>Business name</label>
           <input value={script.business_name} onChange={e => setScript({ ...script, business_name: e.target.value })} placeholder="e.g. Smith Dental Clinic" style={inputStyle} />
           <p style={{ fontSize: '0.75rem', color: C.text, marginTop: '4px' }}>Used in the greeting: "Thank you for calling [business name]"</p>
         </div>
-
         {clientPlan === 'business' && (
           <>
             <div>
@@ -144,11 +143,79 @@ function ScriptSettings({ clientPlan, userId }) {
             </div>
           </>
         )}
-
         <button onClick={handleSave} disabled={saving} style={{ padding: '10px 20px', background: saved ? 'rgba(34,197,94,0.12)' : 'white', color: saved ? '#4ade80' : 'black', border: saved ? '1px solid rgba(34,197,94,0.3)' : 'none', borderRadius: '10px', fontWeight: 700, fontSize: '0.875rem', cursor: 'pointer', alignSelf: 'flex-start', transition: 'all 0.2s' }}>
           {saving ? 'Saving...' : saved ? '✓ Saved' : 'Save changes'}
         </button>
       </div>
+    </div>
+  );
+}
+
+function WeeklyReport({ userId }) {
+  const [weeks, setWeeks] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const loadReport = async () => {
+      const { data } = await supabase.from('calls').select('*').eq('user_id', userId).order('created_at', { ascending: false });
+      if (!data) { setLoading(false); return; }
+
+      // Grouper par semaine
+      const weekMap = {};
+      data.forEach(call => {
+        const date = new Date(call.created_at);
+        const monday = new Date(date);
+        monday.setDate(date.getDate() - ((date.getDay() + 6) % 7));
+        monday.setHours(0, 0, 0, 0);
+        const key = monday.toISOString();
+        if (!weekMap[key]) weekMap[key] = { start: monday, calls: [] };
+        weekMap[key].calls.push(call);
+      });
+
+      const result = Object.values(weekMap).sort((a, b) => b.start - a.start).slice(0, 8).map(w => ({
+        label: w.start.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+        totalCalls: w.calls.length,
+        totalRdv: w.calls.filter(c => c.rdv_pris).length,
+        totalMinutes: Math.round(w.calls.reduce((acc, c) => acc + (c.duration || 0), 0) / 60),
+      }));
+
+      setWeeks(result);
+      setLoading(false);
+    };
+    loadReport();
+  }, [userId]);
+
+  if (loading) return <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', padding: '40px', textAlign: 'center' }}><p style={{ color: C.text, fontSize: '0.9rem' }}>Loading...</p></div>;
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+      {weeks.length === 0 ? (
+        <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', padding: '40px', textAlign: 'center' }}>
+          <p style={{ color: C.text, fontSize: '0.875rem' }}>No call data yet. Reports will appear once your VoiceBot starts handling calls.</p>
+        </div>
+      ) : weeks.map((week, i) => (
+        <div key={i} style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', padding: '20px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
+            <div>
+              <p style={{ fontWeight: 700, fontSize: '0.95rem' }}>Week of {week.label}</p>
+              {i === 0 && <span style={{ fontSize: '0.72rem', color: '#4ade80', fontWeight: 600, background: 'rgba(74,222,128,0.08)', padding: '2px 8px', borderRadius: '100px', border: '1px solid rgba(74,222,128,0.2)' }}>Current week</span>}
+            </div>
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '12px' }}>
+            {[
+              { label: 'Calls', value: week.totalCalls, icon: <IconPhone /> },
+              { label: 'Appointments', value: week.totalRdv, icon: <IconCalendar /> },
+              { label: 'Minutes', value: week.totalMinutes, icon: <IconClock /> },
+            ].map(s => (
+              <div key={s.label} style={{ background: C.bg, border: `1px solid ${C.border}`, borderRadius: '12px', padding: '14px' }}>
+                <div style={{ color: C.text, marginBottom: '6px' }}>{s.icon}</div>
+                <div style={{ fontSize: '1.5rem', fontWeight: 800, letterSpacing: '-0.03em', lineHeight: 1, marginBottom: '3px' }}>{s.value}</div>
+                <div style={{ fontSize: '0.72rem', color: C.text }}>{s.label}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      ))}
     </div>
   );
 }
@@ -216,6 +283,7 @@ export default function Dashboard() {
   const navItems = [
     { id: 'dashboard', label: 'Home', icon: <IconHome /> },
     { id: 'calls', label: 'Calls', icon: <IconPhone /> },
+    { id: 'reports', label: 'Reports', icon: <IconReport /> },
     { id: 'setup', label: 'Setup', icon: <IconSetup /> },
     { id: 'settings', label: 'Settings', icon: <IconSettings /> },
     { id: 'billing', label: 'Billing', icon: <IconBilling /> },
@@ -348,6 +416,16 @@ export default function Dashboard() {
         </>
       )}
 
+      {activePage === 'reports' && (
+        <>
+          <div>
+            <h1 style={{ fontSize: isMobile ? '1.3rem' : '1.5rem', fontWeight: 800, letterSpacing: '-0.03em', marginBottom: '4px' }}>Weekly Reports</h1>
+            <p style={{ fontSize: '0.85rem', color: C.text }}>Your VoiceBot performance, week by week.</p>
+          </div>
+          <WeeklyReport userId={user?.id} />
+        </>
+      )}
+
       {activePage === 'setup' && (
         <>
           <div>
@@ -378,8 +456,6 @@ export default function Dashboard() {
             <h1 style={{ fontSize: isMobile ? '1.3rem' : '1.5rem', fontWeight: 800, letterSpacing: '-0.03em', marginBottom: '4px' }}>Settings</h1>
             <p style={{ fontSize: '0.85rem', color: C.text }}>Manage your account and integrations.</p>
           </div>
-
-          {/* GOOGLE CALENDAR */}
           <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', padding: '20px', display: 'flex', flexDirection: isMobile ? 'column' : 'row', alignItems: isMobile ? 'flex-start' : 'center', justifyContent: 'space-between', gap: '12px' }}>
             <div>
               <p style={{ fontSize: '0.75rem', color: C.text, textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600, marginBottom: '6px' }}>Google Calendar</p>
@@ -391,11 +467,7 @@ export default function Dashboard() {
               : <span style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '9px 16px', background: 'rgba(34,197,94,0.08)', border: '1px solid rgba(34,197,94,0.2)', borderRadius: '9px', color: '#4ade80', fontSize: '0.875rem', fontWeight: 600 }}><IconCheck /> Connected</span>
             }
           </div>
-
-          {/* VOICEBOT SCRIPT */}
           <ScriptSettings clientPlan={clientData?.plan} userId={user?.id} />
-
-          {/* ACCOUNT */}
           <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', padding: '20px' }}>
             <p style={{ fontSize: '0.75rem', color: C.text, textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600, marginBottom: '16px' }}>Account</p>
             <p style={{ fontSize: '0.875rem', color: C.label, marginBottom: '4px' }}>Email</p>
@@ -452,7 +524,7 @@ export default function Dashboard() {
         <div style={{ position: 'fixed', bottom: 0, left: 0, right: 0, background: C.sidebar, borderTop: `1px solid ${C.border}`, display: 'flex', justifyContent: 'space-around', padding: '8px 0 20px', zIndex: 100 }}>
           {navItems.map(item => (
             <button key={item.id} onClick={() => setActivePage(item.id)}
-              style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px', padding: '6px 12px', border: 'none', background: 'transparent', color: activePage === item.id ? 'white' : C.text, cursor: 'pointer', fontSize: '0.65rem', fontWeight: activePage === item.id ? 600 : 400 }}>
+              style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px', padding: '6px 8px', border: 'none', background: 'transparent', color: activePage === item.id ? 'white' : C.text, cursor: 'pointer', fontSize: '0.6rem', fontWeight: activePage === item.id ? 600 : 400 }}>
               {item.icon}{item.label}
             </button>
           ))}
