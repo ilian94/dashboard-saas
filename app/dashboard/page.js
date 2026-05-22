@@ -31,6 +31,40 @@ const IconSetup = () => <svg width="16" height="16" viewBox="0 0 24 24" fill="no
 const IconX = () => <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>;
 const IconReport = () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>;
 
+function SetupProgress({ plan, googleConnected, twilioNumber, callsCount, onOpen }) {
+  const steps = [
+    { label: 'Choose a plan', done: !!plan },
+    { label: 'Connect Google Calendar', done: googleConnected },
+    { label: 'Phone number assigned', done: !!twilioNumber },
+    { label: 'Forward your number', done: false },
+    { label: 'Test your VoiceBot', done: callsCount > 0 },
+  ];
+
+  const completed = steps.filter(s => s.done).length;
+  const total = steps.length;
+  const percentage = Math.round((completed / total) * 100);
+
+  if (completed === total) return null;
+
+  const radius = 20;
+  const circumference = 2 * Math.PI * radius;
+  const strokeDashoffset = circumference - (percentage / 100) * circumference;
+
+  return (
+    <button
+      onClick={onOpen}
+      style={{ position: 'fixed', bottom: '24px', right: '24px', zIndex: 500, background: C.card, border: `1px solid ${C.border}`, borderRadius: '50%', width: '56px', height: '56px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', boxShadow: '0 4px 20px rgba(0,0,0,0.4)', padding: 0 }}
+      title="Setup progress"
+    >
+      <svg width="56" height="56" viewBox="0 0 56 56">
+        <circle cx="28" cy="28" r={radius} fill="none" stroke={C.border} strokeWidth="3" />
+        <circle cx="28" cy="28" r={radius} fill="none" stroke="#4f46e5" strokeWidth="3" strokeDasharray={circumference} strokeDashoffset={strokeDashoffset} strokeLinecap="round" transform="rotate(-90 28 28)" style={{ transition: 'stroke-dashoffset 0.4s ease' }} />
+        <text x="28" y="28" textAnchor="middle" dominantBaseline="central" fill="white" fontSize="11" fontWeight="700">{completed}/{total}</text>
+      </svg>
+    </button>
+  );
+}
+
 function ChangePlanModal({ currentPlan, userId, onClose, onSuccess }) {
   const [preview, setPreview] = useState(null);
   const [selectedPlan, setSelectedPlan] = useState(null);
@@ -77,7 +111,6 @@ function ChangePlanModal({ currentPlan, userId, onClose, onSuccess }) {
           <h2 style={{ fontSize: '1.1rem', fontWeight: 700 }}>Change plan</h2>
           <button onClick={onClose} style={{ background: 'none', border: 'none', color: C.text, cursor: 'pointer' }}><IconX /></button>
         </div>
-
         <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '20px' }}>
           {PLAN_OPTIONS.map(p => {
             const isCurrent = p.key === currentPlan;
@@ -97,16 +130,13 @@ function ChangePlanModal({ currentPlan, userId, onClose, onSuccess }) {
             );
           })}
         </div>
-
         {selectedPlan && (
           <div style={{ background: C.bg, border: `1px solid ${C.border}`, borderRadius: '12px', padding: '14px', marginBottom: '16px' }}>
             {loadingPreview ? (
               <p style={{ fontSize: '0.85rem', color: C.text }}>Calculating...</p>
             ) : isUpgrade && preview ? (
               <>
-                <p style={{ fontSize: '0.85rem', color: '#e5e7eb', marginBottom: '4px' }}>
-                  You'll be charged <span style={{ fontWeight: 700, color: 'white' }}>${preview.amountDue?.toFixed(2)}</span> today (prorated)
-                </p>
+                <p style={{ fontSize: '0.85rem', color: '#e5e7eb', marginBottom: '4px' }}>You'll be charged <span style={{ fontWeight: 700, color: 'white' }}>${preview.amountDue?.toFixed(2)}</span> today (prorated)</p>
                 <p style={{ fontSize: '0.8rem', color: C.text }}>Then ${PLAN_OPTIONS.find(p => p.key === selectedPlan)?.price} starting {preview.nextBillingDate}</p>
               </>
             ) : !isUpgrade ? (
@@ -117,7 +147,6 @@ function ChangePlanModal({ currentPlan, userId, onClose, onSuccess }) {
             ) : null}
           </div>
         )}
-
         <div style={{ display: 'flex', gap: '10px' }}>
           <button onClick={onClose} style={{ flex: 1, padding: '11px', background: 'transparent', border: `1px solid ${C.border}`, color: C.text, borderRadius: '10px', fontWeight: 600, fontSize: '0.875rem', cursor: 'pointer' }}>Cancel</button>
           <button onClick={handleConfirm} disabled={!selectedPlan || confirming || loadingPreview}
@@ -641,41 +670,42 @@ export default function Dashboard() {
           </div>
 
           {plan && (
-  <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', padding: '20px' }}>
-    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
-      <div>
-        <p style={{ fontSize: '0.75rem', color: C.text, textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600, marginBottom: '4px' }}>Phone numbers</p>
-        <p style={{ fontSize: '0.82rem', color: C.text }}>
-          {clientData?.plan === 'business' ? '$15/month per additional number' : 'Additional numbers available on Business plan'}
-        </p>
-      </div>
-      {clientData?.plan === 'business' ? (
-        <button onClick={() => handleCheckout('price_1Ta0HrFbv1QHIqBx45XsDToe', 'subscription')}
-          style={{ padding: '8px 16px', background: '#4f46e5', color: 'white', border: 'none', borderRadius: '8px', fontSize: '0.82rem', fontWeight: 600, cursor: 'pointer', whiteSpace: 'nowrap' }}>
-          + Add number
-        </button>
-      ) : (
-        <a href="/pricing" style={{ fontSize: '0.78rem', color: '#818cf8', background: 'rgba(79,70,229,0.08)', border: '1px solid rgba(79,70,229,0.2)', padding: '6px 12px', borderRadius: '8px', textDecoration: 'none', fontWeight: 600, whiteSpace: 'nowrap' }}>
-          Upgrade →
-        </a>
-      )}
-    </div>
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-      {clientData?.twilio_number && (
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 14px', background: C.bg, border: `1px solid ${C.border}`, borderRadius: '10px' }}>
-          <p style={{ fontFamily: 'monospace', fontSize: '0.9rem', color: '#e5e7eb' }}>{clientData.twilio_number}</p>
-          <span style={{ fontSize: '0.72rem', color: C.text, background: C.card, padding: '2px 8px', borderRadius: '100px', border: `1px solid ${C.border}` }}>Included</span>
-        </div>
-      )}
-      {(clientData?.twilio_numbers || []).map((num, i) => (
-        <div key={i} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 14px', background: C.bg, border: `1px solid ${C.border}`, borderRadius: '10px' }}>
-          <p style={{ fontFamily: 'monospace', fontSize: '0.9rem', color: '#e5e7eb' }}>{num}</p>
-          <span style={{ fontSize: '0.72rem', color: '#60a5fa', background: 'rgba(96,165,250,0.08)', padding: '2px 8px', borderRadius: '100px', border: '1px solid rgba(96,165,250,0.2)' }}>$15/mo</span>
-        </div>
-      ))}
-    </div>
-  </div>
-)}
+            <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', padding: '20px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
+                <div>
+                  <p style={{ fontSize: '0.75rem', color: C.text, textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600, marginBottom: '4px' }}>Phone numbers</p>
+                  <p style={{ fontSize: '0.82rem', color: C.text }}>
+                    {clientData?.plan === 'business' ? '$15/month per additional number' : 'Additional numbers available on Business plan'}
+                  </p>
+                </div>
+                {clientData?.plan === 'business' ? (
+                  <button onClick={() => handleCheckout('price_1Ta0HrFbv1QHIqBx45XsDToe', 'subscription')}
+                    style={{ padding: '8px 16px', background: '#4f46e5', color: 'white', border: 'none', borderRadius: '8px', fontSize: '0.82rem', fontWeight: 600, cursor: 'pointer', whiteSpace: 'nowrap' }}>
+                    + Add number
+                  </button>
+                ) : (
+                  <a href="/pricing" style={{ fontSize: '0.78rem', color: '#818cf8', background: 'rgba(79,70,229,0.08)', border: '1px solid rgba(79,70,229,0.2)', padding: '6px 12px', borderRadius: '8px', textDecoration: 'none', fontWeight: 600, whiteSpace: 'nowrap' }}>
+                    Upgrade →
+                  </a>
+                )}
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                {clientData?.twilio_number && (
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 14px', background: C.bg, border: `1px solid ${C.border}`, borderRadius: '10px' }}>
+                    <p style={{ fontFamily: 'monospace', fontSize: '0.9rem', color: '#e5e7eb' }}>{clientData.twilio_number}</p>
+                    <span style={{ fontSize: '0.72rem', color: C.text, background: C.card, padding: '2px 8px', borderRadius: '100px', border: `1px solid ${C.border}` }}>Included</span>
+                  </div>
+                )}
+                {(clientData?.twilio_numbers || []).map((num, i) => (
+                  <div key={i} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 14px', background: C.bg, border: `1px solid ${C.border}`, borderRadius: '10px' }}>
+                    <p style={{ fontFamily: 'monospace', fontSize: '0.9rem', color: '#e5e7eb' }}>{num}</p>
+                    <span style={{ fontSize: '0.72rem', color: '#60a5fa', background: 'rgba(96,165,250,0.08)', padding: '2px 8px', borderRadius: '100px', border: '1px solid rgba(96,165,250,0.2)' }}>$15/mo</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
           {plan && (
             <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', padding: '20px' }}>
               <p style={{ fontSize: '0.75rem', color: C.text, textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600, marginBottom: '4px' }}>Extra minutes</p>
@@ -713,6 +743,7 @@ export default function Dashboard() {
     return (
       <div style={{ minHeight: '100vh', background: C.bg, color: 'white', fontFamily: 'system-ui, sans-serif' }}>
         {showChangePlan && <ChangePlanModal currentPlan={clientData?.plan} userId={user?.id} onClose={() => setShowChangePlan(false)} onSuccess={handlePlanChangeSuccess} />}
+        <SetupProgress plan={clientData?.plan} googleConnected={googleConnected} twilioNumber={clientData?.twilio_number} callsCount={calls.length} onOpen={() => setActivePage('setup')} />
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px 20px', borderBottom: `1px solid ${C.border}`, background: C.sidebar, position: 'sticky', top: 0, zIndex: 100 }}>
           <span style={{ fontWeight: 700, fontSize: '1rem' }}>VoiceBot AI</span>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
@@ -735,6 +766,7 @@ export default function Dashboard() {
   return (
     <div style={{ minHeight: '100vh', background: C.bg, color: 'white', fontFamily: 'system-ui, sans-serif', display: 'flex' }}>
       {showChangePlan && <ChangePlanModal currentPlan={clientData?.plan} userId={user?.id} onClose={() => setShowChangePlan(false)} onSuccess={handlePlanChangeSuccess} />}
+      <SetupProgress plan={clientData?.plan} googleConnected={googleConnected} twilioNumber={clientData?.twilio_number} callsCount={calls.length} onOpen={() => setActivePage('setup')} />
       <aside style={{ width: '220px', minHeight: '100vh', background: C.sidebar, borderRight: `1px solid ${C.border}`, display: 'flex', flexDirection: 'column', padding: '24px 12px', position: 'fixed', top: 0, left: 0 }}>
         <div style={{ padding: '0 12px', marginBottom: '32px' }}>
           <span style={{ fontWeight: 700, fontSize: '1rem', letterSpacing: '-0.02em' }}>VoiceBot AI</span>
