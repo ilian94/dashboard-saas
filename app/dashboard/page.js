@@ -51,11 +51,7 @@ function SetupProgress({ plan, googleConnected, twilioNumber, callsCount, onOpen
   const strokeDashoffset = circumference - (percentage / 100) * circumference;
 
   return (
-    <button
-      onClick={onOpen}
-      style={{ position: 'fixed', bottom: '24px', right: '24px', zIndex: 500, background: C.card, border: `1px solid ${C.border}`, borderRadius: '50%', width: '56px', height: '56px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', boxShadow: '0 4px 20px rgba(0,0,0,0.4)', padding: 0 }}
-      title="Setup progress"
-    >
+    <button onClick={onOpen} style={{ position: 'fixed', bottom: '24px', right: '24px', zIndex: 500, background: C.card, border: `1px solid ${C.border}`, borderRadius: '50%', width: '56px', height: '56px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', boxShadow: '0 4px 20px rgba(0,0,0,0.4)', padding: 0 }} title="Setup progress">
       <svg width="56" height="56" viewBox="0 0 56 56">
         <circle cx="28" cy="28" r={radius} fill="none" stroke={C.border} strokeWidth="3" />
         <circle cx="28" cy="28" r={radius} fill="none" stroke="#4f46e5" strokeWidth="3" strokeDasharray={circumference} strokeDashoffset={strokeDashoffset} strokeLinecap="round" transform="rotate(-90 28 28)" style={{ transition: 'stroke-dashoffset 0.4s ease' }} />
@@ -745,7 +741,7 @@ export default function Dashboard() {
         {showChangePlan && <ChangePlanModal currentPlan={clientData?.plan} userId={user?.id} onClose={() => setShowChangePlan(false)} onSuccess={handlePlanChangeSuccess} />}
         <SetupProgress plan={clientData?.plan} googleConnected={googleConnected} twilioNumber={clientData?.twilio_number} callsCount={calls.length} onOpen={() => setActivePage('setup')} />
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px 20px', borderBottom: `1px solid ${C.border}`, background: C.sidebar, position: 'sticky', top: 0, zIndex: 100 }}>
-          <span style={{ fontWeight: 700, fontSize: '1rem' }}>VoiceBot AI</span>
+          <a href="/" style={{ fontWeight: 700, fontSize: '1rem', color: 'white', textDecoration: 'none' }}>VoiceBot AI</a>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
             {plan && <span style={{ fontSize: '0.7rem', padding: '3px 10px', borderRadius: '100px', border: `1px solid ${C.border}`, color: plan.color, fontWeight: 600 }}>{plan.label}</span>}
           </div>
@@ -769,7 +765,7 @@ export default function Dashboard() {
       <SetupProgress plan={clientData?.plan} googleConnected={googleConnected} twilioNumber={clientData?.twilio_number} callsCount={calls.length} onOpen={() => setActivePage('setup')} />
       <aside style={{ width: '220px', minHeight: '100vh', background: C.sidebar, borderRight: `1px solid ${C.border}`, display: 'flex', flexDirection: 'column', padding: '24px 12px', position: 'fixed', top: 0, left: 0 }}>
         <div style={{ padding: '0 12px', marginBottom: '32px' }}>
-          <span style={{ fontWeight: 700, fontSize: '1rem', letterSpacing: '-0.02em' }}>VoiceBot AI</span>
+          <a href="/" style={{ fontWeight: 700, fontSize: '1rem', letterSpacing: '-0.02em', color: 'white', textDecoration: 'none' }}>VoiceBot AI</a>
         </div>
         <nav style={{ display: 'flex', flexDirection: 'column', gap: '2px', flex: 1 }}>
           {navItems.map(item => (
