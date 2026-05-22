@@ -75,11 +75,14 @@ export default function PricingPage() {
           )}
         </div>
       </nav>
+
       <section style={{ textAlign: 'center', padding: '80px 20px 60px' }}>
         <h1 style={{ fontSize: 'clamp(2rem, 5vw, 3.5rem)', fontWeight: 800, letterSpacing: '-0.04em', marginBottom: '16px' }}>Simple, transparent pricing</h1>
         <p style={{ color: C.text, fontSize: '1rem', maxWidth: '480px', margin: '0 auto' }}>No hidden fees. Cancel anytime. Start handling every call automatically.</p>
       </section>
-      <div style={{ display: 'flex', gap: '24px', justifyContent: 'center', flexWrap: 'wrap', maxWidth: '1100px', margin: '0 auto', padding: '0 20px 100px' }}>
+
+      {/* PLANS */}
+      <div style={{ display: 'flex', gap: '24px', justifyContent: 'center', flexWrap: 'wrap', maxWidth: '1100px', margin: '0 auto', padding: '0 20px 60px' }}>
         {plans.map((plan) => {
           const btn = getButtonState(plan.key);
           const isCurrent = btn.style === 'current';
@@ -126,6 +129,42 @@ export default function PricingPage() {
           );
         })}
       </div>
+
+      {/* EXTRA MINUTES */}
+      <div style={{ maxWidth: '980px', margin: '0 auto', padding: '0 20px 100px' }}>
+        <div style={{ textAlign: 'center', marginBottom: '32px' }}>
+          <h2 style={{ fontSize: '1.5rem', fontWeight: 800, letterSpacing: '-0.03em', marginBottom: '8px' }}>Need more minutes?</h2>
+          <p style={{ color: C.text, fontSize: '0.9rem' }}>Buy extra minutes anytime. Business plan members get the best rates.</p>
+        </div>
+        <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '20px', overflow: 'hidden' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', padding: '16px 24px', borderBottom: `1px solid ${C.border}`, background: C.bg }}>
+            <span style={{ fontSize: '0.75rem', fontWeight: 600, color: C.text, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Pack</span>
+            <span style={{ fontSize: '0.75rem', fontWeight: 600, color: C.text, textTransform: 'uppercase', letterSpacing: '0.05em', textAlign: 'center' }}>Starter & Scale</span>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
+              <span style={{ fontSize: '0.75rem', fontWeight: 600, color: '#fbbf24', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Business</span>
+              <span style={{ fontSize: '0.65rem', background: 'rgba(251,191,36,0.1)', color: '#fbbf24', border: '1px solid rgba(251,191,36,0.2)', padding: '2px 6px', borderRadius: '100px', fontWeight: 700 }}>BEST PRICE</span>
+            </div>
+          </div>
+          {[
+            { label: '500 minutes', starter: '$25', business: '$20', saving: 'Save $5' },
+            { label: '1,000 minutes', starter: '$45', business: '$35', saving: 'Save $10' },
+            { label: '2,000 minutes', starter: '$70', business: '$60', saving: 'Save $10' },
+          ].map((pack, i) => (
+            <div key={pack.label} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', padding: '18px 24px', borderBottom: i < 2 ? `1px solid ${C.border}` : 'none', alignItems: 'center' }}>
+              <span style={{ fontSize: '0.9rem', fontWeight: 600 }}>{pack.label}</span>
+              <span style={{ fontSize: '0.95rem', color: C.text, textAlign: 'center', fontWeight: 500 }}>{pack.starter}</span>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+                <span style={{ fontSize: '0.95rem', color: '#fbbf24', fontWeight: 700 }}>{pack.business}</span>
+                <span style={{ fontSize: '0.7rem', color: '#4ade80', background: 'rgba(74,222,128,0.08)', border: '1px solid rgba(74,222,128,0.15)', padding: '2px 6px', borderRadius: '100px', fontWeight: 600 }}>{pack.saving}</span>
+              </div>
+            </div>
+          ))}
+          <div style={{ padding: '16px 24px', background: 'rgba(79,70,229,0.06)', borderTop: `1px solid ${C.border}`, textAlign: 'center' }}>
+            <p style={{ fontSize: '0.82rem', color: C.text }}>Extra minutes are available from your <span style={{ color: 'white', fontWeight: 600 }}>Billing</span> page after subscribing.</p>
+          </div>
+        </div>
+      </div>
+
     </div>
   );
 }
