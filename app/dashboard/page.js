@@ -12,6 +12,13 @@ const PLAN_LABELS = {
   business: { label: "Business Plan", color: "#fbbf24", minutes: 6000 },
 };
 
+const PLAN_RANK = { starter: 1, scale: 2, business: 3 };
+const PLAN_OPTIONS = [
+  { key: 'starter', label: 'Starter', price: '$229/mo', minutes: '500 min' },
+  { key: 'scale', label: 'Scale', price: '$459/mo', minutes: '2,000 min' },
+  { key: 'business', label: 'Business', price: '$879/mo', minutes: '6,000 min' },
+];
+
 const IconHome = () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>;
 const IconPhone = () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81a19.79 19.79 0 01-3.07-8.68A2 2 0 012 .95h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 8.84a16 16 0 006.07 6.07l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>;
 const IconCalendar = () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>;
@@ -23,6 +30,105 @@ const IconCheck = () => <svg width="12" height="12" viewBox="0 0 24 24" fill="no
 const IconSetup = () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 8 12 12 14 14"/></svg>;
 const IconX = () => <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>;
 const IconReport = () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>;
+
+function ChangePlanModal({ currentPlan, userId, onClose, onSuccess }) {
+  const [preview, setPreview] = useState(null);
+  const [selectedPlan, setSelectedPlan] = useState(null);
+  const [loadingPreview, setLoadingPreview] = useState(false);
+  const [confirming, setConfirming] = useState(false);
+
+  const handleSelectPlan = async (planKey) => {
+    if (planKey === currentPlan) return;
+    setSelectedPlan(planKey);
+    setPreview(null);
+    const isUpgrade = PLAN_RANK[planKey] > PLAN_RANK[currentPlan];
+    if (isUpgrade) {
+      setLoadingPreview(true);
+      const res = await fetch('/api/stripe/preview-upgrade', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId, targetPlan: planKey }),
+      });
+      const data = await res.json();
+      setPreview(data);
+      setLoadingPreview(false);
+    }
+  };
+
+  const handleConfirm = async () => {
+    if (!selectedPlan) return;
+    setConfirming(true);
+    const res = await fetch('/api/stripe/change-plan', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ userId, targetPlan: selectedPlan }),
+    });
+    const data = await res.json();
+    setConfirming(false);
+    if (data.success) onSuccess(selectedPlan);
+  };
+
+  const isUpgrade = selectedPlan ? PLAN_RANK[selectedPlan] > PLAN_RANK[currentPlan] : false;
+
+  return (
+    <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.7)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: '20px' }}>
+      <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '20px', padding: '28px', width: '100%', maxWidth: '480px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px' }}>
+          <h2 style={{ fontSize: '1.1rem', fontWeight: 700 }}>Change plan</h2>
+          <button onClick={onClose} style={{ background: 'none', border: 'none', color: C.text, cursor: 'pointer' }}><IconX /></button>
+        </div>
+
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '20px' }}>
+          {PLAN_OPTIONS.map(p => {
+            const isCurrent = p.key === currentPlan;
+            const isSelected = p.key === selectedPlan;
+            return (
+              <div key={p.key} onClick={() => !isCurrent && handleSelectPlan(p.key)}
+                style={{ padding: '14px 16px', borderRadius: '12px', border: `1px solid ${isSelected ? '#4f46e5' : isCurrent ? 'rgba(74,222,128,0.3)' : C.border}`, background: isSelected ? 'rgba(79,70,229,0.08)' : C.bg, cursor: isCurrent ? 'default' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <div>
+                  <p style={{ fontWeight: 600, fontSize: '0.9rem', marginBottom: '2px' }}>{p.label}</p>
+                  <p style={{ fontSize: '0.78rem', color: C.text }}>{p.minutes}/month</p>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                  <span style={{ fontWeight: 700, fontSize: '0.9rem' }}>{p.price}</span>
+                  {isCurrent && <span style={{ fontSize: '0.7rem', color: '#4ade80', background: 'rgba(74,222,128,0.08)', padding: '2px 8px', borderRadius: '100px', border: '1px solid rgba(74,222,128,0.2)', fontWeight: 600 }}>Current</span>}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        {selectedPlan && (
+          <div style={{ background: C.bg, border: `1px solid ${C.border}`, borderRadius: '12px', padding: '14px', marginBottom: '16px' }}>
+            {loadingPreview ? (
+              <p style={{ fontSize: '0.85rem', color: C.text }}>Calculating...</p>
+            ) : isUpgrade && preview ? (
+              <>
+                <p style={{ fontSize: '0.85rem', color: '#e5e7eb', marginBottom: '4px' }}>
+                  You'll be charged <span style={{ fontWeight: 700, color: 'white' }}>${preview.amountDue?.toFixed(2)}</span> today (prorated)
+                </p>
+                <p style={{ fontSize: '0.8rem', color: C.text }}>Then ${PLAN_OPTIONS.find(p => p.key === selectedPlan)?.price} starting {preview.nextBillingDate}</p>
+              </>
+            ) : !isUpgrade ? (
+              <>
+                <p style={{ fontSize: '0.85rem', color: '#e5e7eb', marginBottom: '4px' }}>Your plan will change at the end of your current billing period.</p>
+                <p style={{ fontSize: '0.8rem', color: C.text }}>You keep your current plan until then.</p>
+              </>
+            ) : null}
+          </div>
+        )}
+
+        <div style={{ display: 'flex', gap: '10px' }}>
+          <button onClick={onClose} style={{ flex: 1, padding: '11px', background: 'transparent', border: `1px solid ${C.border}`, color: C.text, borderRadius: '10px', fontWeight: 600, fontSize: '0.875rem', cursor: 'pointer' }}>Cancel</button>
+          <button onClick={handleConfirm} disabled={!selectedPlan || confirming || loadingPreview}
+            style={{ flex: 1, padding: '11px', background: selectedPlan ? '#4f46e5' : C.border, color: 'white', border: 'none', borderRadius: '10px', fontWeight: 700, fontSize: '0.875rem', cursor: selectedPlan ? 'pointer' : 'default', opacity: confirming ? 0.7 : 1 }}>
+            {confirming ? 'Processing...' : isUpgrade ? 'Confirm upgrade' : 'Confirm downgrade'}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 function OnboardingBanner({ plan, googleConnected, twilioNumber, onDismiss }) {
   const steps = [
@@ -225,6 +331,7 @@ export default function Dashboard() {
   const [activePage, setActivePage] = useState('dashboard');
   const [isMobile, setIsMobile] = useState(false);
   const [showOnboarding, setShowOnboarding] = useState(false);
+  const [showChangePlan, setShowChangePlan] = useState(false);
 
   useEffect(() => {
     const check = () => setIsMobile(window.innerWidth < 768);
@@ -274,6 +381,11 @@ export default function Dashboard() {
     });
     const data = await res.json();
     if (data.url) window.location.href = data.url;
+  };
+
+  const handlePlanChangeSuccess = (newPlan) => {
+    setClientData(prev => ({ ...prev, plan: newPlan }));
+    setShowChangePlan(false);
   };
 
   if (loading) return (
@@ -502,7 +614,6 @@ export default function Dashboard() {
             <p style={{ fontSize: '0.85rem', color: C.text }}>Manage your subscription and add-ons.</p>
           </div>
 
-          {/* PLAN ACTUEL */}
           <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', padding: '20px' }}>
             {plan ? (
               <div style={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', alignItems: isMobile ? 'flex-start' : 'center', justifyContent: 'space-between', gap: '12px' }}>
@@ -514,9 +625,9 @@ export default function Dashboard() {
                     <p style={{ fontSize: '0.82rem', color: '#4ade80', marginTop: '4px' }}>+ {clientData.extra_minutes.toLocaleString()} extra minutes available</p>
                   )}
                 </div>
-                <a href="/pricing" style={{ padding: '9px 20px', background: C.bg, border: `1px solid ${C.border}`, color: '#e5e7eb', textDecoration: 'none', borderRadius: '9px', fontSize: '0.875rem', fontWeight: 600 }}>
-  {clientData?.plan === 'business' ? 'Change plan' : 'Upgrade plan'}
-</a>
+                <button onClick={() => setShowChangePlan(true)} style={{ padding: '9px 20px', background: C.bg, border: `1px solid ${C.border}`, color: '#e5e7eb', borderRadius: '9px', fontSize: '0.875rem', fontWeight: 600, cursor: 'pointer' }}>
+                  Change plan
+                </button>
               </div>
             ) : (
               <div style={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', alignItems: isMobile ? 'flex-start' : 'center', justifyContent: 'space-between', gap: '12px' }}>
@@ -529,7 +640,6 @@ export default function Dashboard() {
             )}
           </div>
 
-          {/* NUMÉROS */}
           {plan && (
             <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', padding: '20px' }}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
@@ -559,16 +669,15 @@ export default function Dashboard() {
             </div>
           )}
 
-          {/* PACK MINUTES */}
           {plan && (
             <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', padding: '20px' }}>
               <p style={{ fontSize: '0.75rem', color: C.text, textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600, marginBottom: '4px' }}>Extra minutes</p>
               <p style={{ fontSize: '0.82rem', color: C.text, marginBottom: '16px' }}>One-time purchase, added immediately to your account.</p>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                 {[
-                  { label: '500 minutes', price: '$20', priceId: 'price_1Ta0IaFbv1QHIqBxbXgAGIlo' },
-                  { label: '1,000 minutes', price: '$35', priceId: 'price_1Ta0J4Fbv1QHIqBxJDgDXSxx' },
-                  { label: '2,000 minutes', price: '$60', priceId: 'price_1Ta0JIFbv1QHIqBxWJHkMI3w' },
+                  { label: '500 minutes', price: clientData?.plan === 'business' ? '$20' : '$25', priceId: 'price_1Ta0IaFbv1QHIqBxbXgAGIlo' },
+                  { label: '1,000 minutes', price: clientData?.plan === 'business' ? '$35' : '$45', priceId: 'price_1Ta0J4Fbv1QHIqBxJDgDXSxx' },
+                  { label: '2,000 minutes', price: clientData?.plan === 'business' ? '$60' : '$70', priceId: 'price_1Ta0JIFbv1QHIqBxWJHkMI3w' },
                 ].map(pack => (
                   <div key={pack.priceId} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 16px', background: C.bg, border: `1px solid ${C.border}`, borderRadius: '10px' }}>
                     <div>
@@ -596,6 +705,7 @@ export default function Dashboard() {
   if (isMobile) {
     return (
       <div style={{ minHeight: '100vh', background: C.bg, color: 'white', fontFamily: 'system-ui, sans-serif' }}>
+        {showChangePlan && <ChangePlanModal currentPlan={clientData?.plan} userId={user?.id} onClose={() => setShowChangePlan(false)} onSuccess={handlePlanChangeSuccess} />}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px 20px', borderBottom: `1px solid ${C.border}`, background: C.sidebar, position: 'sticky', top: 0, zIndex: 100 }}>
           <span style={{ fontWeight: 700, fontSize: '1rem' }}>VoiceBot AI</span>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
@@ -617,6 +727,7 @@ export default function Dashboard() {
 
   return (
     <div style={{ minHeight: '100vh', background: C.bg, color: 'white', fontFamily: 'system-ui, sans-serif', display: 'flex' }}>
+      {showChangePlan && <ChangePlanModal currentPlan={clientData?.plan} userId={user?.id} onClose={() => setShowChangePlan(false)} onSuccess={handlePlanChangeSuccess} />}
       <aside style={{ width: '220px', minHeight: '100vh', background: C.sidebar, borderRight: `1px solid ${C.border}`, display: 'flex', flexDirection: 'column', padding: '24px 12px', position: 'fixed', top: 0, left: 0 }}>
         <div style={{ padding: '0 12px', marginBottom: '32px' }}>
           <span style={{ fontWeight: 700, fontSize: '1rem', letterSpacing: '-0.02em' }}>VoiceBot AI</span>
