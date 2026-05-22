@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import Link from 'next/link';
@@ -15,25 +15,33 @@ const plans = [
 
 export default function PricingPage() {
   const [loading, setLoading] = useState(null);
+  const [user, setUser] = useState(null);
+  const [clientData, setClientData] = useState(null);
   const router = useRouter();
+
+  useEffect(() => {
+    const loadUser = async () => {
+      const { data: { user: authUser } } = await supabase.auth.getUser();
+      if (authUser) {
+        setUser(authUser);
+        const { data } = await supabase.from('clients').select('business_name').eq('user_id', authUser.id).maybeSingle();
+        if (data) setClientData(data);
+      }
+    };
+    loadUser();
+  }, []);
 
   const handleSubscribe = async (priceId, planName) => {
     setLoading(planName);
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      console.log('User:', user);
-      if (!user) {
-        router.push('/register');
-        setLoading(null);
-        return;
-      }
+      const { data: { user: authUser } } = await supabase.auth.getUser();
+      if (!authUser) { router.push('/register'); setLoading(null); return; }
       const res = await fetch('/api/stripe/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ priceId, userId: user.id, userEmail: user.email }),
+        body: JSON.stringify({ priceId, userId: authUser.id, userEmail: authUser.email }),
       });
       const data = await res.json();
-      console.log('Checkout response:', data);
       if (data.url) window.location.href = data.url;
     } catch (err) {
       console.error('Error:', err);
@@ -45,7 +53,16 @@ export default function PricingPage() {
     <div style={{ minHeight: '100vh', background: C.bg, color: 'white', fontFamily: 'system-ui, sans-serif' }}>
       <nav style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '20px 60px', borderBottom: `1px solid ${C.border}` }}>
         <Link href="/" style={{ fontWeight: 700, fontSize: '1.1rem', color: 'white', textDecoration: 'none', letterSpacing: '-0.02em' }}>VoiceBot AI</Link>
-        <Link href="/login" style={{ color: C.text, textDecoration: 'none', fontSize: '0.9rem' }}>Sign in</Link>
+        <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+          {user ? (
+            <>
+              <span style={{ color: C.text, fontSize: '0.85rem' }}>{clientData?.business_name || user.email}</span>
+              <Link href="/dashboard" style={{ background: 'white', color: 'black', textDecoration: 'none', fontSize: '0.9rem', fontWeight: 600, padding: '8px 18px', borderRadius: '8px' }}>Dashboard →</Link>
+            </>
+          ) : (
+            <Link href="/login" style={{ color: C.text, textDecoration: 'none', fontSize: '0.9rem' }}>Sign in</Link>
+          )}
+        </div>
       </nav>
       <section style={{ textAlign: 'center', padding: '80px 20px 60px' }}>
         <h1 style={{ fontSize: 'clamp(2rem, 5vw, 3.5rem)', fontWeight: 800, letterSpacing: '-0.04em', marginBottom: '16px' }}>Simple, transparent pricing</h1>
