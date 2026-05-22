@@ -5,9 +5,6 @@ import Script from "next/script";
 export const metadata = {
   title: "VoiceBot AI",
   description: "AI-powered voice assistant that answers calls 24/7, books appointments, and qualifies leads automatically.",
-  icons: {
-    icon: 'https://dashboard-saas-nine.vercel.app/favicon.png',
-  },
 };
 
 export default function RootLayout({ children }) {
