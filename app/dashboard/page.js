@@ -641,34 +641,41 @@ export default function Dashboard() {
           </div>
 
           {plan && (
-            <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', padding: '20px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
-                <div>
-                  <p style={{ fontSize: '0.75rem', color: C.text, textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600, marginBottom: '4px' }}>Phone numbers</p>
-                  <p style={{ fontSize: '0.82rem', color: C.text }}>$15/month per additional number</p>
-                </div>
-                <button onClick={() => handleCheckout('price_1Ta0HrFbv1QHIqBx45XsDToe', 'subscription')}
-                  style={{ padding: '8px 16px', background: '#4f46e5', color: 'white', border: 'none', borderRadius: '8px', fontSize: '0.82rem', fontWeight: 600, cursor: 'pointer', whiteSpace: 'nowrap' }}>
-                  + Add number
-                </button>
-              </div>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                {clientData?.twilio_number && (
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 14px', background: C.bg, border: `1px solid ${C.border}`, borderRadius: '10px' }}>
-                    <p style={{ fontFamily: 'monospace', fontSize: '0.9rem', color: '#e5e7eb' }}>{clientData.twilio_number}</p>
-                    <span style={{ fontSize: '0.72rem', color: C.text, background: C.card, padding: '2px 8px', borderRadius: '100px', border: `1px solid ${C.border}` }}>Included</span>
-                  </div>
-                )}
-                {(clientData?.twilio_numbers || []).map((num, i) => (
-                  <div key={i} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 14px', background: C.bg, border: `1px solid ${C.border}`, borderRadius: '10px' }}>
-                    <p style={{ fontFamily: 'monospace', fontSize: '0.9rem', color: '#e5e7eb' }}>{num}</p>
-                    <span style={{ fontSize: '0.72rem', color: '#60a5fa', background: 'rgba(96,165,250,0.08)', padding: '2px 8px', borderRadius: '100px', border: '1px solid rgba(96,165,250,0.2)' }}>$15/mo</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
+  <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', padding: '20px' }}>
+    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
+      <div>
+        <p style={{ fontSize: '0.75rem', color: C.text, textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600, marginBottom: '4px' }}>Phone numbers</p>
+        <p style={{ fontSize: '0.82rem', color: C.text }}>
+          {clientData?.plan === 'business' ? '$15/month per additional number' : 'Additional numbers available on Business plan'}
+        </p>
+      </div>
+      {clientData?.plan === 'business' ? (
+        <button onClick={() => handleCheckout('price_1Ta0HrFbv1QHIqBx45XsDToe', 'subscription')}
+          style={{ padding: '8px 16px', background: '#4f46e5', color: 'white', border: 'none', borderRadius: '8px', fontSize: '0.82rem', fontWeight: 600, cursor: 'pointer', whiteSpace: 'nowrap' }}>
+          + Add number
+        </button>
+      ) : (
+        <a href="/pricing" style={{ fontSize: '0.78rem', color: '#818cf8', background: 'rgba(79,70,229,0.08)', border: '1px solid rgba(79,70,229,0.2)', padding: '6px 12px', borderRadius: '8px', textDecoration: 'none', fontWeight: 600, whiteSpace: 'nowrap' }}>
+          Upgrade →
+        </a>
+      )}
+    </div>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+      {clientData?.twilio_number && (
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 14px', background: C.bg, border: `1px solid ${C.border}`, borderRadius: '10px' }}>
+          <p style={{ fontFamily: 'monospace', fontSize: '0.9rem', color: '#e5e7eb' }}>{clientData.twilio_number}</p>
+          <span style={{ fontSize: '0.72rem', color: C.text, background: C.card, padding: '2px 8px', borderRadius: '100px', border: `1px solid ${C.border}` }}>Included</span>
+        </div>
+      )}
+      {(clientData?.twilio_numbers || []).map((num, i) => (
+        <div key={i} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 14px', background: C.bg, border: `1px solid ${C.border}`, borderRadius: '10px' }}>
+          <p style={{ fontFamily: 'monospace', fontSize: '0.9rem', color: '#e5e7eb' }}>{num}</p>
+          <span style={{ fontSize: '0.72rem', color: '#60a5fa', background: 'rgba(96,165,250,0.08)', padding: '2px 8px', borderRadius: '100px', border: '1px solid rgba(96,165,250,0.2)' }}>$15/mo</span>
+        </div>
+      ))}
+    </div>
+  </div>
+)}
           {plan && (
             <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', padding: '20px' }}>
               <p style={{ fontSize: '0.75rem', color: C.text, textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600, marginBottom: '4px' }}>Extra minutes</p>
