@@ -159,8 +159,6 @@ function WeeklyReport({ userId }) {
     const loadReport = async () => {
       const { data } = await supabase.from('calls').select('*').eq('user_id', userId).order('created_at', { ascending: false });
       if (!data) { setLoading(false); return; }
-
-      // Grouper par semaine
       const weekMap = {};
       data.forEach(call => {
         const date = new Date(call.created_at);
@@ -171,14 +169,12 @@ function WeeklyReport({ userId }) {
         if (!weekMap[key]) weekMap[key] = { start: monday, calls: [] };
         weekMap[key].calls.push(call);
       });
-
       const result = Object.values(weekMap).sort((a, b) => b.start - a.start).slice(0, 8).map(w => ({
         label: w.start.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
         totalCalls: w.calls.length,
         totalRdv: w.calls.filter(c => c.rdv_pris).length,
         totalMinutes: Math.round(w.calls.reduce((acc, c) => acc + (c.duration || 0), 0) / 60),
       }));
-
       setWeeks(result);
       setLoading(false);
     };
@@ -243,7 +239,7 @@ export default function Dashboard() {
   }, []);
 
   const fetchClientData = useCallback(async (userId) => {
-    const { data } = await supabase.from("clients").select("google_connected, plan, twilio_number, business_name").eq("user_id", userId).maybeSingle();
+    const { data } = await supabase.from("clients").select("google_connected, plan, twilio_number, twilio_numbers, extra_minutes, business_name").eq("user_id", userId).maybeSingle();
     if (data) {
       setClientData(data);
       if (data.google_connected) setGoogleConnected(true);
@@ -269,6 +265,16 @@ export default function Dashboard() {
 
   const handleLogout = async () => { await supabase.auth.signOut(); window.location.href = "/login"; };
   const handleDismissOnboarding = () => { localStorage.setItem('onboarding_dismissed', 'true'); setShowOnboarding(false); };
+
+  const handleCheckout = async (priceId, mode = 'subscription') => {
+    const res = await fetch('/api/stripe/checkout', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ priceId, userId: user.id, userEmail: user.email, mode }),
+    });
+    const data = await res.json();
+    if (data.url) window.location.href = data.url;
+  };
 
   if (loading) return (
     <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: C.bg }}>
@@ -385,46 +391,46 @@ export default function Dashboard() {
       )}
 
       {activePage === 'calls' && (
-  <>
-    <div>
-      <h1 style={{ fontSize: isMobile ? '1.3rem' : '1.5rem', fontWeight: 800, letterSpacing: '-0.03em', marginBottom: '4px' }}>Calls</h1>
-      <p style={{ fontSize: '0.85rem', color: C.text }}>All calls handled by your VoiceBot.</p>
-    </div>
-    <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', padding: '20px' }}>
-      {calls.length === 0 ? (
-        <div style={{ textAlign: 'center', padding: '40px 0' }}>
-          <div style={{ color: C.border, marginBottom: '12px', display: 'flex', justifyContent: 'center' }}><IconPhone /></div>
-          <p style={{ fontSize: '0.875rem', color: C.text }}>No calls yet. Your VoiceBot is ready.</p>
-        </div>
-      ) : (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-          {calls.map(call => (
-            <div key={call.id} style={{ padding: '12px 14px', background: C.bg, border: `1px solid ${C.border}`, borderRadius: '12px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                <div>
-                  <p style={{ fontSize: '0.875rem', fontWeight: 600, marginBottom: '3px' }}>{call.caller_number}</p>
-                  <p style={{ fontSize: '0.8rem', color: C.text }}>{call.summary}</p>
-                </div>
-                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '6px' }}>
-                  <span style={{ fontSize: '0.75rem', color: C.text }}>{call.duration}s</span>
-                  {call.rdv_pris && <span style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '0.75rem', color: '#4ade80', background: 'rgba(34,197,94,0.08)', padding: '2px 8px', borderRadius: '100px' }}><IconCheck /> Booked</span>}
-                </div>
+        <>
+          <div>
+            <h1 style={{ fontSize: isMobile ? '1.3rem' : '1.5rem', fontWeight: 800, letterSpacing: '-0.03em', marginBottom: '4px' }}>Calls</h1>
+            <p style={{ fontSize: '0.85rem', color: C.text }}>All calls handled by your VoiceBot.</p>
+          </div>
+          <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', padding: '20px' }}>
+            {calls.length === 0 ? (
+              <div style={{ textAlign: 'center', padding: '40px 0' }}>
+                <div style={{ color: C.border, marginBottom: '12px', display: 'flex', justifyContent: 'center' }}><IconPhone /></div>
+                <p style={{ fontSize: '0.875rem', color: C.text }}>No calls yet. Your VoiceBot is ready.</p>
               </div>
-              {call.recording_url && (
-                <div style={{ marginTop: '10px', paddingTop: '10px', borderTop: `1px solid ${C.border}` }}>
-                  <p style={{ fontSize: '0.72rem', color: C.label, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '6px' }}>Recording</p>
-                  <audio controls style={{ width: '100%', height: '32px', accentColor: '#4f46e5' }}>
-                    <source src={call.recording_url} type="audio/mpeg" />
-                  </audio>
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
+            ) : (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                {calls.map(call => (
+                  <div key={call.id} style={{ padding: '12px 14px', background: C.bg, border: `1px solid ${C.border}`, borderRadius: '12px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                      <div>
+                        <p style={{ fontSize: '0.875rem', fontWeight: 600, marginBottom: '3px' }}>{call.caller_number}</p>
+                        <p style={{ fontSize: '0.8rem', color: C.text }}>{call.summary}</p>
+                      </div>
+                      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '6px' }}>
+                        <span style={{ fontSize: '0.75rem', color: C.text }}>{call.duration}s</span>
+                        {call.rdv_pris && <span style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '0.75rem', color: '#4ade80', background: 'rgba(34,197,94,0.08)', padding: '2px 8px', borderRadius: '100px' }}><IconCheck /> Booked</span>}
+                      </div>
+                    </div>
+                    {call.recording_url && (
+                      <div style={{ marginTop: '10px', paddingTop: '10px', borderTop: `1px solid ${C.border}` }}>
+                        <p style={{ fontSize: '0.72rem', color: C.label, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '6px' }}>Recording</p>
+                        <audio controls style={{ width: '100%', height: '32px', accentColor: '#4f46e5' }}>
+                          <source src={call.recording_url} type="audio/mpeg" />
+                        </audio>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </>
       )}
-    </div>
-  </>
-)}
 
       {activePage === 'reports' && (
         <>
@@ -493,8 +499,10 @@ export default function Dashboard() {
         <>
           <div>
             <h1 style={{ fontSize: isMobile ? '1.3rem' : '1.5rem', fontWeight: 800, letterSpacing: '-0.03em', marginBottom: '4px' }}>Billing</h1>
-            <p style={{ fontSize: '0.85rem', color: C.text }}>Manage your subscription.</p>
+            <p style={{ fontSize: '0.85rem', color: C.text }}>Manage your subscription and add-ons.</p>
           </div>
+
+          {/* PLAN ACTUEL */}
           <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', padding: '20px' }}>
             {plan ? (
               <div style={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', alignItems: isMobile ? 'flex-start' : 'center', justifyContent: 'space-between', gap: '12px' }}>
@@ -502,6 +510,9 @@ export default function Dashboard() {
                   <p style={{ fontSize: '0.75rem', color: C.text, textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600, marginBottom: '6px' }}>Current plan</p>
                   <p style={{ fontWeight: 700, fontSize: '1.2rem', color: plan.color, marginBottom: '4px' }}>{plan.label}</p>
                   <p style={{ fontSize: '0.85rem', color: C.text }}>{plan.minutes.toLocaleString()} minutes/month included</p>
+                  {clientData?.extra_minutes > 0 && (
+                    <p style={{ fontSize: '0.82rem', color: '#4ade80', marginTop: '4px' }}>+ {clientData.extra_minutes.toLocaleString()} extra minutes available</p>
+                  )}
                 </div>
                 <a href="/pricing" style={{ padding: '9px 20px', background: C.bg, border: `1px solid ${C.border}`, color: '#e5e7eb', textDecoration: 'none', borderRadius: '9px', fontSize: '0.875rem', fontWeight: 600 }}>Upgrade plan</a>
               </div>
@@ -515,6 +526,65 @@ export default function Dashboard() {
               </div>
             )}
           </div>
+
+          {/* NUMÉROS */}
+          {plan && (
+            <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', padding: '20px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
+                <div>
+                  <p style={{ fontSize: '0.75rem', color: C.text, textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600, marginBottom: '4px' }}>Phone numbers</p>
+                  <p style={{ fontSize: '0.82rem', color: C.text }}>$15/month per additional number</p>
+                </div>
+                <button onClick={() => handleCheckout('price_1Ta0HrFbv1QHIqBx45XsDToe', 'subscription')}
+                  style={{ padding: '8px 16px', background: '#4f46e5', color: 'white', border: 'none', borderRadius: '8px', fontSize: '0.82rem', fontWeight: 600, cursor: 'pointer', whiteSpace: 'nowrap' }}>
+                  + Add number
+                </button>
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                {clientData?.twilio_number && (
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 14px', background: C.bg, border: `1px solid ${C.border}`, borderRadius: '10px' }}>
+                    <p style={{ fontFamily: 'monospace', fontSize: '0.9rem', color: '#e5e7eb' }}>{clientData.twilio_number}</p>
+                    <span style={{ fontSize: '0.72rem', color: C.text, background: C.card, padding: '2px 8px', borderRadius: '100px', border: `1px solid ${C.border}` }}>Included</span>
+                  </div>
+                )}
+                {(clientData?.twilio_numbers || []).map((num, i) => (
+                  <div key={i} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 14px', background: C.bg, border: `1px solid ${C.border}`, borderRadius: '10px' }}>
+                    <p style={{ fontFamily: 'monospace', fontSize: '0.9rem', color: '#e5e7eb' }}>{num}</p>
+                    <span style={{ fontSize: '0.72rem', color: '#60a5fa', background: 'rgba(96,165,250,0.08)', padding: '2px 8px', borderRadius: '100px', border: '1px solid rgba(96,165,250,0.2)' }}>$15/mo</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* PACK MINUTES */}
+          {plan && (
+            <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', padding: '20px' }}>
+              <p style={{ fontSize: '0.75rem', color: C.text, textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600, marginBottom: '4px' }}>Extra minutes</p>
+              <p style={{ fontSize: '0.82rem', color: C.text, marginBottom: '16px' }}>One-time purchase, added immediately to your account.</p>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                {[
+                  { label: '500 minutes', price: '$20', priceId: 'price_1Ta0IaFbv1QHIqBxbXgAGIlo' },
+                  { label: '1,000 minutes', price: '$35', priceId: 'price_1Ta0J4Fbv1QHIqBxJDgDXSxx' },
+                  { label: '2,000 minutes', price: '$60', priceId: 'price_1Ta0JIFbv1QHIqBxWJHkMI3w' },
+                ].map(pack => (
+                  <div key={pack.priceId} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 16px', background: C.bg, border: `1px solid ${C.border}`, borderRadius: '10px' }}>
+                    <div>
+                      <p style={{ fontSize: '0.9rem', fontWeight: 600, marginBottom: '2px' }}>{pack.label}</p>
+                      <p style={{ fontSize: '0.78rem', color: C.text }}>One-time payment</p>
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                      <span style={{ fontWeight: 700, fontSize: '0.95rem' }}>{pack.price}</span>
+                      <button onClick={() => handleCheckout(pack.priceId, 'payment')}
+                        style={{ padding: '7px 14px', background: '#4f46e5', color: 'white', border: 'none', borderRadius: '8px', fontSize: '0.82rem', fontWeight: 600, cursor: 'pointer' }}>
+                        Buy
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </>
       )}
 
