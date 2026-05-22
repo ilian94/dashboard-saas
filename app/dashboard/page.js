@@ -385,36 +385,46 @@ export default function Dashboard() {
       )}
 
       {activePage === 'calls' && (
-        <>
-          <div>
-            <h1 style={{ fontSize: isMobile ? '1.3rem' : '1.5rem', fontWeight: 800, letterSpacing: '-0.03em', marginBottom: '4px' }}>Calls</h1>
-            <p style={{ fontSize: '0.85rem', color: C.text }}>All calls handled by your VoiceBot.</p>
-          </div>
-          <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', padding: '20px' }}>
-            {calls.length === 0 ? (
-              <div style={{ textAlign: 'center', padding: '40px 0' }}>
-                <div style={{ color: C.border, marginBottom: '12px', display: 'flex', justifyContent: 'center' }}><IconPhone /></div>
-                <p style={{ fontSize: '0.875rem', color: C.text }}>No calls yet. Your VoiceBot is ready.</p>
+  <>
+    <div>
+      <h1 style={{ fontSize: isMobile ? '1.3rem' : '1.5rem', fontWeight: 800, letterSpacing: '-0.03em', marginBottom: '4px' }}>Calls</h1>
+      <p style={{ fontSize: '0.85rem', color: C.text }}>All calls handled by your VoiceBot.</p>
+    </div>
+    <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', padding: '20px' }}>
+      {calls.length === 0 ? (
+        <div style={{ textAlign: 'center', padding: '40px 0' }}>
+          <div style={{ color: C.border, marginBottom: '12px', display: 'flex', justifyContent: 'center' }}><IconPhone /></div>
+          <p style={{ fontSize: '0.875rem', color: C.text }}>No calls yet. Your VoiceBot is ready.</p>
+        </div>
+      ) : (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+          {calls.map(call => (
+            <div key={call.id} style={{ padding: '12px 14px', background: C.bg, border: `1px solid ${C.border}`, borderRadius: '12px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <div>
+                  <p style={{ fontSize: '0.875rem', fontWeight: 600, marginBottom: '3px' }}>{call.caller_number}</p>
+                  <p style={{ fontSize: '0.8rem', color: C.text }}>{call.summary}</p>
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '6px' }}>
+                  <span style={{ fontSize: '0.75rem', color: C.text }}>{call.duration}s</span>
+                  {call.rdv_pris && <span style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '0.75rem', color: '#4ade80', background: 'rgba(34,197,94,0.08)', padding: '2px 8px', borderRadius: '100px' }}><IconCheck /> Booked</span>}
+                </div>
               </div>
-            ) : (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                {calls.map(call => (
-                  <div key={call.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 14px', background: C.bg, border: `1px solid ${C.border}`, borderRadius: '12px' }}>
-                    <div>
-                      <p style={{ fontSize: '0.875rem', fontWeight: 600, marginBottom: '3px' }}>{call.caller_number}</p>
-                      <p style={{ fontSize: '0.8rem', color: C.text }}>{call.summary}</p>
-                    </div>
-                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '6px' }}>
-                      <span style={{ fontSize: '0.75rem', color: C.text }}>{call.duration}s</span>
-                      {call.rdv_pris && <span style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '0.75rem', color: '#4ade80', background: 'rgba(34,197,94,0.08)', padding: '2px 8px', borderRadius: '100px' }}><IconCheck /> Booked</span>}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        </>
+              {call.recording_url && (
+                <div style={{ marginTop: '10px', paddingTop: '10px', borderTop: `1px solid ${C.border}` }}>
+                  <p style={{ fontSize: '0.72rem', color: C.label, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '6px' }}>Recording</p>
+                  <audio controls style={{ width: '100%', height: '32px', accentColor: '#4f46e5' }}>
+                    <source src={call.recording_url} type="audio/mpeg" />
+                  </audio>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
       )}
+    </div>
+  </>
+)}
 
       {activePage === 'reports' && (
         <>
