@@ -23,7 +23,7 @@ const faqs = [
   { q: 'Can I cancel anytime?', a: 'Yes, you can cancel your subscription at any time from your dashboard. Your service will remain active until the end of the current billing period.' },
   { q: 'How long does setup take?', a: 'Most businesses are live within 5 minutes. You just need to connect your Google Calendar, receive your dedicated number, and forward your existing business line to it.' },
   { q: 'Is there a money-back guarantee?', a: 'Yes. We offer a 7-day money-back guarantee for all first-time subscribers. No questions asked.' },
-  { q: 'Can I customize what the bot says?', a: 'Custom scripts and personas are coming in a future update. Currently the bot uses a professional, friendly tone optimized for appointment booking.' },
+  { q: 'Can I customize what the bot says?', a: 'Yes. Scale plan users can customize the business name used in the greeting. Business plan users can fully customize the script, services, questions asked, and the bot\'s tone and personality — all from the dashboard.' },
 ];
 
 export default function Home() {
