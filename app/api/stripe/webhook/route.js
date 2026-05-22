@@ -71,13 +71,11 @@ export async function POST(req) {
     return NextResponse.json({ error: `Webhook Error: ${err.message}` }, { status: 400 });
   }
 
-  // Paiement abonnement principal
   if (event.type === 'checkout.session.completed') {
     const session = event.data.object;
     const userId = session.metadata.userId;
     const mode = session.mode;
 
-    // Paiement one-time (pack minutes)
     if (mode === 'payment') {
       const lineItems = await stripe.checkout.sessions.listLineItems(session.id);
       const priceId = lineItems.data[0]?.price?.id;
@@ -116,14 +114,12 @@ export async function POST(req) {
       return NextResponse.json({ received: true });
     }
 
-    // Abonnement récurrent
     if (mode === 'subscription') {
       const subscription = await stripe.subscriptions.retrieve(session.subscription, {
         expand: ['items.data.price'],
       });
       const activePriceId = subscription.items.data[0].price.id;
 
-      // Numéro supplémentaire
       if (activePriceId === ADDITIONAL_NUMBER_PRICE_ID) {
         const { data: client } = await supabase
           .from('clients')
@@ -163,7 +159,6 @@ export async function POST(req) {
         return NextResponse.json({ received: true });
       }
 
-      // Plan principal
       const plan = PLAN_MAP[activePriceId] || 'starter';
       const { data: client } = await supabase
         .from('clients')
@@ -217,6 +212,21 @@ export async function POST(req) {
     }
   }
 
+  if (event.type === 'customer.subscription.updated') {
+    const subscription = event.data.object;
+    const customerId = subscription.customer;
+    const newPriceId = subscription.items.data[0]?.price?.id;
+    const newPlan = PLAN_MAP[newPriceId];
+
+    if (newPlan) {
+      await supabase
+        .from('clients')
+        .update({ plan: newPlan })
+        .eq('stripe_customer_id', customerId);
+      console.log(`✅ Plan updated to ${newPlan} for customer ${customerId}`);
+    }
+  }
+
   if (event.type === 'customer.subscription.deleted') {
     const subscription = event.data.object;
     const customerId = subscription.customer;
@@ -228,7 +238,6 @@ export async function POST(req) {
       .eq('stripe_customer_id', customerId)
       .maybeSingle();
 
-    // Annulation numéro supplémentaire
     if (priceId === ADDITIONAL_NUMBER_PRICE_ID) {
       const numbers = client?.twilio_numbers || [];
       if (numbers.length > 0) {
@@ -242,7 +251,6 @@ export async function POST(req) {
       return NextResponse.json({ received: true });
     }
 
-    // Annulation plan principal
     if (client?.twilio_number) {
       await releaseTwilioNumber(client.twilio_number);
     }
