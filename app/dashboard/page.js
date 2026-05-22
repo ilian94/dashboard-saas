@@ -514,7 +514,9 @@ export default function Dashboard() {
                     <p style={{ fontSize: '0.82rem', color: '#4ade80', marginTop: '4px' }}>+ {clientData.extra_minutes.toLocaleString()} extra minutes available</p>
                   )}
                 </div>
-                <a href="/pricing" style={{ padding: '9px 20px', background: C.bg, border: `1px solid ${C.border}`, color: '#e5e7eb', textDecoration: 'none', borderRadius: '9px', fontSize: '0.875rem', fontWeight: 600 }}>Upgrade plan</a>
+                <a href="/pricing" style={{ padding: '9px 20px', background: C.bg, border: `1px solid ${C.border}`, color: '#e5e7eb', textDecoration: 'none', borderRadius: '9px', fontSize: '0.875rem', fontWeight: 600 }}>
+  {clientData?.plan === 'business' ? 'Change plan' : 'Upgrade plan'}
+</a>
               </div>
             ) : (
               <div style={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', alignItems: isMobile ? 'flex-start' : 'center', justifyContent: 'space-between', gap: '12px' }}>
