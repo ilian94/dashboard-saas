@@ -46,22 +46,19 @@ export default function Home() {
     <div style={{ minHeight: '100vh', background: C.bg, color: 'white', fontFamily: 'system-ui, sans-serif' }}>
 
       {/* NAV */}
-      <nav style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '20px 60px', borderBottom: `1px solid ${C.border}`, position: 'sticky', top: 0, background: `rgba(15,17,23,0.85)`, backdropFilter: 'blur(12px)', zIndex: 100 }}>
-        <span style={{ fontWeight: 700, fontSize: '1.1rem', letterSpacing: '-0.02em' }}>VoiceBot AI</span>
-        <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
-          {user ? (
-            <>
-              <span style={{ color: C.text, fontSize: '0.85rem' }}>{clientData?.business_name || user.email}</span>
-              <Link href="/dashboard" style={{ background: 'white', color: 'black', textDecoration: 'none', fontSize: '0.9rem', fontWeight: 600, padding: '8px 18px', borderRadius: '8px' }}>Dashboard →</Link>
-            </>
-          ) : (
-            <>
-              <Link href="/login" style={{ color: C.text, textDecoration: 'none', fontSize: '0.9rem', padding: '8px 16px' }}>Sign in</Link>
-              <Link href="/pricing" style={{ background: 'white', color: 'black', textDecoration: 'none', fontSize: '0.9rem', fontWeight: 600, padding: '8px 18px', borderRadius: '8px' }}>Get started</Link>
-            </>
-          )}
-        </div>
-      </nav>
+      <nav style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px 20px', borderBottom: `1px solid ${C.border}`, position: 'sticky', top: 0, background: `rgba(15,17,23,0.85)`, backdropFilter: 'blur(12px)', zIndex: 100 }}>
+  <span style={{ fontWeight: 700, fontSize: '1.1rem', letterSpacing: '-0.02em' }}>VoiceBot AI</span>
+  <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+    {user ? (
+      <Link href="/dashboard" style={{ background: 'white', color: 'black', textDecoration: 'none', fontSize: '0.85rem', fontWeight: 600, padding: '8px 14px', borderRadius: '8px', whiteSpace: 'nowrap' }}>Dashboard →</Link>
+    ) : (
+      <>
+        <Link href="/login" style={{ color: C.text, textDecoration: 'none', fontSize: '0.85rem', padding: '8px 10px', whiteSpace: 'nowrap' }}>Sign in</Link>
+        <Link href="/pricing" style={{ background: 'white', color: 'black', textDecoration: 'none', fontSize: '0.85rem', fontWeight: 600, padding: '8px 14px', borderRadius: '8px', whiteSpace: 'nowrap' }}>Get started</Link>
+      </>
+    )}
+  </div>
+</nav>
 
       {/* HERO */}
       <section style={{ textAlign: 'center', padding: '120px 20px 100px', maxWidth: '860px', margin: '0 auto' }}>

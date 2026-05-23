@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { createClient } from "@/lib/supabase/client";
 
 const supabase = createClient();
@@ -31,7 +31,7 @@ const IconSetup = () => <svg width="16" height="16" viewBox="0 0 24 24" fill="no
 const IconX = () => <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>;
 const IconReport = () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>;
 
-function SetupProgress({ plan, googleConnected, twilioNumber, callsCount, onOpen }) {
+function SetupProgress({ plan, googleConnected, twilioNumber, callsCount, onGoSetup }) {
   const steps = [
     { label: 'Choose a plan', done: !!plan },
     { label: 'Connect Google Calendar', done: googleConnected },
@@ -43,21 +43,80 @@ function SetupProgress({ plan, googleConnected, twilioNumber, callsCount, onOpen
   const completed = steps.filter(s => s.done).length;
   const total = steps.length;
   const percentage = Math.round((completed / total) * 100);
+  const nextStep = steps.find(s => !s.done);
 
-  if (completed === total) return null;
+  const [showPopup, setShowPopup] = useState(false);
+  const [pos, setPos] = useState({ x: null, y: null });
+  const [dragging, setDragging] = useState(false);
+  const dragOffset = useRef({ x: 0, y: 0 });
+  const btnRef = useRef(null);
+  const hasDragged = useRef(false);
+
+  useEffect(() => {
+    setPos({ x: window.innerWidth - 80, y: window.innerHeight - 140 });
+  }, []);
+
+  const handleTouchStart = (e) => {
+    const touch = e.touches[0];
+    const rect = btnRef.current.getBoundingClientRect();
+    dragOffset.current = { x: touch.clientX - rect.left, y: touch.clientY - rect.top };
+    hasDragged.current = false;
+  };
+
+  const handleTouchMove = (e) => {
+    e.preventDefault();
+    hasDragged.current = true;
+    setDragging(true);
+    const touch = e.touches[0];
+    setPos({ x: touch.clientX - dragOffset.current.x, y: touch.clientY - dragOffset.current.y });
+  };
+
+  const handleTouchEnd = () => {
+    setDragging(false);
+    if (hasDragged.current) {
+      const snapX = pos.x + 28 < window.innerWidth / 2 ? 16 : window.innerWidth - 80;
+      const snapY = Math.max(80, Math.min(pos.y, window.innerHeight - 140));
+      setPos({ x: snapX, y: snapY });
+    } else {
+      setShowPopup(p => !p);
+    }
+    hasDragged.current = false;
+  };
+
+  if (completed === total || pos.x === null) return null;
 
   const radius = 20;
   const circumference = 2 * Math.PI * radius;
   const strokeDashoffset = circumference - (percentage / 100) * circumference;
+  const isRight = pos.x > window.innerWidth / 2;
 
   return (
-    <button onClick={onOpen} style={{ position: 'fixed', bottom: '24px', right: '24px', zIndex: 500, background: C.card, border: `1px solid ${C.border}`, borderRadius: '50%', width: '56px', height: '56px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', boxShadow: '0 4px 20px rgba(0,0,0,0.4)', padding: 0 }} title="Setup progress">
-      <svg width="56" height="56" viewBox="0 0 56 56">
-        <circle cx="28" cy="28" r={radius} fill="none" stroke={C.border} strokeWidth="3" />
-        <circle cx="28" cy="28" r={radius} fill="none" stroke="#4f46e5" strokeWidth="3" strokeDasharray={circumference} strokeDashoffset={strokeDashoffset} strokeLinecap="round" transform="rotate(-90 28 28)" style={{ transition: 'stroke-dashoffset 0.4s ease' }} />
-        <text x="28" y="28" textAnchor="middle" dominantBaseline="central" fill="white" fontSize="11" fontWeight="700">{completed}/{total}</text>
-      </svg>
-    </button>
+    <>
+      <button
+        ref={btnRef}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+        style={{ position: 'fixed', left: pos.x, top: pos.y, zIndex: 500, background: C.card, border: `1px solid ${C.border}`, borderRadius: '50%', width: '56px', height: '56px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', boxShadow: '0 4px 20px rgba(0,0,0,0.4)', padding: 0, touchAction: 'none', transition: dragging ? 'none' : 'left 0.25s ease, top 0.25s ease' }}
+        title="Setup progress"
+      >
+        <svg width="56" height="56" viewBox="0 0 56 56">
+          <circle cx="28" cy="28" r={radius} fill="none" stroke={C.border} strokeWidth="3" />
+          <circle cx="28" cy="28" r={radius} fill="none" stroke="#4f46e5" strokeWidth="3" strokeDasharray={circumference} strokeDashoffset={strokeDashoffset} strokeLinecap="round" transform="rotate(-90 28 28)" style={{ transition: 'stroke-dashoffset 0.4s ease' }} />
+          <text x="28" y="28" textAnchor="middle" dominantBaseline="central" fill="white" fontSize="11" fontWeight="700">{completed}/{total}</text>
+        </svg>
+      </button>
+
+      {showPopup && nextStep && (
+        <div
+          onClick={() => { setShowPopup(false); onGoSetup(); }}
+          style={{ position: 'fixed', left: isRight ? 'auto' : pos.x, right: isRight ? window.innerWidth - pos.x - 56 : 'auto', top: pos.y > window.innerHeight / 2 ? pos.y - 90 : pos.y + 64, zIndex: 501, background: C.card, border: `1px solid ${C.border}`, borderRadius: '14px', padding: '14px 16px', maxWidth: '220px', boxShadow: '0 8px 32px rgba(0,0,0,0.5)', cursor: 'pointer' }}
+        >
+          <p style={{ fontSize: '0.72rem', color: C.text, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '6px' }}>Next step</p>
+          <p style={{ fontSize: '0.85rem', fontWeight: 600, color: 'white' }}>{nextStep.label} →</p>
+        </div>
+      )}
+    </>
   );
 }
 
@@ -739,7 +798,7 @@ export default function Dashboard() {
     return (
       <div style={{ minHeight: '100vh', background: C.bg, color: 'white', fontFamily: 'system-ui, sans-serif' }}>
         {showChangePlan && <ChangePlanModal currentPlan={clientData?.plan} userId={user?.id} onClose={() => setShowChangePlan(false)} onSuccess={handlePlanChangeSuccess} />}
-        <SetupProgress plan={clientData?.plan} googleConnected={googleConnected} twilioNumber={clientData?.twilio_number} callsCount={calls.length} onOpen={() => setActivePage('setup')} />
+        <SetupProgress plan={clientData?.plan} googleConnected={googleConnected} twilioNumber={clientData?.twilio_number} callsCount={calls.length} onGoSetup={() => setActivePage('setup')} />
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px 20px', borderBottom: `1px solid ${C.border}`, background: C.sidebar, position: 'sticky', top: 0, zIndex: 100 }}>
           <a href="/" style={{ fontWeight: 700, fontSize: '1rem', color: 'white', textDecoration: 'none' }}>VoiceBot AI</a>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
@@ -762,7 +821,7 @@ export default function Dashboard() {
   return (
     <div style={{ minHeight: '100vh', background: C.bg, color: 'white', fontFamily: 'system-ui, sans-serif', display: 'flex' }}>
       {showChangePlan && <ChangePlanModal currentPlan={clientData?.plan} userId={user?.id} onClose={() => setShowChangePlan(false)} onSuccess={handlePlanChangeSuccess} />}
-      <SetupProgress plan={clientData?.plan} googleConnected={googleConnected} twilioNumber={clientData?.twilio_number} callsCount={calls.length} onOpen={() => setActivePage('setup')} />
+      <SetupProgress plan={clientData?.plan} googleConnected={googleConnected} twilioNumber={clientData?.twilio_number} callsCount={calls.length} onGoSetup={() => setActivePage('setup')} />
       <aside style={{ width: '220px', minHeight: '100vh', background: C.sidebar, borderRight: `1px solid ${C.border}`, display: 'flex', flexDirection: 'column', padding: '24px 12px', position: 'fixed', top: 0, left: 0 }}>
         <div style={{ padding: '0 12px', marginBottom: '32px' }}>
           <a href="/" style={{ fontWeight: 700, fontSize: '1rem', letterSpacing: '-0.02em', color: 'white', textDecoration: 'none' }}>VoiceBot AI</a>
