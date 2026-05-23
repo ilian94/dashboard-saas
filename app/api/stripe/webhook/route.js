@@ -29,14 +29,12 @@ const EXTRA_MINUTES_MAP = {
 
 const ADDITIONAL_NUMBER_PRICE_ID = 'price_1Ta0HrFbv1QHIqBx45XsDToe';
 
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-// EMAIL TEMPLATES
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+const LOGO = `<img src="https://dashboard-saas-nine.vercel.app/favicon.png" width="28" height="28" style="border-radius:8px;vertical-align:middle;display:inline-block;" alt="VoiceBot AI">`;
 
 function emailActivation({ plan, twilioNumber, businessName }) {
   const planMinutes = plan === 'starter' ? '500' : plan === 'scale' ? '2,000' : '6,000';
   const planLabel = plan.charAt(0).toUpperCase() + plan.slice(1);
-  const number = twilioNumber || 'Being assigned â€” check your dashboard';
+  const number = twilioNumber || 'Being assigned — check your dashboard';
   return `<!DOCTYPE html>
 <html lang="en">
 <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
@@ -47,15 +45,15 @@ function emailActivation({ plan, twilioNumber, businessName }) {
 
       <tr><td style="padding-bottom:32px;">
         <table width="100%" cellpadding="0" cellspacing="0"><tr>
-          <td><span style="display:inline-block;width:28px;height:28px;background:linear-gradient(135deg,#6366f1,#8b5cf6);border-radius:8px;text-align:center;line-height:28px;font-size:14px;">ðŸ¤–</span>&nbsp;<span style="color:#e2e8f0;font-size:14px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;vertical-align:middle;">VoiceBot AI</span></td>
+          <td>${LOGO}&nbsp;<span style="color:#e2e8f0;font-size:14px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;vertical-align:middle;">VoiceBot AI</span></td>
           <td align="right"><span style="background:rgba(99,102,241,0.15);border:1px solid rgba(99,102,241,0.3);color:#818cf8;font-size:11px;font-weight:700;padding:4px 12px;border-radius:20px;text-transform:uppercase;letter-spacing:0.08em;">${planLabel} Plan</span></td>
         </tr></table>
       </td></tr>
 
       <tr><td style="background:linear-gradient(135deg,#0f1420 0%,#13192b 100%);border:1px solid #1e2a3a;border-radius:16px;padding:40px 36px 36px;">
         <p style="margin:0 0 20px;color:#6366f1;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;">Welcome aboard</p>
-        <h1 style="margin:0 0 12px;color:#f8fafc;font-size:32px;font-weight:800;letter-spacing:-0.03em;line-height:1.1;">Your VoiceBot<br>is live âœ…</h1>
-        <p style="margin:0;color:#64748b;font-size:15px;line-height:1.6;">Hi ${businessName || 'there'} â€” your AI receptionist is now answering calls 24/7. Here's everything you need to get started.</p>
+        <h1 style="margin:0 0 12px;color:#f8fafc;font-size:32px;font-weight:800;letter-spacing:-0.03em;line-height:1.1;">Your VoiceBot<br>is live ✅</h1>
+        <p style="margin:0;color:#64748b;font-size:15px;line-height:1.6;">Hi ${businessName || 'there'} — your AI receptionist is now answering calls 24/7. Here's everything you need to get started.</p>
       </td></tr>
 
       <tr><td style="height:12px;"></td></tr>
@@ -84,7 +82,7 @@ function emailActivation({ plan, twilioNumber, businessName }) {
           <td width="36" style="vertical-align:top;padding-top:2px;"><div style="width:28px;height:28px;background:linear-gradient(135deg,#6366f1,#8b5cf6);border-radius:50%;text-align:center;line-height:28px;font-size:12px;font-weight:800;color:#fff;">1</div></td>
           <td style="padding-left:14px;vertical-align:top;">
             <p style="margin:0 0 4px;color:#f8fafc;font-size:14px;font-weight:700;">Connect Google Calendar</p>
-            <p style="margin:0;color:#64748b;font-size:13px;line-height:1.5;">So your VoiceBot books appointments automatically â€” no manual work.</p>
+            <p style="margin:0;color:#64748b;font-size:13px;line-height:1.5;">So your VoiceBot books appointments automatically — no manual work.</p>
           </td>
         </tr></table>
         <div style="height:1px;background:#1e2a3a;margin-bottom:20px;"></div>
@@ -92,7 +90,7 @@ function emailActivation({ plan, twilioNumber, businessName }) {
           <td width="36" style="vertical-align:top;padding-top:2px;"><div style="width:28px;height:28px;background:linear-gradient(135deg,#6366f1,#8b5cf6);border-radius:50%;text-align:center;line-height:28px;font-size:12px;font-weight:800;color:#fff;">2</div></td>
           <td style="padding-left:14px;vertical-align:top;">
             <p style="margin:0 0 4px;color:#f8fafc;font-size:14px;font-weight:700;">Forward your business number</p>
-            <p style="margin:0;color:#64748b;font-size:13px;line-height:1.5;">Redirect calls to <span style="color:#818cf8;font-family:'Courier New',monospace;">${number}</span> â€” your VoiceBot answers instantly.</p>
+            <p style="margin:0;color:#64748b;font-size:13px;line-height:1.5;">Redirect calls to <span style="color:#818cf8;font-family:'Courier New',monospace;">${number}</span> — your VoiceBot answers instantly.</p>
           </td>
         </tr></table>
         <div style="height:1px;background:#1e2a3a;margin-bottom:20px;"></div>
@@ -106,10 +104,10 @@ function emailActivation({ plan, twilioNumber, businessName }) {
       </td></tr>
 
       <tr><td style="height:24px;"></td></tr>
-      <tr><td align="center"><a href="https://dashboard-saas-nine.vercel.app/dashboard" style="display:inline-block;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;text-decoration:none;padding:16px 36px;border-radius:10px;font-weight:800;font-size:15px;">Open Dashboard â†’</a></td></tr>
+      <tr><td align="center"><a href="https://dashboard-saas-nine.vercel.app/dashboard" style="display:inline-block;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;text-decoration:none;padding:16px 36px;border-radius:10px;font-weight:800;font-size:15px;">Open Dashboard →</a></td></tr>
 
       <tr><td style="padding-top:32px;border-top:1px solid #1e2a3a;margin-top:32px;">
-        <p style="margin:24px 0 4px;color:#334155;font-size:12px;text-align:center;">VoiceBot AI â€” Never miss a client call again.</p>
+        <p style="margin:24px 0 4px;color:#334155;font-size:12px;text-align:center;">VoiceBot AI — Never miss a client call again.</p>
         <p style="margin:0;color:#1e293b;font-size:12px;text-align:center;">Questions? Reply to this email.</p>
       </td></tr>
 
@@ -130,14 +128,14 @@ function emailExtraMinutes({ extraMinutes, currentExtra, businessName }) {
     <table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;">
 
       <tr><td style="padding-bottom:32px;">
-        <span style="display:inline-block;width:28px;height:28px;background:linear-gradient(135deg,#6366f1,#8b5cf6);border-radius:8px;text-align:center;line-height:28px;font-size:14px;">ðŸ¤–</span>&nbsp;<span style="color:#e2e8f0;font-size:14px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;vertical-align:middle;">VoiceBot AI</span>
+        ${LOGO}&nbsp;<span style="color:#e2e8f0;font-size:14px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;vertical-align:middle;">VoiceBot AI</span>
       </td></tr>
 
       <tr><td style="background:linear-gradient(135deg,#0a1a12 0%,#0f2018 100%);border:1px solid #1a3a28;border-radius:16px;padding:40px 36px 36px;">
         <p style="margin:0 0 16px;color:#4ade80;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;">Minutes added</p>
         <h1 style="margin:0 0 4px;color:#f8fafc;font-size:56px;font-weight:900;letter-spacing:-0.04em;line-height:1;">+${extraMinutes}</h1>
         <p style="margin:0 0 20px;color:#4ade80;font-size:20px;font-weight:700;">minutes</p>
-        <p style="margin:0;color:#64748b;font-size:15px;line-height:1.6;">Hi ${businessName || 'there'} â€” your extra minutes are ready to use right now.</p>
+        <p style="margin:0;color:#64748b;font-size:15px;line-height:1.6;">Hi ${businessName || 'there'} — your extra minutes are ready to use right now.</p>
       </td></tr>
 
       <tr><td style="height:12px;"></td></tr>
@@ -150,16 +148,16 @@ function emailExtraMinutes({ extraMinutes, currentExtra, businessName }) {
             <p style="margin:6px 0 0;color:#64748b;font-size:13px;">In addition to your monthly plan minutes</p>
           </td>
           <td align="right" style="vertical-align:middle;">
-            <div style="width:56px;height:56px;background:rgba(74,222,128,0.1);border:1px solid rgba(74,222,128,0.25);border-radius:50%;text-align:center;line-height:56px;font-size:24px;">âš¡</div>
+            <div style="width:56px;height:56px;background:rgba(74,222,128,0.1);border:1px solid rgba(74,222,128,0.25);border-radius:50%;text-align:center;line-height:56px;font-size:24px;">⚡</div>
           </td>
         </tr></table>
       </td></tr>
 
       <tr><td style="height:24px;"></td></tr>
-      <tr><td align="center"><a href="https://dashboard-saas-nine.vercel.app/dashboard" style="display:inline-block;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;text-decoration:none;padding:16px 36px;border-radius:10px;font-weight:800;font-size:15px;">Open Dashboard â†’</a></td></tr>
+      <tr><td align="center"><a href="https://dashboard-saas-nine.vercel.app/dashboard" style="display:inline-block;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;text-decoration:none;padding:16px 36px;border-radius:10px;font-weight:800;font-size:15px;">Open Dashboard →</a></td></tr>
 
       <tr><td style="padding-top:32px;">
-        <p style="margin:24px 0 4px;color:#334155;font-size:12px;text-align:center;">VoiceBot AI â€” Never miss a client call again.</p>
+        <p style="margin:24px 0 4px;color:#334155;font-size:12px;text-align:center;">VoiceBot AI — Never miss a client call again.</p>
         <p style="margin:0;color:#1e293b;font-size:12px;text-align:center;">Questions? Reply to this email.</p>
       </td></tr>
 
@@ -179,13 +177,13 @@ function emailAdditionalNumber({ newNumber, businessName }) {
     <table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;">
 
       <tr><td style="padding-bottom:32px;">
-        <span style="display:inline-block;width:28px;height:28px;background:linear-gradient(135deg,#6366f1,#8b5cf6);border-radius:8px;text-align:center;line-height:28px;font-size:14px;">ðŸ¤–</span>&nbsp;<span style="color:#e2e8f0;font-size:14px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;vertical-align:middle;">VoiceBot AI</span>
+        ${LOGO}&nbsp;<span style="color:#e2e8f0;font-size:14px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;vertical-align:middle;">VoiceBot AI</span>
       </td></tr>
 
       <tr><td style="background:linear-gradient(135deg,#0f1420 0%,#13192b 100%);border:1px solid #1e2a3a;border-radius:16px;padding:40px 36px 36px;">
         <p style="margin:0 0 20px;color:#6366f1;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;">New number active</p>
-        <h1 style="margin:0 0 12px;color:#f8fafc;font-size:32px;font-weight:800;letter-spacing:-0.03em;line-height:1.1;">Additional number<br>ready âœ…</h1>
-        <p style="margin:0;color:#64748b;font-size:15px;line-height:1.6;">Hi ${businessName || 'there'} â€” your new VoiceBot line is active and ready to take calls.</p>
+        <h1 style="margin:0 0 12px;color:#f8fafc;font-size:32px;font-weight:800;letter-spacing:-0.03em;line-height:1.1;">Additional number<br>ready ✅</h1>
+        <p style="margin:0;color:#64748b;font-size:15px;line-height:1.6;">Hi ${businessName || 'there'} — your new VoiceBot line is active and ready to take calls.</p>
       </td></tr>
 
       <tr><td style="height:12px;"></td></tr>
@@ -193,21 +191,21 @@ function emailAdditionalNumber({ newNumber, businessName }) {
       <tr><td style="background:#0f1420;border:1px solid #1e2a3a;border-radius:12px;padding:32px;text-align:center;">
         <p style="margin:0 0 12px;color:#475569;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;">Your new number</p>
         <p style="margin:0 0 12px;color:#f8fafc;font-size:36px;font-weight:800;font-family:'Courier New',monospace;letter-spacing:0.04em;">${newNumber}</p>
-        <span style="display:inline-block;background:rgba(74,222,128,0.1);border:1px solid rgba(74,222,128,0.25);color:#4ade80;font-size:11px;font-weight:700;padding:4px 14px;border-radius:20px;letter-spacing:0.06em;text-transform:uppercase;">â— Active</span>
+        <span style="display:inline-block;background:rgba(74,222,128,0.1);border:1px solid rgba(74,222,128,0.25);color:#4ade80;font-size:11px;font-weight:700;padding:4px 14px;border-radius:20px;letter-spacing:0.06em;text-transform:uppercase;">● Active</span>
       </td></tr>
 
       <tr><td style="height:12px;"></td></tr>
 
       <tr><td style="background:#0f1420;border:1px solid #1e2a3a;border-radius:12px;padding:28px 32px;">
         <p style="margin:0 0 12px;color:#f8fafc;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;">Next step</p>
-        <p style="margin:0;color:#64748b;font-size:14px;line-height:1.7;">Forward any of your business lines to <span style="color:#818cf8;font-family:'Courier New',monospace;">${newNumber}</span> â€” your VoiceBot will answer automatically, just like your main number.</p>
+        <p style="margin:0;color:#64748b;font-size:14px;line-height:1.7;">Forward any of your business lines to <span style="color:#818cf8;font-family:'Courier New',monospace;">${newNumber}</span> — your VoiceBot will answer automatically, just like your main number.</p>
       </td></tr>
 
       <tr><td style="height:24px;"></td></tr>
-      <tr><td align="center"><a href="https://dashboard-saas-nine.vercel.app/dashboard" style="display:inline-block;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;text-decoration:none;padding:16px 36px;border-radius:10px;font-weight:800;font-size:15px;">View all my numbers â†’</a></td></tr>
+      <tr><td align="center"><a href="https://dashboard-saas-nine.vercel.app/dashboard" style="display:inline-block;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;text-decoration:none;padding:16px 36px;border-radius:10px;font-weight:800;font-size:15px;">View all my numbers →</a></td></tr>
 
       <tr><td style="padding-top:32px;">
-        <p style="margin:24px 0 4px;color:#334155;font-size:12px;text-align:center;">VoiceBot AI â€” Never miss a client call again.</p>
+        <p style="margin:24px 0 4px;color:#334155;font-size:12px;text-align:center;">VoiceBot AI — Never miss a client call again.</p>
         <p style="margin:0;color:#1e293b;font-size:12px;text-align:center;">Questions? Reply to this email.</p>
       </td></tr>
 
@@ -227,7 +225,7 @@ function emailCancellation() {
     <table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;">
 
       <tr><td style="padding-bottom:32px;">
-        <span style="display:inline-block;width:28px;height:28px;background:linear-gradient(135deg,#6366f1,#8b5cf6);border-radius:8px;text-align:center;line-height:28px;font-size:14px;">ðŸ¤–</span>&nbsp;<span style="color:#e2e8f0;font-size:14px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;vertical-align:middle;">VoiceBot AI</span>
+        ${LOGO}&nbsp;<span style="color:#e2e8f0;font-size:14px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;vertical-align:middle;">VoiceBot AI</span>
       </td></tr>
 
       <tr><td style="background:linear-gradient(135deg,#12100f 0%,#1a1412 100%);border:1px solid #2a2018;border-radius:16px;padding:40px 36px 36px;">
@@ -240,21 +238,21 @@ function emailCancellation() {
 
       <tr><td style="background:#0f1420;border:1px solid #1e2a3a;border-radius:12px;padding:28px 32px;">
         <p style="margin:0 0 16px;color:#94a3b8;font-size:14px;line-height:1.8;">Your AI receptionist is no longer active. Any calls forwarded to your VoiceBot number will no longer be answered automatically.</p>
-        <p style="margin:0;color:#64748b;font-size:14px;line-height:1.8;">If this was a mistake â€” or if you ever want to come back â€” reactivating takes less than 5 minutes. Everything is ready for you.</p>
+        <p style="margin:0;color:#64748b;font-size:14px;line-height:1.8;">If this was a mistake — or if you ever want to come back — reactivating takes less than 5 minutes. Everything is ready for you.</p>
       </td></tr>
 
       <tr><td style="height:24px;"></td></tr>
-      <tr><td align="center"><a href="https://dashboard-saas-nine.vercel.app/pricing" style="display:inline-block;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;text-decoration:none;padding:16px 36px;border-radius:10px;font-weight:800;font-size:15px;">Resubscribe â†’</a></td></tr>
+      <tr><td align="center"><a href="https://dashboard-saas-nine.vercel.app/pricing" style="display:inline-block;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;text-decoration:none;padding:16px 36px;border-radius:10px;font-weight:800;font-size:15px;">Resubscribe →</a></td></tr>
 
       <tr><td style="height:24px;"></td></tr>
 
       <tr><td style="background:#0a0d14;border:1px solid #141b26;border-radius:10px;padding:20px 24px;text-align:center;">
         <p style="margin:0 0 4px;color:#475569;font-size:13px;">Still have questions about why you cancelled?</p>
-        <p style="margin:0;color:#334155;font-size:12px;">Reply to this email â€” we read every message.</p>
+        <p style="margin:0;color:#334155;font-size:12px;">Reply to this email — we read every message.</p>
       </td></tr>
 
       <tr><td style="padding-top:32px;">
-        <p style="margin:24px 0 4px;color:#334155;font-size:12px;text-align:center;">VoiceBot AI â€” Never miss a client call again.</p>
+        <p style="margin:24px 0 4px;color:#334155;font-size:12px;text-align:center;">VoiceBot AI — Never miss a client call again.</p>
         <p style="margin:0;color:#1e293b;font-size:12px;text-align:center;">You can unsubscribe from transactional emails by replying to this message.</p>
       </td></tr>
 
@@ -263,10 +261,6 @@ function emailCancellation() {
 </table>
 </body></html>`;
 }
-
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-// TWILIO HELPERS
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 async function buyTwilioNumber() {
   try {
@@ -299,10 +293,6 @@ async function releaseTwilioNumber(phoneNumber) {
   }
 }
 
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-// WEBHOOK HANDLER
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-
 export async function POST(req) {
   const body = await req.text();
   const sig = req.headers.get('stripe-signature');
@@ -314,13 +304,11 @@ export async function POST(req) {
     return NextResponse.json({ error: `Webhook Error: ${err.message}` }, { status: 400 });
   }
 
-  // â”€â”€ checkout.session.completed â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   if (event.type === 'checkout.session.completed') {
     const session = event.data.object;
     const userId = session.metadata.userId;
     const mode = session.mode;
 
-    // PAYMENT â€” extra minutes
     if (mode === 'payment') {
       const lineItems = await stripe.checkout.sessions.listLineItems(session.id);
       const priceId = lineItems.data[0]?.price?.id;
@@ -343,23 +331,21 @@ export async function POST(req) {
           await resend.emails.send({
             from: 'VoiceBot AI <onboarding@resend.dev>',
             to: client.email,
-            subject: `+${extraMinutes} minutes added to your account âœ…`,
+            subject: `+${extraMinutes} minutes added to your account ✅`,
             html: emailExtraMinutes({ extraMinutes, currentExtra, businessName: client.business_name }),
           });
         }
-        console.log(`âœ… ${extraMinutes} extra minutes added for ${userId}`);
+        console.log(`✅ ${extraMinutes} extra minutes added for ${userId}`);
       }
       return NextResponse.json({ received: true });
     }
 
-    // SUBSCRIPTION
     if (mode === 'subscription') {
       const subscription = await stripe.subscriptions.retrieve(session.subscription, {
         expand: ['items.data.price'],
       });
       const activePriceId = subscription.items.data[0].price.id;
 
-      // NumÃ©ro supplÃ©mentaire
       if (activePriceId === ADDITIONAL_NUMBER_PRICE_ID) {
         const { data: client } = await supabase
           .from('clients')
@@ -379,16 +365,15 @@ export async function POST(req) {
             await resend.emails.send({
               from: 'VoiceBot AI <onboarding@resend.dev>',
               to: client.email,
-              subject: 'Your new VoiceBot number is active âœ…',
+              subject: 'Your new VoiceBot number is active ✅',
               html: emailAdditionalNumber({ newNumber, businessName: client.business_name }),
             });
           }
-          console.log(`âœ… New number ${newNumber} added for ${userId}`);
+          console.log(`✅ New number ${newNumber} added for ${userId}`);
         }
         return NextResponse.json({ received: true });
       }
 
-      // Plan principal
       const plan = PLAN_MAP[activePriceId] || 'starter';
       const { data: client } = await supabase
         .from('clients')
@@ -415,15 +400,14 @@ export async function POST(req) {
         await resend.emails.send({
           from: 'VoiceBot AI <onboarding@resend.dev>',
           to: client.email,
-          subject: 'Your VoiceBot is now active âœ…',
+          subject: 'Your VoiceBot is now active ✅',
           html: emailActivation({ plan, twilioNumber, businessName: client.business_name }),
         });
       }
-      console.log(`âœ… Client ${userId} â€” plan: ${plan} â€” number: ${twilioNumber}`);
+      console.log(`✅ Client ${userId} — plan: ${plan} — number: ${twilioNumber}`);
     }
   }
 
-  // â”€â”€ customer.subscription.updated â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   if (event.type === 'customer.subscription.updated') {
     const subscription = event.data.object;
     const customerId = subscription.customer;
@@ -435,11 +419,10 @@ export async function POST(req) {
         .from('clients')
         .update({ plan: newPlan })
         .eq('stripe_customer_id', customerId);
-      console.log(`âœ… Plan updated to ${newPlan} for customer ${customerId}`);
+      console.log(`✅ Plan updated to ${newPlan} for customer ${customerId}`);
     }
   }
 
-  // â”€â”€ customer.subscription.deleted â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   if (event.type === 'customer.subscription.deleted') {
     const subscription = event.data.object;
     const customerId = subscription.customer;
@@ -451,7 +434,6 @@ export async function POST(req) {
       .eq('stripe_customer_id', customerId)
       .maybeSingle();
 
-    // Annulation numÃ©ro supplÃ©mentaire uniquement
     if (priceId === ADDITIONAL_NUMBER_PRICE_ID) {
       const numbers = client?.twilio_numbers || [];
       if (numbers.length > 0) {
@@ -465,7 +447,6 @@ export async function POST(req) {
       return NextResponse.json({ received: true });
     }
 
-    // Annulation plan principal â€” libÃ¨re tous les numÃ©ros
     if (client?.twilio_number) {
       await releaseTwilioNumber(client.twilio_number);
     }
