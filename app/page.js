@@ -50,7 +50,10 @@ export default function Home() {
   <span style={{ fontWeight: 700, fontSize: '1.1rem', letterSpacing: '-0.02em' }}>VoiceBot AI</span>
   <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
     {user ? (
-      <Link href="/dashboard" style={{ background: 'white', color: 'black', textDecoration: 'none', fontSize: '0.85rem', fontWeight: 600, padding: '8px 14px', borderRadius: '8px', whiteSpace: 'nowrap' }}>Dashboard →</Link>
+      <>
+        <Link href="/dashboard" style={{ background: 'white', color: 'black', textDecoration: 'none', fontSize: '0.85rem', fontWeight: 600, padding: '8px 14px', borderRadius: '8px', whiteSpace: 'nowrap' }}>Dashboard →</Link>
+        <button onClick={async () => { await supabase.auth.signOut(); window.location.href = '/'; }} style={{ background: 'transparent', color: C.text, border: `1px solid ${C.border}`, fontSize: '0.85rem', fontWeight: 600, padding: '8px 14px', borderRadius: '8px', cursor: 'pointer', whiteSpace: 'nowrap' }}>Sign out</button>
+      </>
     ) : (
       <>
         <Link href="/login" style={{ color: C.text, textDecoration: 'none', fontSize: '0.85rem', padding: '8px 10px', whiteSpace: 'nowrap' }}>Sign in</Link>
