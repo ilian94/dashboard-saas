@@ -38,7 +38,11 @@ function SuccessContent() {
             <img src="/favicon.png" width={32} height={32} style={{ borderRadius: 8 }} alt="VoiceBot AI" />
             <span style={{ color: '#e2e8f0', fontSize: 15, fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase' }}>VoiceBot AI</span>
           </div>
-          <div style={{ width: 72, height: 72, background: 'rgba(99,102,241,0.15)', border: '2px solid rgba(99,102,241,0.4)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px', fontSize: 32 }}>✅</div>
+          <div style={{ width: 72, height: 72, background: 'rgba(99,102,241,0.15)', border: '2px solid rgba(99,102,241,0.4)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px' }}>
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#818cf8" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="20 6 9 17 4 12" />
+            </svg>
+          </div>
           <h1 style={{ margin: '0 0 12px', color: '#f8fafc', fontSize: 32, fontWeight: 800, letterSpacing: '-0.03em', lineHeight: 1.1 }}>You're all set!</h1>
           <p style={{ margin: 0, color: '#64748b', fontSize: 16, lineHeight: 1.6 }}>Your VoiceBot is being activated. Check your email for setup instructions.</p>
         </div>
