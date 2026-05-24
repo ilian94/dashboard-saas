@@ -6,25 +6,43 @@ import Link from "next/link";
 const supabase = createClient();
 const C = { bg: '#0f1117', card: '#161b27', border: '#1e2433', input: '#0f1117', text: '#6b7280', label: '#9ca3af' };
 
+const GoogleIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 48 48">
+    <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+    <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+    <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+    <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+    <path fill="none" d="M0 0h48v48H0z"/>
+  </svg>
+);
+
 export default function Register() {
   const [form, setForm] = useState({ email: "", password: "", company: "" });
   const [loading, setLoading] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
   const [error, setError] = useState("");
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
+
+  const handleGoogle = async () => {
+    setGoogleLoading(true);
+    await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: { redirectTo: `${window.location.origin}/dashboard` },
+    });
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault(); setLoading(true); setError("");
     const { data, error: err } = await supabase.auth.signUp({ email: form.email, password: form.password });
     if (err) { setError(err.message); setLoading(false); return; }
     if (data.user) {
       await supabase.from("clients").insert([{ user_id: data.user.id, email: form.email, business_name: form.company }]);
-      
       await fetch('/api/email/welcome', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: form.email, businessName: form.company }),
       });
-
       window.location.href = "/dashboard";
     } else { setError("Check your email to confirm your account."); setLoading(false); }
   };
@@ -37,6 +55,20 @@ export default function Register() {
           <h1 style={{ fontSize: '1.6rem', fontWeight: 800, color: 'white', letterSpacing: '-0.03em', marginBottom: '6px' }}>Create your account</h1>
           <p style={{ fontSize: '0.875rem', color: C.text }}>Get started in minutes. No credit card required.</p>
         </div>
+
+        {/* Google Button */}
+        <button onClick={handleGoogle} disabled={googleLoading} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', padding: '13px', background: 'white', color: '#111', border: 'none', borderRadius: '10px', fontWeight: 700, fontSize: '0.95rem', cursor: 'pointer', width: '100%' }}>
+          <GoogleIcon />
+          {googleLoading ? 'Redirecting...' : 'Continue with Google'}
+        </button>
+
+        {/* Divider */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <div style={{ flex: 1, height: 1, background: C.border }} />
+          <span style={{ color: C.text, fontSize: '0.8rem' }}>or</span>
+          <div style={{ flex: 1, height: 1, background: C.border }} />
+        </div>
+
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
           {[
             { name: 'company', label: 'Company name', type: 'text', placeholder: 'Acme Inc.' },
@@ -50,10 +82,11 @@ export default function Register() {
             </div>
           ))}
           {error && <p style={{ fontSize: '0.85rem', color: '#f87171', background: 'rgba(248,113,113,0.08)', padding: '10px 14px', borderRadius: '8px', border: '1px solid rgba(248,113,113,0.2)' }}>{error}</p>}
-          <button type="submit" disabled={loading} style={{ padding: '13px', background: 'white', color: 'black', border: 'none', borderRadius: '10px', fontWeight: 700, fontSize: '0.95rem', cursor: 'pointer', marginTop: '4px' }}>
+          <button type="submit" disabled={loading} style={{ padding: '13px', background: '#4f46e5', color: 'white', border: 'none', borderRadius: '10px', fontWeight: 700, fontSize: '0.95rem', cursor: 'pointer', marginTop: '4px' }}>
             {loading ? 'Creating account...' : 'Create account →'}
           </button>
         </form>
+
         <p style={{ fontSize: '0.85rem', textAlign: 'center', color: C.text }}>
           Already have an account?{' '}<Link href="/login" style={{ color: 'white', textDecoration: 'none', fontWeight: 600 }}>Sign in</Link>
         </p>
