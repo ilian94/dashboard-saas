@@ -184,7 +184,7 @@ function SetupProgress({ plan, googleConnected, twilioNumber, callsCount, onGoSe
           style={{
             position: 'fixed',
             left: isRight ? 'auto' : pos.x,
-            right: isRight ? window.innerWidth - pos.x - 56 : 'auto',
+            right: isRight ? window.innerWidth - pos.x + 12 : 'auto',
             top: popupAbove ? pos.y - 210 : pos.y + 64,
             zIndex: 501, background: C.card, border: `1px solid ${C.border}`,
             borderRadius: '16px', padding: '16px 18px', width: '240px',
