@@ -890,11 +890,15 @@ export default function Dashboard() {
               <p style={{ fontSize: '0.75rem', color: C.text, textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600, marginBottom: '4px' }}>Extra minutes</p>
               <p style={{ fontSize: '0.82rem', color: C.text, marginBottom: '16px' }}>One-time purchase, added immediately to your account.</p>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                {[
-                  { label: '500 minutes', price: clientData?.plan === 'business' ? '$20' : '$25', priceId: 'price_1Ta0IaFbv1QHIqBxbXgAGIlo' },
-                  { label: '1,000 minutes', price: clientData?.plan === 'business' ? '$35' : '$45', priceId: 'price_1Ta0J4Fbv1QHIqBxJDgDXSxx' },
-                  { label: '2,000 minutes', price: clientData?.plan === 'business' ? '$60' : '$70', priceId: 'price_1Ta0JIFbv1QHIqBxWJHkMI3w' },
-                ].map(pack => (
+                {(clientData?.plan === 'business' ? [
+  { label: '500 minutes', price: '$20', priceId: 'price_1Ta0IaFbv1QHIqBxbXgAGIlo' },
+  { label: '1,000 minutes', price: '$35', priceId: 'price_1Ta0J4Fbv1QHIqBxJDgDXSxx' },
+  { label: '2,000 minutes', price: '$60', priceId: 'price_1Ta0JIFbv1QHIqBxWJHkMI3w' },
+] : [
+  { label: '500 minutes', price: '$25', priceId: 'price_1Tb2jVFbv1QHIqBxpPYETYKS' },
+  { label: '1,000 minutes', price: '$45', priceId: 'price_1Tb2lMFbv1QHIqBxTbNNU8FK' },
+  { label: '2,000 minutes', price: '$70', priceId: 'price_1Tb2lmFbv1QHIqBxjHqbrZbr' },
+]).map(pack => (
                   <div key={pack.priceId} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 16px', background: C.bg, border: `1px solid ${C.border}`, borderRadius: '10px' }}>
                     <div>
                       <p style={{ fontSize: '0.9rem', fontWeight: 600, marginBottom: '2px' }}>{pack.label}</p>
