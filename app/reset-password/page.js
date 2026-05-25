@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
 
 const supabase = createClient();
@@ -16,6 +16,18 @@ export default function ResetPassword() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
+  const [ready, setReady] = useState(false);
+
+  useEffect(() => {
+    // Supabase envoie le token via le hash de l'URL (#access_token=...)
+    // On écoute l'event PASSWORD_RECOVERY
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'PASSWORD_RECOVERY') {
+        setReady(true);
+      }
+    });
+    return () => subscription.unsubscribe();
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -27,7 +39,7 @@ export default function ResetPassword() {
     setLoading(false);
     if (err) { setError(err.message); return; }
     setSuccess(true);
-    setTimeout(() => { window.location.href = "/dashboard"; }, 2000);
+    setTimeout(() => { window.location.href = "/login"; }, 2000);
   };
 
   return (
@@ -41,7 +53,12 @@ export default function ResetPassword() {
         {success ? (
           <div style={{ background: 'rgba(74,222,128,0.08)', border: '1px solid rgba(74,222,128,0.2)', borderRadius: '10px', padding: '16px' }}>
             <p style={{ color: '#4ade80', fontSize: '0.9rem', fontWeight: 600, marginBottom: '4px' }}>Password updated ✓</p>
-            <p style={{ color: C.text, fontSize: '0.85rem' }}>Redirecting to dashboard...</p>
+            <p style={{ color: C.text, fontSize: '0.85rem' }}>Redirecting to login...</p>
+          </div>
+        ) : !ready ? (
+          <div style={{ background: 'rgba(251,191,36,0.08)', border: '1px solid rgba(251,191,36,0.2)', borderRadius: '10px', padding: '16px' }}>
+            <p style={{ color: '#fbbf24', fontSize: '0.9rem', fontWeight: 600, marginBottom: '4px' }}>Invalid or expired link</p>
+            <p style={{ color: C.text, fontSize: '0.85rem' }}>Please request a new password reset link.</p>
           </div>
         ) : (
           <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
