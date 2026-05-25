@@ -19,18 +19,28 @@ export default function ResetPassword() {
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    const exchangeCode = async () => {
-      const params = new URLSearchParams(window.location.search);
-      const code = params.get('code');
-      if (code) {
-        const { error } = await supabase.auth.exchangeCodeForSession(code);
+    const params = new URLSearchParams(window.location.search);
+    const code = params.get('code');
+    const token = params.get('token');
+    const type = params.get('type');
+
+    if (code) {
+      supabase.auth.exchangeCodeForSession(code).then(({ error }) => {
         if (!error) setReady(true);
-        else setError('Invalid or expired link. Please request a new one.');
-      } else {
-        setError('Invalid or expired link. Please request a new one.');
-      }
-    };
-    exchangeCode();
+        else setError('Invalid or expired link.');
+      });
+    } else if (token && type === 'recovery') {
+      supabase.auth.verifyOtp({ token, type: 'recovery', email: params.get('email') || '' }).then(({ error }) => {
+        if (!error) setReady(true);
+        else setError('Invalid or expired link.');
+      });
+    } else {
+      const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
+        if (event === 'PASSWORD_RECOVERY') setReady(true);
+      });
+      setTimeout(() => setError('Invalid or expired link.'), 3000);
+      return () => subscription.unsubscribe();
+    }
   }, []);
 
   const handleSubmit = async (e) => {
