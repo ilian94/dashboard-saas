@@ -21,16 +21,30 @@ export default function ResetPassword() {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const code = params.get('code');
-    console.log('Code:', code);
 
     if (code) {
       supabase.auth.exchangeCodeForSession(code).then(({ data, error }) => {
-        console.log('Exchange result:', data, error);
-        if (!error) setReady(true);
-        else setError('Error: ' + error.message);
+        if (!error) {
+          setReady(true);
+        } else {
+          const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+            if (event === 'PASSWORD_RECOVERY' || (event === 'SIGNED_IN' && session)) {
+              setReady(true);
+              subscription.unsubscribe();
+            }
+          });
+          setTimeout(() => setError('Invalid or expired link.'), 5000);
+        }
       });
     } else {
-      setError('No code found in URL.');
+      const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
+        if (event === 'PASSWORD_RECOVERY') {
+          setReady(true);
+          subscription.unsubscribe();
+        }
+      });
+      setTimeout(() => setError('Invalid or expired link.'), 5000);
+      return () => subscription.unsubscribe();
     }
   }, []);
 
