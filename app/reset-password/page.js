@@ -19,16 +19,13 @@ export default function ResetPassword() {
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === 'PASSWORD_RECOVERY') {
-        setReady(true);
-      }
-    });
-    setTimeout(() => {
-      if (!ready) setError('Invalid or expired link.');
-    }, 5000);
-    return () => subscription.unsubscribe();
-  }, []);
+  const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+    if (event === 'PASSWORD_RECOVERY') {
+      setReady(true);
+    }
+  });
+  return () => subscription.unsubscribe();
+}, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
