@@ -7,7 +7,7 @@ export async function POST(req) {
   const { email, businessName } = await req.json();
 
   await resend.emails.send({
-    from: 'VoiceBot AI <onboarding@resend.dev>',
+    from: 'VoiceBot AI <hello@voicebotai.us>',
     to: email,
     subject: 'Welcome to VoiceBot AI',
     html: `
@@ -23,7 +23,7 @@ export async function POST(req) {
             <li>Forward your business number to VoiceBot</li>
           </ol>
         </div>
-        <a href="https://dashboard-saas-nine.vercel.app/pricing" style="display: inline-block; background: #4f46e5; color: white; text-decoration: none; padding: 12px 24px; border-radius: 8px; font-weight: 600;">Choose a plan →</a>
+        <a href="https://www.voicebotai.us/pricing" style="display: inline-block; background: #4f46e5; color: white; text-decoration: none; padding: 12px 24px; border-radius: 8px; font-weight: 600;">Choose a plan →</a>
         <p style="color: #374151; font-size: 0.85rem; margin-top: 32px;">VoiceBot AI — Never miss a client call again.</p>
       </div>
     `,
