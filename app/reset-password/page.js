@@ -21,25 +21,16 @@ export default function ResetPassword() {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const code = params.get('code');
-    const token = params.get('token');
-    const type = params.get('type');
+    console.log('Code:', code);
 
     if (code) {
-      supabase.auth.exchangeCodeForSession(code).then(({ error }) => {
+      supabase.auth.exchangeCodeForSession(code).then(({ data, error }) => {
+        console.log('Exchange result:', data, error);
         if (!error) setReady(true);
-        else setError('Invalid or expired link.');
-      });
-    } else if (token && type === 'recovery') {
-      supabase.auth.verifyOtp({ token, type: 'recovery', email: params.get('email') || '' }).then(({ error }) => {
-        if (!error) setReady(true);
-        else setError('Invalid or expired link.');
+        else setError('Error: ' + error.message);
       });
     } else {
-      const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
-        if (event === 'PASSWORD_RECOVERY') setReady(true);
-      });
-      setTimeout(() => setError('Invalid or expired link.'), 3000);
-      return () => subscription.unsubscribe();
+      setError('No code found in URL.');
     }
   }, []);
 
@@ -71,8 +62,8 @@ export default function ResetPassword() {
           </div>
         ) : error && !ready ? (
           <div style={{ background: 'rgba(248,113,113,0.08)', border: '1px solid rgba(248,113,113,0.2)', borderRadius: '10px', padding: '16px' }}>
-            <p style={{ color: '#f87171', fontSize: '0.9rem', fontWeight: 600, marginBottom: '4px' }}>Invalid or expired link</p>
-            <p style={{ color: C.text, fontSize: '0.85rem' }}>Please request a new password reset link.</p>
+            <p style={{ color: '#f87171', fontSize: '0.9rem', fontWeight: 600, marginBottom: '4px' }}>Error</p>
+            <p style={{ color: C.text, fontSize: '0.85rem' }}>{error}</p>
           </div>
         ) : !ready ? (
           <p style={{ color: C.text, fontSize: '0.9rem' }}>Verifying...</p>
