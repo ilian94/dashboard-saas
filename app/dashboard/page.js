@@ -46,15 +46,35 @@ function SetupProgress({ plan, googleConnected, twilioNumber, callsCount, onGoSe
   const nextStep = steps.find(s => !s.done);
 
   const [showPopup, setShowPopup] = useState(false);
+  const [visible, setVisible] = useState(false);
   const [pos, setPos] = useState({ x: null, y: null });
   const [dragging, setDragging] = useState(false);
   const dragOffset = useRef({ x: 0, y: 0 });
   const btnRef = useRef(null);
   const hasDragged = useRef(false);
+  const leaveTimer = useRef(null);
+  const isHovered = useRef(false);
 
   useEffect(() => {
     setPos({ x: window.innerWidth - 80, y: window.innerHeight - 140 });
   }, []);
+
+  const openPopup = () => {
+    clearTimeout(leaveTimer.current);
+    isHovered.current = true;
+    setShowPopup(true);
+    setTimeout(() => setVisible(true), 10);
+  };
+
+  const closePopup = () => {
+    isHovered.current = false;
+    leaveTimer.current = setTimeout(() => {
+      if (!isHovered.current) {
+        setVisible(false);
+        setTimeout(() => setShowPopup(false), 250);
+      }
+    }, 300);
+  };
 
   const handleTouchStart = (e) => {
     const touch = e.touches[0];
@@ -78,7 +98,8 @@ function SetupProgress({ plan, googleConnected, twilioNumber, callsCount, onGoSe
       const snapY = Math.max(80, Math.min(pos.y, window.innerHeight - 140));
       setPos({ x: snapX, y: snapY });
     } else {
-      setShowPopup(p => !p);
+      if (showPopup) { setVisible(false); setTimeout(() => setShowPopup(false), 250); }
+      else openPopup();
     }
     hasDragged.current = false;
   };
@@ -89,36 +110,137 @@ function SetupProgress({ plan, googleConnected, twilioNumber, callsCount, onGoSe
   const circumference = 2 * Math.PI * radius;
   const strokeDashoffset = circumference - (percentage / 100) * circumference;
   const isRight = pos.x > window.innerWidth / 2;
+  const popupAbove = pos.y > window.innerHeight / 2;
 
   return (
     <>
+      <style>{`
+        @keyframes setupBtnAppear {
+          from { transform: rotate(-180deg) scale(0.4); opacity: 0; }
+          to { transform: rotate(0deg) scale(1); opacity: 1; }
+        }
+        .setup-float-btn {
+          animation: setupBtnAppear 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+        }
+        .setup-float-btn:hover {
+          transform: scale(1.1) !important;
+          box-shadow: 0 0 0 4px rgba(79,70,229,0.25), 0 8px 32px rgba(79,70,229,0.35) !important;
+        }
+        .setup-float-btn:active {
+          transform: scale(0.96) !important;
+        }
+        .setup-popup-card {
+          transition: opacity 0.22s ease, transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .setup-popup-card.hidden {
+          opacity: 0;
+          transform: translateY(8px) scale(0.95);
+          pointer-events: none;
+        }
+        .setup-popup-card.shown {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+        }
+      `}</style>
+
       <button
         ref={btnRef}
+        className="setup-float-btn"
         onTouchStart={handleTouchStart}
-onTouchMove={handleTouchMove}
-onTouchEnd={handleTouchEnd}
-onClick={() => setShowPopup(p => !p)}
-onMouseEnter={() => setShowPopup(true)}
-onMouseLeave={() => setShowPopup(false)}
-        style={{ position: 'fixed', left: pos.x, top: pos.y, zIndex: 500, background: C.card, border: `1px solid ${C.border}`, borderRadius: '50%', width: '56px', height: '56px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', boxShadow: '0 4px 20px rgba(0,0,0,0.4)', padding: 0, touchAction: 'none', transition: dragging ? 'none' : 'left 0.25s ease, top 0.25s ease' }}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+        onMouseEnter={openPopup}
+        onMouseLeave={closePopup}
+        onClick={() => {
+          if (showPopup) { setVisible(false); setTimeout(() => setShowPopup(false), 250); }
+          else openPopup();
+        }}
+        style={{
+          position: 'fixed', left: pos.x, top: pos.y, zIndex: 500,
+          background: C.card, border: `1px solid ${C.border}`,
+          borderRadius: '50%', width: '56px', height: '56px',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          cursor: 'pointer', padding: 0, touchAction: 'none',
+          transition: dragging ? 'none' : 'left 0.25s ease, top 0.25s ease, transform 0.18s ease, box-shadow 0.18s ease',
+          boxShadow: '0 4px 20px rgba(0,0,0,0.4)',
+        }}
         title="Setup progress"
       >
         <svg width="56" height="56" viewBox="0 0 56 56">
           <circle cx="28" cy="28" r={radius} fill="none" stroke={C.border} strokeWidth="3" />
-          <circle cx="28" cy="28" r={radius} fill="none" stroke="#4f46e5" strokeWidth="3" strokeDasharray={circumference} strokeDashoffset={strokeDashoffset} strokeLinecap="round" transform="rotate(-90 28 28)" style={{ transition: 'stroke-dashoffset 0.4s ease' }} />
+          <circle cx="28" cy="28" r={radius} fill="none" stroke="#4f46e5" strokeWidth="3"
+            strokeDasharray={circumference} strokeDashoffset={strokeDashoffset}
+            strokeLinecap="round" transform="rotate(-90 28 28)"
+            style={{ transition: 'stroke-dashoffset 0.4s ease' }} />
           <text x="28" y="28" textAnchor="middle" dominantBaseline="central" fill="white" fontSize="11" fontWeight="700">{completed}/{total}</text>
         </svg>
       </button>
 
       {showPopup && nextStep && (
         <div
-          onClick={() => { setShowPopup(false); onGoSetup(); }}
-          style={{ position: 'fixed', left: isRight ? 'auto' : pos.x, right: isRight ? window.innerWidth - pos.x - 56 : 'auto', top: pos.y > window.innerHeight / 2 ? pos.y - 90 : pos.y + 64, zIndex: 501, background: C.card, border: `1px solid ${C.border}`, borderRadius: '14px', padding: '14px 16px', maxWidth: '220px', boxShadow: '0 8px 32px rgba(0,0,0,0.5)', cursor: 'pointer' }}
-          onMouseEnter={() => setShowPopup(true)}
-onMouseLeave={() => setShowPopup(false)}
+          className={`setup-popup-card ${visible ? 'shown' : 'hidden'}`}
+          onMouseEnter={openPopup}
+          onMouseLeave={closePopup}
+          style={{
+            position: 'fixed',
+            left: isRight ? 'auto' : pos.x,
+            right: isRight ? window.innerWidth - pos.x - 56 : 'auto',
+            top: popupAbove ? pos.y - 210 : pos.y + 64,
+            zIndex: 501, background: C.card, border: `1px solid ${C.border}`,
+            borderRadius: '16px', padding: '16px 18px', width: '240px',
+            boxShadow: '0 12px 40px rgba(0,0,0,0.6)', cursor: 'default',
+          }}
         >
-          <p style={{ fontSize: '0.72rem', color: C.text, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '6px' }}>Next step</p>
-          <p style={{ fontSize: '0.85rem', fontWeight: 600, color: 'white' }}>{nextStep.label} →</p>
+          <div style={{ marginBottom: '12px' }}>
+            <p style={{ fontSize: '0.68rem', color: C.text, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '6px' }}>
+              Setup progress
+            </p>
+            <div style={{ height: '3px', background: C.border, borderRadius: '100px', overflow: 'hidden' }}>
+              <div style={{ height: '100%', width: `${percentage}%`, background: 'linear-gradient(90deg, #4f46e5, #818cf8)', borderRadius: '100px', transition: 'width 0.4s ease' }} />
+            </div>
+          </div>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', marginBottom: '12px' }}>
+            {steps.map((s, i) => (
+              <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <div style={{
+                  width: '16px', height: '16px', borderRadius: '50%', flexShrink: 0,
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  background: s.done ? 'rgba(74,222,128,0.12)' : C.bg,
+                  border: `1px solid ${s.done ? 'rgba(74,222,128,0.35)' : C.border}`,
+                }}>
+                  {s.done
+                    ? <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="#4ade80" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                    : <span style={{ width: '4px', height: '4px', borderRadius: '50%', background: C.border, display: 'block' }} />
+                  }
+                </div>
+                <span style={{
+                  fontSize: '0.78rem',
+                  color: s.done ? '#6b7280' : 'white',
+                  fontWeight: s.done ? 400 : 500,
+                  textDecoration: s.done ? 'line-through' : 'none',
+                }}>
+                  {s.label}
+                </span>
+              </div>
+            ))}
+          </div>
+
+          <div
+            onClick={() => { setVisible(false); setTimeout(() => setShowPopup(false), 250); onGoSetup(); }}
+            style={{
+              padding: '10px 14px',
+              background: 'rgba(79,70,229,0.12)',
+              border: '1px solid rgba(79,70,229,0.25)',
+              borderRadius: '10px',
+              cursor: 'pointer',
+            }}
+            onMouseEnter={e => e.currentTarget.style.background = 'rgba(79,70,229,0.22)'}
+            onMouseLeave={e => e.currentTarget.style.background = 'rgba(79,70,229,0.12)'}
+          >
+            <p style={{ fontSize: '0.68rem', color: '#818cf8', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '2px' }}>Next step</p>
+            <p style={{ fontSize: '0.82rem', fontWeight: 700, color: 'white' }}>{nextStep.label} →</p>
+          </div>
         </div>
       )}
     </>
@@ -702,7 +824,6 @@ export default function Dashboard() {
             <h1 style={{ fontSize: isMobile ? '1.3rem' : '1.5rem', fontWeight: 800, letterSpacing: '-0.03em', marginBottom: '4px' }}>Billing</h1>
             <p style={{ fontSize: '0.85rem', color: C.text }}>Manage your subscription and add-ons.</p>
           </div>
-
           <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', padding: '20px' }}>
             {plan ? (
               <div style={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', alignItems: isMobile ? 'flex-start' : 'center', justifyContent: 'space-between', gap: '12px' }}>
@@ -728,7 +849,6 @@ export default function Dashboard() {
               </div>
             )}
           </div>
-
           {plan && (
             <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', padding: '20px' }}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
@@ -765,7 +885,6 @@ export default function Dashboard() {
               </div>
             </div>
           )}
-
           {plan && (
             <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', padding: '20px' }}>
               <p style={{ fontSize: '0.75rem', color: C.text, textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600, marginBottom: '4px' }}>Extra minutes</p>
