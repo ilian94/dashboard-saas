@@ -329,7 +329,7 @@ export async function POST(req) {
 
         if (client?.email) {
           await resend.emails.send({
-            from: 'VoiceBot AI <onboarding@resend.dev>',
+            from: 'VoiceBot AI <hello@voicebotai.us>',
             to: client.email,
             subject: `+${extraMinutes} minutes added to your account ✅`,
             html: emailExtraMinutes({ extraMinutes, currentExtra, businessName: client.business_name }),
@@ -363,7 +363,7 @@ export async function POST(req) {
 
           if (client?.email) {
             await resend.emails.send({
-              from: 'VoiceBot AI <onboarding@resend.dev>',
+              from: 'VoiceBot AI <hello@voicebotai.us>',
               to: client.email,
               subject: 'Your new VoiceBot number is active ✅',
               html: emailAdditionalNumber({ newNumber, businessName: client.business_name }),
@@ -398,7 +398,7 @@ export async function POST(req) {
 
       if (client?.email) {
         await resend.emails.send({
-          from: 'VoiceBot AI <onboarding@resend.dev>',
+          from: 'VoiceBot AI <hello@voicebotai.us>',
           to: client.email,
           subject: 'Your VoiceBot is now active ✅',
           html: emailActivation({ plan, twilioNumber, businessName: client.business_name }),
@@ -458,7 +458,7 @@ export async function POST(req) {
 
     if (client?.email) {
       await resend.emails.send({
-        from: 'VoiceBot AI <onboarding@resend.dev>',
+        from: 'VoiceBot AI <hello@voicebotai.us>',
         to: client.email,
         subject: 'Your VoiceBot subscription has been cancelled',
         html: emailCancellation(),
