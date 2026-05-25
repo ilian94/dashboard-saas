@@ -95,8 +95,11 @@ function SetupProgress({ plan, googleConnected, twilioNumber, callsCount, onGoSe
       <button
         ref={btnRef}
         onTouchStart={handleTouchStart}
-        onTouchMove={handleTouchMove}
-        onTouchEnd={handleTouchEnd}
+onTouchMove={handleTouchMove}
+onTouchEnd={handleTouchEnd}
+onClick={() => setShowPopup(p => !p)}
+onMouseEnter={() => setShowPopup(true)}
+onMouseLeave={() => setShowPopup(false)}
         style={{ position: 'fixed', left: pos.x, top: pos.y, zIndex: 500, background: C.card, border: `1px solid ${C.border}`, borderRadius: '50%', width: '56px', height: '56px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', boxShadow: '0 4px 20px rgba(0,0,0,0.4)', padding: 0, touchAction: 'none', transition: dragging ? 'none' : 'left 0.25s ease, top 0.25s ease' }}
         title="Setup progress"
       >
@@ -111,6 +114,8 @@ function SetupProgress({ plan, googleConnected, twilioNumber, callsCount, onGoSe
         <div
           onClick={() => { setShowPopup(false); onGoSetup(); }}
           style={{ position: 'fixed', left: isRight ? 'auto' : pos.x, right: isRight ? window.innerWidth - pos.x - 56 : 'auto', top: pos.y > window.innerHeight / 2 ? pos.y - 90 : pos.y + 64, zIndex: 501, background: C.card, border: `1px solid ${C.border}`, borderRadius: '14px', padding: '14px 16px', maxWidth: '220px', boxShadow: '0 8px 32px rgba(0,0,0,0.5)', cursor: 'pointer' }}
+          onMouseEnter={() => setShowPopup(true)}
+onMouseLeave={() => setShowPopup(false)}
         >
           <p style={{ fontSize: '0.72rem', color: C.text, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '6px' }}>Next step</p>
           <p style={{ fontSize: '0.85rem', fontWeight: 600, color: 'white' }}>{nextStep.label} →</p>
