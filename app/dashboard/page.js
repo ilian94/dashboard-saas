@@ -383,28 +383,49 @@ function OnboardingBanner({ plan, googleConnected, twilioNumber, onDismiss }) {
   );
 }
 
-function ScriptSettings({ clientPlan, userId }) {
-  const [script, setScript] = useState({ business_name: '', services: '', questions: '', tone: '' });
+function ScriptSettings({ clientPlan, userId, allNumbers }) {
+  const [selectedNumber, setSelectedNumber] = useState(allNumbers?.[0] || '');
+  const [scripts, setScripts] = useState({});
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+
+  const script = scripts[selectedNumber] || { business_name: '', services: '', questions: '', tone: '' };
 
   useEffect(() => {
     const loadScript = async () => {
       const { data } = await supabase.from('clients').select('bot_script').eq('user_id', userId).maybeSingle();
-      if (data?.bot_script) setScript({ business_name: '', services: '', questions: '', tone: '', ...data.bot_script });
+      if (data?.bot_script) {
+        const raw = data.bot_script;
+        if (raw.business_name !== undefined) {
+          const migrated = {};
+          (allNumbers || []).forEach(num => { migrated[num] = raw; });
+          setScripts(migrated);
+        } else {
+          setScripts(raw);
+        }
+      }
     };
-    loadScript();
-  }, [userId]);
+    if (userId && allNumbers?.length) loadScript();
+  }, [userId, allNumbers]);
 
   const handleSave = async () => {
     setSaving(true);
     const scriptToSave = clientPlan === 'scale'
       ? { business_name: script.business_name }
       : { business_name: script.business_name, services: script.services, questions: script.questions, tone: script.tone };
-    await supabase.from('clients').update({ bot_script: scriptToSave }).eq('user_id', userId);
+    const updatedScripts = { ...scripts, [selectedNumber]: scriptToSave };
+    await supabase.from('clients').update({ bot_script: updatedScripts }).eq('user_id', userId);
+    setScripts(updatedScripts);
     setSaving(false);
     setSaved(true);
     setTimeout(() => setSaved(false), 2000);
+  };
+
+  const setField = (field, value) => {
+    setScripts(prev => ({
+      ...prev,
+      [selectedNumber]: { ...(prev[selectedNumber] || {}), [field]: value }
+    }));
   };
 
   const inputStyle = { width: '100%', padding: '10px 14px', borderRadius: '10px', border: `1px solid ${C.border}`, background: C.bg, color: 'white', fontSize: '0.875rem', outline: 'none', boxSizing: 'border-box' };
@@ -435,28 +456,39 @@ function ScriptSettings({ clientPlan, userId }) {
         {clientPlan === 'scale' && <span style={{ fontSize: '0.7rem', padding: '3px 10px', borderRadius: '100px', border: `1px solid rgba(167,139,250,0.3)`, color: '#a78bfa', fontWeight: 600 }}>Scale</span>}
         {clientPlan === 'business' && <span style={{ fontSize: '0.7rem', padding: '3px 10px', borderRadius: '100px', border: `1px solid rgba(251,191,36,0.3)`, color: '#fbbf24', fontWeight: 600 }}>Business</span>}
       </div>
+
+      {allNumbers?.length > 1 && (
+        <div style={{ marginBottom: '20px' }}>
+          <label style={labelStyle}>Phone number</label>
+          <select value={selectedNumber} onChange={e => setSelectedNumber(e.target.value)}
+            style={{ ...inputStyle, cursor: 'pointer' }}>
+            {allNumbers.map(num => (
+              <option key={num} value={num}>{num}</option>
+            ))}
+          </select>
+          <p style={{ fontSize: '0.75rem', color: C.text, marginTop: '4px' }}>Each number can have its own script.</p>
+        </div>
+      )}
+
       <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
         <div>
           <label style={labelStyle}>Business name</label>
-          <input value={script.business_name} onChange={e => setScript({ ...script, business_name: e.target.value })} placeholder="e.g. Smith Dental Clinic" style={inputStyle} />
+          <input value={script.business_name || ''} onChange={e => setField('business_name', e.target.value)} placeholder="e.g. Smith Dental Clinic" style={inputStyle} />
           <p style={{ fontSize: '0.75rem', color: C.text, marginTop: '4px' }}>Used in the greeting: "Thank you for calling [business name]"</p>
         </div>
         {clientPlan === 'business' && (
           <>
             <div>
               <label style={labelStyle}>Services offered</label>
-              <input value={script.services} onChange={e => setScript({ ...script, services: e.target.value })} placeholder="e.g. dental cleanings, consultations, emergency appointments" style={inputStyle} />
-              <p style={{ fontSize: '0.75rem', color: C.text, marginTop: '4px' }}>What the bot can help callers with.</p>
+              <input value={script.services || ''} onChange={e => setField('services', e.target.value)} placeholder="e.g. dental cleanings, consultations, emergency appointments" style={inputStyle} />
             </div>
             <div>
               <label style={labelStyle}>Questions to ask callers</label>
-              <input value={script.questions} onChange={e => setScript({ ...script, questions: e.target.value })} placeholder="e.g. their name, preferred date, type of service needed" style={inputStyle} />
-              <p style={{ fontSize: '0.75rem', color: C.text, marginTop: '4px' }}>Information to collect before booking.</p>
+              <input value={script.questions || ''} onChange={e => setField('questions', e.target.value)} placeholder="e.g. their name, preferred date, type of service needed" style={inputStyle} />
             </div>
             <div>
               <label style={labelStyle}>Tone & personality</label>
-              <input value={script.tone} onChange={e => setScript({ ...script, tone: e.target.value })} placeholder="e.g. warm and professional, concise, friendly" style={inputStyle} />
-              <p style={{ fontSize: '0.75rem', color: C.text, marginTop: '4px' }}>How the bot should sound.</p>
+              <input value={script.tone || ''} onChange={e => setField('tone', e.target.value)} placeholder="e.g. warm and professional, concise, friendly" style={inputStyle} />
             </div>
           </>
         )}
@@ -860,7 +892,14 @@ export default function Dashboard() {
                   : <span style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '9px 16px', background: 'rgba(34,197,94,0.08)', border: '1px solid rgba(34,197,94,0.2)', borderRadius: '9px', color: '#4ade80', fontSize: '0.875rem', fontWeight: 600 }}><IconCheck /> Connected</span>
                 }
               </div>
-              <ScriptSettings clientPlan={clientData?.plan} userId={user?.id} />
+              <ScriptSettings 
+  clientPlan={clientData?.plan} 
+  userId={user?.id} 
+  allNumbers={[
+    ...(clientData?.twilio_number ? [clientData.twilio_number] : []),
+    ...(clientData?.twilio_numbers || [])
+  ]} 
+/>
               <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', padding: '20px' }}>
                 <p style={{ fontSize: '0.75rem', color: C.text, textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600, marginBottom: '16px' }}>Account</p>
                 <p style={{ fontSize: '0.875rem', color: C.label, marginBottom: '4px' }}>Email</p>
