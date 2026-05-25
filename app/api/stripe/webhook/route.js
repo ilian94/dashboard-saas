@@ -25,11 +25,14 @@ const EXTRA_MINUTES_MAP = {
   'price_1Ta0IaFbv1QHIqBxbXgAGIlo': 500,
   'price_1Ta0J4Fbv1QHIqBxJDgDXSxx': 1000,
   'price_1Ta0JIFbv1QHIqBxWJHkMI3w': 2000,
+  'price_1Tb2jVFbv1QHIqBxpPYETYKS': 500,
+  'price_1Tb2lMFbv1QHIqBxTbNNU8FK': 1000,
+  'price_1Tb2lmFbv1QHIqBxjHqbrZbr': 2000,
 };
 
 const ADDITIONAL_NUMBER_PRICE_ID = 'price_1Ta0HrFbv1QHIqBx45XsDToe';
 
-const LOGO = `<img src="https://dashboard-saas-nine.vercel.app/favicon.png" width="28" height="28" style="border-radius:8px;vertical-align:middle;display:inline-block;" alt="VoiceBot AI">`;
+const LOGO = `<img src="https://voicebotai.us/favicon.png" width="28" height="28" style="border-radius:8px;vertical-align:middle;display:inline-block;" alt="VoiceBot AI">`;
 
 function emailActivation({ plan, twilioNumber, businessName }) {
   const planMinutes = plan === 'starter' ? '500' : plan === 'scale' ? '2,000' : '6,000';
@@ -104,7 +107,7 @@ function emailActivation({ plan, twilioNumber, businessName }) {
       </td></tr>
 
       <tr><td style="height:24px;"></td></tr>
-      <tr><td align="center"><a href="https://dashboard-saas-nine.vercel.app/dashboard" style="display:inline-block;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;text-decoration:none;padding:16px 36px;border-radius:10px;font-weight:800;font-size:15px;">Open Dashboard →</a></td></tr>
+      <tr><td align="center"><a href="https://voicebotai.us/dashboard" style="display:inline-block;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;text-decoration:none;padding:16px 36px;border-radius:10px;font-weight:800;font-size:15px;">Open Dashboard →</a></td></tr>
 
       <tr><td style="padding-top:32px;border-top:1px solid #1e2a3a;margin-top:32px;">
         <p style="margin:24px 0 4px;color:#334155;font-size:12px;text-align:center;">VoiceBot AI — Never miss a client call again.</p>
@@ -154,7 +157,7 @@ function emailExtraMinutes({ extraMinutes, currentExtra, businessName }) {
       </td></tr>
 
       <tr><td style="height:24px;"></td></tr>
-      <tr><td align="center"><a href="https://dashboard-saas-nine.vercel.app/dashboard" style="display:inline-block;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;text-decoration:none;padding:16px 36px;border-radius:10px;font-weight:800;font-size:15px;">Open Dashboard →</a></td></tr>
+      <tr><td align="center"><a href="https://voicebotai.us/dashboard" style="display:inline-block;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;text-decoration:none;padding:16px 36px;border-radius:10px;font-weight:800;font-size:15px;">Open Dashboard →</a></td></tr>
 
       <tr><td style="padding-top:32px;">
         <p style="margin:24px 0 4px;color:#334155;font-size:12px;text-align:center;">VoiceBot AI — Never miss a client call again.</p>
@@ -202,7 +205,7 @@ function emailAdditionalNumber({ newNumber, businessName }) {
       </td></tr>
 
       <tr><td style="height:24px;"></td></tr>
-      <tr><td align="center"><a href="https://dashboard-saas-nine.vercel.app/dashboard" style="display:inline-block;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;text-decoration:none;padding:16px 36px;border-radius:10px;font-weight:800;font-size:15px;">View all my numbers →</a></td></tr>
+      <tr><td align="center"><a href="https://voicebotai.us/dashboard" style="display:inline-block;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;text-decoration:none;padding:16px 36px;border-radius:10px;font-weight:800;font-size:15px;">View all my numbers →</a></td></tr>
 
       <tr><td style="padding-top:32px;">
         <p style="margin:24px 0 4px;color:#334155;font-size:12px;text-align:center;">VoiceBot AI — Never miss a client call again.</p>
@@ -242,7 +245,7 @@ function emailCancellation() {
       </td></tr>
 
       <tr><td style="height:24px;"></td></tr>
-      <tr><td align="center"><a href="https://dashboard-saas-nine.vercel.app/pricing" style="display:inline-block;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;text-decoration:none;padding:16px 36px;border-radius:10px;font-weight:800;font-size:15px;">Resubscribe →</a></td></tr>
+      <tr><td align="center"><a href="https://voicebotai.us/pricing" style="display:inline-block;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;text-decoration:none;padding:16px 36px;border-radius:10px;font-weight:800;font-size:15px;">Resubscribe →</a></td></tr>
 
       <tr><td style="height:24px;"></td></tr>
 
