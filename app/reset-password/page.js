@@ -19,14 +19,18 @@ export default function ResetPassword() {
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    // Supabase envoie le token via le hash de l'URL (#access_token=...)
-    // On écoute l'event PASSWORD_RECOVERY
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === 'PASSWORD_RECOVERY') {
-        setReady(true);
+    const exchangeCode = async () => {
+      const params = new URLSearchParams(window.location.search);
+      const code = params.get('code');
+      if (code) {
+        const { error } = await supabase.auth.exchangeCodeForSession(code);
+        if (!error) setReady(true);
+        else setError('Invalid or expired link. Please request a new one.');
+      } else {
+        setError('Invalid or expired link. Please request a new one.');
       }
-    });
-    return () => subscription.unsubscribe();
+    };
+    exchangeCode();
   }, []);
 
   const handleSubmit = async (e) => {
@@ -55,11 +59,13 @@ export default function ResetPassword() {
             <p style={{ color: '#4ade80', fontSize: '0.9rem', fontWeight: 600, marginBottom: '4px' }}>Password updated ✓</p>
             <p style={{ color: C.text, fontSize: '0.85rem' }}>Redirecting to login...</p>
           </div>
-        ) : !ready ? (
-          <div style={{ background: 'rgba(251,191,36,0.08)', border: '1px solid rgba(251,191,36,0.2)', borderRadius: '10px', padding: '16px' }}>
-            <p style={{ color: '#fbbf24', fontSize: '0.9rem', fontWeight: 600, marginBottom: '4px' }}>Invalid or expired link</p>
+        ) : error && !ready ? (
+          <div style={{ background: 'rgba(248,113,113,0.08)', border: '1px solid rgba(248,113,113,0.2)', borderRadius: '10px', padding: '16px' }}>
+            <p style={{ color: '#f87171', fontSize: '0.9rem', fontWeight: 600, marginBottom: '4px' }}>Invalid or expired link</p>
             <p style={{ color: C.text, fontSize: '0.85rem' }}>Please request a new password reset link.</p>
           </div>
+        ) : !ready ? (
+          <p style={{ color: C.text, fontSize: '0.9rem' }}>Verifying...</p>
         ) : (
           <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
