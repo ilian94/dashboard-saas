@@ -606,6 +606,7 @@ export default function Dashboard() {
   const [isMobile, setIsMobile] = useState(false);
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [showCalendlyModal, setShowCalendlyModal] = useState(false);
+  const [showChangePlan, setShowChangePlan] = useState(false);
   const [selectedNumber, setSelectedNumber] = useState('all');
 const [showNumberDropdown, setShowNumberDropdown] = useState(false);
 
