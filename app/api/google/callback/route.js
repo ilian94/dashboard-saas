@@ -61,6 +61,7 @@ export async function GET(request) {
       email: matchedUser.email,
       google_refresh_token: tokens.refresh_token,
       google_connected: true,
+      calendar_type: 'google', // ✅
     }, { onConflict: "user_id" });
 
   if (upsertError) {
