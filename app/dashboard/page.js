@@ -411,8 +411,8 @@ function ScriptSettings({ clientPlan, userId, allNumbers }) {
   const handleSave = async () => {
     setSaving(true);
     const scriptToSave = clientPlan === 'scale'
-      ? { business_name: script.business_name }
-      : { business_name: script.business_name, services: script.services, questions: script.questions, tone: script.tone };
+  ? { business_name: script.business_name }
+  : { business_name: script.business_name, services: script.services, questions: script.questions, tone: script.tone };
     const updatedScripts = { ...scripts, [selectedNumber]: scriptToSave };
     await supabase.from('clients').update({ bot_script: updatedScripts }).eq('user_id', userId);
     setScripts(updatedScripts);
@@ -492,6 +492,37 @@ function ScriptSettings({ clientPlan, userId, allNumbers }) {
             </div>
           </>
         )}
+        <div style={{ borderTop: `1px solid ${C.border}`, paddingTop: '16px' }}>
+  <p style={{ fontSize: '0.78rem', fontWeight: 600, color: C.label, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '12px' }}>Bot capabilities</p>
+  <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+    {[
+      { key: 'allow_modify', label: 'Allow appointment modification', desc: 'Callers can ask to reschedule existing appointments' },
+      { key: 'allow_cancel', label: 'Allow appointment cancellation', desc: 'Callers can ask to cancel existing appointments' },
+    ].map(cap => (
+      <div key={cap.key} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 14px', background: C.bg, border: `1px solid ${C.border}`, borderRadius: '10px' }}>
+        <div>
+          <p style={{ fontSize: '0.85rem', fontWeight: 600, color: 'white', marginBottom: '2px' }}>{cap.label}</p>
+          <p style={{ fontSize: '0.75rem', color: C.text }}>{cap.desc}</p>
+        </div>
+        <button
+          onClick={() => setField(cap.key, script[cap.key] === false ? true : false)}
+          style={{
+            width: '40px', height: '22px', borderRadius: '100px', border: 'none', cursor: 'pointer', flexShrink: 0,
+            background: script[cap.key] === false ? C.border : '#4f46e5',
+            position: 'relative', transition: 'background 0.2s',
+          }}
+        >
+          <div style={{
+            width: '16px', height: '16px', borderRadius: '50%', background: 'white',
+            position: 'absolute', top: '3px',
+            left: script[cap.key] === false ? '3px' : '21px',
+            transition: 'left 0.2s',
+          }} />
+        </button>
+      </div>
+    ))}
+  </div>
+</div>
         <button onClick={handleSave} disabled={saving} style={{ padding: '10px 20px', background: saved ? 'rgba(34,197,94,0.12)' : 'white', color: saved ? '#4ade80' : 'black', border: saved ? '1px solid rgba(34,197,94,0.3)' : 'none', borderRadius: '10px', fontWeight: 700, fontSize: '0.875rem', cursor: 'pointer', alignSelf: 'flex-start', transition: 'all 0.2s' }}>
           {saving ? 'Saving...' : saved ? '✓ Saved' : 'Save changes'}
         </button>
