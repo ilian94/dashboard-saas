@@ -716,7 +716,7 @@ const totalDuration = filteredCalls.reduce((acc, c) => acc + (c.duration || 0), 
                       <p style={{ fontSize: '0.75rem', color: C.text, textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600, marginBottom: '6px', textAlign: isMobile ? 'left' : 'right' }}>Viewing stats for</p>
                       <button
                         onClick={(e) => { e.stopPropagation(); setShowNumberDropdown(!showNumberDropdown); }}
-                        style={{ display: 'flex', alignItems: 'center', gap: '8px', background: C.bg, border: `1px solid ${C.border}`, borderRadius: '10px', padding: '8px 14px', cursor: 'pointer', color: 'white', fontFamily: 'monospace', fontSize: '0.9rem', fontWeight: 600 }}
+                        stylestyle={{ display: 'flex', alignItems: 'center', gap: '6px', background: 'transparent', border: 'none', borderRadius: '6px', padding: '4px 0', cursor: 'pointer', color: C.text, fontFamily: 'monospace', fontSize: '0.85rem', fontWeight: 500 }}
                       >
                         {selectedNumber === 'all' ? 'All numbers' : selectedNumber}
                         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="6 9 12 15 18 9"/></svg>
