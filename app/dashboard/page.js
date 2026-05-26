@@ -711,14 +711,33 @@ const totalDuration = filteredCalls.reduce((acc, c) => acc + (c.duration || 0), 
                     <p style={{ fontWeight: 700, fontSize: '1.1rem', color: plan.color }}>{plan.label}</p>
                     <p style={{ fontSize: '0.8rem', color: C.text, marginTop: '4px' }}>{plan.minutes.toLocaleString()} minutes/month included</p>
                   </div>
-                  {clientData?.twilio_number && (
-                    <div style={{ textAlign: isMobile ? 'left' : 'right' }}>
-                      <p style={{ fontSize: '0.75rem', color: C.text, textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600, marginBottom: '6px' }}>Phone number</p>
-                      <p style={{ fontFamily: 'monospace', fontSize: '1rem', color: '#e5e7eb', fontWeight: 600 }}>{clientData.twilio_number}</p>
-                    </div>
-                  )}
-                </div>
-              )}
+                  {allNumbers.length > 0 && (
+  <div style={{ position: 'relative' }}>
+    <p style={{ fontSize: '0.75rem', color: C.text, textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600, marginBottom: '6px', textAlign: isMobile ? 'left' : 'right' }}>Viewing stats for</p>
+    <button
+      onClick={(e) => { e.stopPropagation(); setShowNumberDropdown(!showNumberDropdown); }}
+      style={{ display: 'flex', alignItems: 'center', gap: '8px', background: C.bg, border: `1px solid ${C.border}`, borderRadius: '10px', padding: '8px 14px', cursor: 'pointer', color: 'white', fontFamily: 'monospace', fontSize: '0.9rem', fontWeight: 600 }}
+    >
+      {selectedNumber === 'all' ? 'All numbers' : selectedNumber}
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+    </button>
+    {showNumberDropdown && (
+      <div style={{ position: 'absolute', top: '100%', right: 0, marginTop: '6px', background: C.card, border: `1px solid ${C.border}`, borderRadius: '12px', overflow: 'hidden', zIndex: 50, minWidth: '180px', boxShadow: '0 8px 24px rgba(0,0,0,0.4)' }}>
+        <button onClick={() => { setSelectedNumber('all'); setShowNumberDropdown(false); }}
+          style={{ width: '100%', padding: '10px 14px', background: selectedNumber === 'all' ? 'rgba(79,70,229,0.12)' : 'transparent', border: 'none', color: selectedNumber === 'all' ? '#818cf8' : '#e5e7eb', fontSize: '0.85rem', fontWeight: selectedNumber === 'all' ? 600 : 400, cursor: 'pointer', textAlign: 'left' }}>
+          All numbers
+        </button>
+        {allNumbers.map(num => (
+          <button key={num} onClick={() => { setSelectedNumber(num); setShowNumberDropdown(false); }}
+            style={{ width: '100%', padding: '10px 14px', background: selectedNumber === num ? 'rgba(79,70,229,0.12)' : 'transparent', border: 'none', color: selectedNumber === num ? '#818cf8' : '#e5e7eb', fontFamily: 'monospace', fontSize: '0.85rem', fontWeight: selectedNumber === num ? 600 : 400, cursor: 'pointer', textAlign: 'left' }}>
+            {num}
+          </button>
+        ))}
+      </div>
+    )}
+  </div>
+</div>
+        )}
 
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '12px' }}>
                 {[
@@ -1079,39 +1098,77 @@ const totalDuration = filteredCalls.reduce((acc, c) => acc + (c.duration || 0), 
   );
 
   return (
-    <div style={{ minHeight: '100vh', background: C.bg, color: 'white', fontFamily: 'system-ui, sans-serif', display: 'flex' }}>
+    <div style={{ minHeight: '100vh', background: C.bg, color: 'white', fontFamily: 'system-ui, sans-serif' }}>
       {showChangePlan && <ChangePlanModal currentPlan={clientData?.plan} userId={user?.id} onClose={() => setShowChangePlan(false)} onSuccess={handlePlanChangeSuccess} />}
       <SetupProgress plan={clientData?.plan} googleConnected={googleConnected} twilioNumber={clientData?.twilio_number} callsCount={calls.length} onGoSetup={() => setActivePage('setup')} />
-      <aside style={{ width: '220px', minHeight: '100vh', background: C.sidebar, borderRight: `1px solid ${C.border}`, display: 'flex', flexDirection: 'column', padding: '24px 12px', position: 'fixed', top: 0, left: 0 }}>
-        <div style={{ padding: '0 12px', marginBottom: '32px' }}>
-          <a href="/" style={{ fontWeight: 700, fontSize: '1rem', letterSpacing: '-0.02em', color: 'white', textDecoration: 'none' }}>VoiceBot AI</a>
-        </div>
-        <nav style={{ display: 'flex', flexDirection: 'column', gap: '2px', flex: 1 }}>
-          {navItems.map(item => (
-            <button key={item.id} onClick={() => setActivePage(item.id)}
-              style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '9px 12px', borderRadius: '8px', border: 'none', background: activePage === item.id ? C.card : 'transparent', color: activePage === item.id ? 'white' : C.text, cursor: 'pointer', fontSize: '0.875rem', fontWeight: activePage === item.id ? 600 : 400, textAlign: 'left', width: '100%', transition: 'all 0.15s' }}>
-              {item.icon}{item.label}
-            </button>
-          ))}
-        </nav>
-        <div style={{ borderTop: `1px solid ${C.border}`, paddingTop: '16px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-          {plan && (
-            <div style={{ padding: '10px 12px', background: C.card, borderRadius: '8px', marginBottom: '4px' }}>
-              <p style={{ fontSize: '0.7rem', color: C.text, textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600, marginBottom: '3px' }}>Plan</p>
-              <p style={{ fontSize: '0.8rem', fontWeight: 600, color: plan.color }}>{plan.label}</p>
-            </div>
-          )}
-          <div style={{ padding: '8px 12px' }}>
-            <p style={{ fontSize: '0.75rem', color: C.text, marginBottom: '8px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{user.email}</p>
-            <button onClick={handleLogout} style={{ display: 'flex', alignItems: 'center', gap: '8px', color: C.text, background: 'none', border: 'none', cursor: 'pointer', fontSize: '0.8rem', padding: 0 }}>
-              <IconLogout /> Sign out
-            </button>
+
+      {!isMobile && (
+        <aside style={{ width: '220px', minHeight: '100vh', background: C.sidebar, borderRight: `1px solid ${C.border}`, display: 'flex', flexDirection: 'column', padding: '24px 12px', position: 'fixed', top: 0, left: 0, zIndex: 100 }}>
+          <div style={{ padding: '0 12px', marginBottom: '32px' }}>
+            <a href="/" style={{ fontWeight: 700, fontSize: '1rem', letterSpacing: '-0.02em', color: 'white', textDecoration: 'none' }}>VoiceBot AI</a>
           </div>
-        </div>
-      </aside>
-      <div style={{ marginLeft: '220px', flex: 1 }}>
+          <nav style={{ display: 'flex', flexDirection: 'column', gap: '2px', flex: 1 }}>
+            {navItems.map(item => (
+              <button key={item.id} onClick={() => setActivePage(item.id)}
+                style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '9px 12px', borderRadius: '8px', border: 'none', background: activePage === item.id ? C.card : 'transparent', color: activePage === item.id ? 'white' : C.text, cursor: 'pointer', fontSize: '0.875rem', fontWeight: activePage === item.id ? 600 : 400, textAlign: 'left', width: '100%', transition: 'all 0.15s' }}>
+                {item.icon}{item.label}
+              </button>
+            ))}
+          </nav>
+          <div style={{ borderTop: `1px solid ${C.border}`, paddingTop: '16px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            {plan && (
+              <div style={{ padding: '10px 12px', background: C.card, borderRadius: '8px', marginBottom: '4px' }}>
+                <p style={{ fontSize: '0.7rem', color: C.text, textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600, marginBottom: '3px' }}>Plan</p>
+                <p style={{ fontSize: '0.8rem', fontWeight: 600, color: plan.color }}>{plan.label}</p>
+              </div>
+            )}
+            <div style={{ padding: '8px 12px' }}>
+              <p style={{ fontSize: '0.75rem', color: C.text, marginBottom: '8px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{user.email}</p>
+              <button onClick={handleLogout} style={{ display: 'flex', alignItems: 'center', gap: '8px', color: C.text, background: 'none', border: 'none', cursor: 'pointer', fontSize: '0.8rem', padding: 0 }}>
+                <IconLogout /> Sign out
+              </button>
+            </div>
+          </div>
+        </aside>
+      )}
+
+      <div style={{ marginLeft: isMobile ? '0' : '220px' }}>
+        {isMobile && (
+          <div style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 100, background: C.sidebar, borderBottom: `1px solid ${C.border}`, padding: '0 16px', height: '56px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <a href="/" style={{ fontWeight: 700, fontSize: '0.95rem', color: 'white', textDecoration: 'none' }}>VoiceBot AI</a>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              {plan && (
+                <span style={{ fontSize: '0.7rem', fontWeight: 600, color: plan.color, background: 'rgba(255,255,255,0.06)', padding: '3px 10px', borderRadius: '100px', border: `1px solid ${C.border}` }}>
+                  {plan.label}
+                </span>
+              )}
+              <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: plan ? '#4ade80' : '#f87171', boxShadow: plan ? '0 0 6px rgba(74,222,128,0.6)' : '0 0 6px rgba(248,113,113,0.6)' }} />
+            </div>
+          </div>
+        )}
         {pageContent}
       </div>
+
+      {isMobile && (
+        <nav style={{ position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 100, background: C.sidebar, borderTop: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', justifyContent: 'space-around', padding: '8px 0 20px' }}>
+          {navItems.map(item => {
+            const isActive = activePage === item.id;
+            return (
+              <button key={item.id} onClick={() => setActivePage(item.id)} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px', background: 'none', border: 'none', cursor: 'pointer', padding: '6px 12px', borderRadius: '10px', position: 'relative' }}>
+                <div style={{ color: isActive ? '#818cf8' : C.text, transition: 'color 0.15s' }}>
+                  {item.icon}
+                </div>
+                <span style={{ fontSize: '0.65rem', fontWeight: isActive ? 600 : 400, color: isActive ? 'white' : C.text, transition: 'color 0.15s' }}>
+                  {item.label}
+                </span>
+                {isActive && (
+                  <div style={{ position: 'absolute', bottom: '-8px', left: '50%', transform: 'translateX(-50%)', width: '4px', height: '4px', borderRadius: '50%', background: '#818cf8' }} />
+                )}
+              </button>
+            );
+          })}
+        </nav>
+      )}
     </div>
   );
 }
