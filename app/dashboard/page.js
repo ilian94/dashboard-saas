@@ -945,7 +945,7 @@ const totalDuration = filteredCalls.reduce((acc, c) => acc + (c.duration || 0), 
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 16px', background: C.bg, border: `1px solid ${googleConnected ? 'rgba(74,222,128,0.2)' : C.border}`, borderRadius: '12px' }}>
                     <div>
                       <p style={{ fontWeight: 600, fontSize: '0.9rem', marginBottom: '2px' }}>Google Calendar</p>
-                      <p style={{ fontSize: '0.78rem', color: C.text }}>{googleConnected ? 'Connected — appointments booked automatically' : 'Connect to book appointments directly'}</p>
+                      <p style={{ fontSize: '0.78rem', color: C.text }}>{googleConnected ? 'Connected — appointments created automatically on your calendar' : 'Appointments booked automatically — no action needed'}</p>
                     </div>
                     {!googleConnected
                       ? <a href="/api/google/auth" style={{ padding: '8px 16px', background: '#1a73e8', color: 'white', textDecoration: 'none', borderRadius: '8px', fontSize: '0.82rem', fontWeight: 600, whiteSpace: 'nowrap' }}>Connect →</a>
@@ -955,7 +955,7 @@ const totalDuration = filteredCalls.reduce((acc, c) => acc + (c.duration || 0), 
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 16px', background: C.bg, border: `1px solid ${clientData?.calendly_token ? 'rgba(74,222,128,0.2)' : C.border}`, borderRadius: '12px' }}>
                     <div>
                       <p style={{ fontWeight: 600, fontSize: '0.9rem', marginBottom: '2px' }}>Calendly</p>
-                      <p style={{ fontSize: '0.78rem', color: C.text }}>{clientData?.calendly_token ? 'Connected — appointments sent via Calendly' : 'Connect to use Calendly scheduling links'}</p>
+                      <p style={{ fontSize: '0.78rem', color: C.text }}>{clientData?.calendly_token ? 'Connected — caller receives a Calendly link by SMS to confirm' : 'Bot collects info & sends caller a Calendly link to confirm'}</p>
                     </div>
                     {clientData?.calendly_token
                       ? <span style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '6px 12px', background: 'rgba(34,197,94,0.08)', border: '1px solid rgba(34,197,94,0.2)', borderRadius: '8px', color: '#4ade80', fontSize: '0.82rem', fontWeight: 600 }}><IconCheck /> Connected</span>
