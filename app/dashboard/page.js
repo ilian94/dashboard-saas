@@ -686,9 +686,9 @@ const totalDuration = filteredCalls.reduce((acc, c) => acc + (c.duration || 0), 
   ];
 
   const pageContent = (
-    <main style={{ flex: 1, padding: isMobile ? '24px 16px' : '48px 40px', paddingBottom: isMobile ? '80px' : '48px' }}>
+    <main style={{ padding: isMobile ? '72px 16px 90px' : '48px 40px' }}>
       <div style={{ display: isMobile || activePage !== 'dashboard' ? 'flex' : 'grid', gridTemplateColumns: '1fr 320px', gap: '24px', flexDirection: 'column', maxWidth: activePage === 'dashboard' && !isMobile ? '1200px' : '900px', alignItems: 'flex-start' }}>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', minWidth: 0 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', minWidth: 0, width: '100%' }}>
 
           {activePage === 'dashboard' && (
             <>
@@ -712,43 +712,44 @@ const totalDuration = filteredCalls.reduce((acc, c) => acc + (c.duration || 0), 
                     <p style={{ fontSize: '0.8rem', color: C.text, marginTop: '4px' }}>{plan.minutes.toLocaleString()} minutes/month included</p>
                   </div>
                   {allNumbers.length > 0 && (
-  <div style={{ position: 'relative' }}>
-    <p style={{ fontSize: '0.75rem', color: C.text, textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600, marginBottom: '6px', textAlign: isMobile ? 'left' : 'right' }}>Viewing stats for</p>
-    <button
-      onClick={(e) => { e.stopPropagation(); setShowNumberDropdown(!showNumberDropdown); }}
-      style={{ display: 'flex', alignItems: 'center', gap: '8px', background: C.bg, border: `1px solid ${C.border}`, borderRadius: '10px', padding: '8px 14px', cursor: 'pointer', color: 'white', fontFamily: 'monospace', fontSize: '0.9rem', fontWeight: 600 }}
-    >
-      {selectedNumber === 'all' ? 'All numbers' : selectedNumber}
-      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="6 9 12 15 18 9"/></svg>
-    </button>
-    {showNumberDropdown && (
-      <div style={{ position: 'absolute', top: '100%', right: 0, marginTop: '6px', background: C.card, border: `1px solid ${C.border}`, borderRadius: '12px', overflow: 'hidden', zIndex: 50, minWidth: '180px', boxShadow: '0 8px 24px rgba(0,0,0,0.4)' }}>
-        <button onClick={() => { setSelectedNumber('all'); setShowNumberDropdown(false); }}
-          style={{ width: '100%', padding: '10px 14px', background: selectedNumber === 'all' ? 'rgba(79,70,229,0.12)' : 'transparent', border: 'none', color: selectedNumber === 'all' ? '#818cf8' : '#e5e7eb', fontSize: '0.85rem', fontWeight: selectedNumber === 'all' ? 600 : 400, cursor: 'pointer', textAlign: 'left' }}>
-          All numbers
-        </button>
-        {allNumbers.map(num => (
-          <button key={num} onClick={() => { setSelectedNumber(num); setShowNumberDropdown(false); }}
-            style={{ width: '100%', padding: '10px 14px', background: selectedNumber === num ? 'rgba(79,70,229,0.12)' : 'transparent', border: 'none', color: selectedNumber === num ? '#818cf8' : '#e5e7eb', fontFamily: 'monospace', fontSize: '0.85rem', fontWeight: selectedNumber === num ? 600 : 400, cursor: 'pointer', textAlign: 'left' }}>
-            {num}
-          </button>
-        ))}
-      </div>
-    )}
-  </div>
-</div>
-        )}
+                    <div style={{ position: 'relative' }}>
+                      <p style={{ fontSize: '0.75rem', color: C.text, textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600, marginBottom: '6px', textAlign: isMobile ? 'left' : 'right' }}>Viewing stats for</p>
+                      <button
+                        onClick={(e) => { e.stopPropagation(); setShowNumberDropdown(!showNumberDropdown); }}
+                        style={{ display: 'flex', alignItems: 'center', gap: '8px', background: C.bg, border: `1px solid ${C.border}`, borderRadius: '10px', padding: '8px 14px', cursor: 'pointer', color: 'white', fontFamily: 'monospace', fontSize: '0.9rem', fontWeight: 600 }}
+                      >
+                        {selectedNumber === 'all' ? 'All numbers' : selectedNumber}
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+                      </button>
+                      {showNumberDropdown && (
+                        <div style={{ position: 'absolute', top: '100%', right: 0, marginTop: '6px', background: C.card, border: `1px solid ${C.border}`, borderRadius: '12px', overflow: 'hidden', zIndex: 50, minWidth: '180px', boxShadow: '0 8px 24px rgba(0,0,0,0.4)' }}>
+                          <button onClick={() => { setSelectedNumber('all'); setShowNumberDropdown(false); }}
+                            style={{ width: '100%', padding: '10px 14px', background: selectedNumber === 'all' ? 'rgba(79,70,229,0.12)' : 'transparent', border: 'none', color: selectedNumber === 'all' ? '#818cf8' : '#e5e7eb', fontSize: '0.85rem', fontWeight: selectedNumber === 'all' ? 600 : 400, cursor: 'pointer', textAlign: 'left' }}>
+                            All numbers
+                          </button>
+                          {allNumbers.map(num => (
+                            <button key={num} onClick={() => { setSelectedNumber(num); setShowNumberDropdown(false); }}
+                              style={{ width: '100%', padding: '10px 14px', background: selectedNumber === num ? 'rgba(79,70,229,0.12)' : 'transparent', border: 'none', color: selectedNumber === num ? '#818cf8' : '#e5e7eb', fontFamily: 'monospace', fontSize: '0.85rem', fontWeight: selectedNumber === num ? 600 : 400, cursor: 'pointer', textAlign: 'left' }}>
+                              {num}
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              )}
 
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '12px' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '10px' }}>
                 {[
-                  { label: 'Calls received', value: filteredCalls.length, icon: <IconPhone /> },
+                  { label: 'Calls', value: filteredCalls.length, icon: <IconPhone /> },
                   { label: 'Appointments', value: rdvCount, icon: <IconCalendar /> },
                   { label: 'Minutes', value: Math.round(totalDuration / 60), icon: <IconClock /> },
                 ].map(s => (
-                  <div key={s.label} style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '14px', padding: isMobile ? '16px 12px' : '24px' }}>
+                  <div key={s.label} style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '14px', padding: isMobile ? '14px 10px' : '24px' }}>
                     <div style={{ color: C.text, marginBottom: '8px' }}>{s.icon}</div>
-                    <div style={{ fontSize: isMobile ? '1.6rem' : '2.2rem', fontWeight: 800, letterSpacing: '-0.04em', lineHeight: 1, marginBottom: '4px' }}>{s.value}</div>
-                    <div style={{ fontSize: '0.75rem', color: C.text }}>{s.label}</div>
+                    <div style={{ fontSize: isMobile ? '1.5rem' : '2.2rem', fontWeight: 800, letterSpacing: '-0.04em', lineHeight: 1, marginBottom: '4px' }}>{s.value}</div>
+                    <div style={{ fontSize: '0.72rem', color: C.text }}>{s.label}</div>
                   </div>
                 ))}
               </div>
@@ -791,7 +792,7 @@ const totalDuration = filteredCalls.reduce((acc, c) => acc + (c.duration || 0), 
                   <p style={{ fontSize: '0.75rem', color: C.text, textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600 }}>Recent calls</p>
                   {calls.length > 0 && <button onClick={() => setActivePage('calls')} style={{ fontSize: '0.78rem', color: '#818cf8', background: 'none', border: 'none', cursor: 'pointer', padding: 0, fontWeight: 600 }}>View all →</button>}
                 </div>
-                {calls.length === 0 ? (
+                {filteredCalls.length === 0 ? (
                   <div style={{ textAlign: 'center', padding: '24px 0' }}>
                     <p style={{ fontSize: '0.875rem', color: C.text }}>No calls yet. Your VoiceBot is ready.</p>
                   </div>
@@ -836,7 +837,6 @@ const totalDuration = filteredCalls.reduce((acc, c) => acc + (c.duration || 0), 
               <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', padding: '20px' }}>
                 {calls.length === 0 ? (
                   <div style={{ textAlign: 'center', padding: '40px 0' }}>
-                    <div style={{ color: C.border, marginBottom: '12px', display: 'flex', justifyContent: 'center' }}><IconPhone /></div>
                     <p style={{ fontSize: '0.875rem', color: C.text }}>No calls yet. Your VoiceBot is ready.</p>
                   </div>
                 ) : (
@@ -855,7 +855,6 @@ const totalDuration = filteredCalls.reduce((acc, c) => acc + (c.duration || 0), 
                         </div>
                         {call.recording_url && (
                           <div style={{ marginTop: '10px', paddingTop: '10px', borderTop: `1px solid ${C.border}` }}>
-                            <p style={{ fontSize: '0.72rem', color: C.label, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '6px' }}>Recording</p>
                             <audio controls style={{ width: '100%', height: '32px', accentColor: '#4f46e5' }}>
                               <source src={call.recording_url} type="audio/mpeg" />
                             </audio>
@@ -920,14 +919,7 @@ const totalDuration = filteredCalls.reduce((acc, c) => acc + (c.duration || 0), 
                   : <span style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '9px 16px', background: 'rgba(34,197,94,0.08)', border: '1px solid rgba(34,197,94,0.2)', borderRadius: '9px', color: '#4ade80', fontSize: '0.875rem', fontWeight: 600 }}><IconCheck /> Connected</span>
                 }
               </div>
-              <ScriptSettings 
-  clientPlan={clientData?.plan} 
-  userId={user?.id} 
-  allNumbers={[
-    ...(clientData?.twilio_number ? [clientData.twilio_number] : []),
-    ...(clientData?.twilio_numbers || [])
-  ]} 
-/>
+              <ScriptSettings clientPlan={clientData?.plan} userId={user?.id} allNumbers={[...(clientData?.twilio_number ? [clientData.twilio_number] : []), ...(clientData?.twilio_numbers || [])]} />
               <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', padding: '20px' }}>
                 <p style={{ fontSize: '0.75rem', color: C.text, textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600, marginBottom: '16px' }}>Account</p>
                 <p style={{ fontSize: '0.875rem', color: C.label, marginBottom: '4px' }}>Email</p>
@@ -1026,12 +1018,10 @@ const totalDuration = filteredCalls.reduce((acc, c) => acc + (c.duration || 0), 
             </>
           )}
 
-        </div>{/* fin colonne gauche */}
+        </div>
 
-        {/* SIDEBAR DROITE */}
         {!isMobile && activePage === 'dashboard' && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', position: 'sticky', top: '48px' }}>
-
             <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', padding: '20px' }}>
               <p style={{ fontSize: '0.75rem', color: C.text, textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600, marginBottom: '14px' }}>Bot status</p>
               <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
@@ -1042,7 +1032,6 @@ const totalDuration = filteredCalls.reduce((acc, c) => acc + (c.duration || 0), 
                 <p style={{ fontSize: '0.78rem', color: C.text, marginTop: '8px' }}>Answering calls on <span style={{ fontFamily: 'monospace', color: '#e5e7eb' }}>{clientData.twilio_number}</span></p>
               )}
             </div>
-
             <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', padding: '20px' }}>
               <p style={{ fontSize: '0.75rem', color: C.text, textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600, marginBottom: '14px' }}>This month</p>
               {(() => {
@@ -1053,11 +1042,7 @@ const totalDuration = filteredCalls.reduce((acc, c) => acc + (c.duration || 0), 
                 const monthMinutes = Math.round(monthCalls.reduce((acc, c) => acc + (c.duration || 0), 0) / 60);
                 return (
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                    {[
-                      { label: 'Calls', value: monthCalls.length },
-                      { label: 'Appointments', value: monthRdv },
-                      { label: 'Minutes used', value: monthMinutes },
-                    ].map(s => (
+                    {[{ label: 'Calls', value: monthCalls.length }, { label: 'Appointments', value: monthRdv }, { label: 'Minutes used', value: monthMinutes }].map(s => (
                       <div key={s.label} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                         <span style={{ fontSize: '0.85rem', color: C.text }}>{s.label}</span>
                         <span style={{ fontSize: '0.95rem', fontWeight: 700, color: 'white' }}>{s.value}</span>
@@ -1067,33 +1052,18 @@ const totalDuration = filteredCalls.reduce((acc, c) => acc + (c.duration || 0), 
                 );
               })()}
             </div>
-
             <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', padding: '20px' }}>
               <p style={{ fontSize: '0.75rem', color: C.text, textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600, marginBottom: '14px' }}>Quick actions</p>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                {!googleConnected && (
-                  <a href="/api/google/auth" style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '10px 14px', background: 'rgba(26,115,232,0.08)', border: '1px solid rgba(26,115,232,0.2)', borderRadius: '10px', textDecoration: 'none', color: '#60a5fa', fontSize: '0.85rem', fontWeight: 600 }}>
-                    <IconCalendar /> Connect Calendar
-                  </a>
-                )}
-                {clientData?.plan && clientData.plan !== 'starter' && (
-                  <button onClick={() => setActivePage('settings')} style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '10px 14px', background: 'rgba(79,70,229,0.08)', border: '1px solid rgba(79,70,229,0.2)', borderRadius: '10px', color: '#818cf8', fontSize: '0.85rem', fontWeight: 600, cursor: 'pointer', textAlign: 'left' }}>
-                    <IconSettings /> Customize script
-                  </button>
-                )}
-                <button onClick={() => setActivePage('setup')} style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '10px 14px', background: C.bg, border: `1px solid ${C.border}`, borderRadius: '10px', color: C.text, fontSize: '0.85rem', fontWeight: 600, cursor: 'pointer', textAlign: 'left' }}>
-                  <IconSetup /> Setup guide
-                </button>
-                <button onClick={() => setActivePage('billing')} style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '10px 14px', background: C.bg, border: `1px solid ${C.border}`, borderRadius: '10px', color: C.text, fontSize: '0.85rem', fontWeight: 600, cursor: 'pointer', textAlign: 'left' }}>
-                  <IconBilling /> Manage billing
-                </button>
+                {!googleConnected && <a href="/api/google/auth" style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '10px 14px', background: 'rgba(26,115,232,0.08)', border: '1px solid rgba(26,115,232,0.2)', borderRadius: '10px', textDecoration: 'none', color: '#60a5fa', fontSize: '0.85rem', fontWeight: 600 }}><IconCalendar /> Connect Calendar</a>}
+                {clientData?.plan && clientData.plan !== 'starter' && <button onClick={() => setActivePage('settings')} style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '10px 14px', background: 'rgba(79,70,229,0.08)', border: '1px solid rgba(79,70,229,0.2)', borderRadius: '10px', color: '#818cf8', fontSize: '0.85rem', fontWeight: 600, cursor: 'pointer', textAlign: 'left' }}><IconSettings /> Customize script</button>}
+                <button onClick={() => setActivePage('setup')} style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '10px 14px', background: C.bg, border: `1px solid ${C.border}`, borderRadius: '10px', color: C.text, fontSize: '0.85rem', fontWeight: 600, cursor: 'pointer', textAlign: 'left' }}><IconSetup /> Setup guide</button>
+                <button onClick={() => setActivePage('billing')} style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '10px 14px', background: C.bg, border: `1px solid ${C.border}`, borderRadius: '10px', color: C.text, fontSize: '0.85rem', fontWeight: 600, cursor: 'pointer', textAlign: 'left' }}><IconBilling /> Manage billing</button>
               </div>
             </div>
-
           </div>
         )}
-
-      </div>{/* fin grid */}
+      </div>
     </main>
   );
 
