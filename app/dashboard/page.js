@@ -605,7 +605,7 @@ export default function Dashboard() {
   const [activePage, setActivePage] = useState('dashboard');
   const [isMobile, setIsMobile] = useState(false);
   const [showOnboarding, setShowOnboarding] = useState(false);
-  const [showChangePlan, setShowChangePlan] = useState(false);
+  const [showCalendlyModal, setShowCalendlyModal] = useState(false);
   const [selectedNumber, setSelectedNumber] = useState('all');
 const [showNumberDropdown, setShowNumberDropdown] = useState(false);
 
@@ -622,7 +622,7 @@ const [showNumberDropdown, setShowNumberDropdown] = useState(false);
   }, []);
 
   const fetchClientData = useCallback(async (userId) => {
-    const { data } = await supabase.from("clients").select("google_connected, plan, twilio_number, twilio_numbers, extra_minutes, business_name").eq("user_id", userId).maybeSingle();
+    const { data } = await supabase.from("clients").select("google_connected, plan, twilio_number, twilio_numbers, extra_minutes, business_name, calendly_token, calendar_type").eq("user_id", userId).maybeSingle();
     if (data) {
       setClientData(data);
       if (data.google_connected) setGoogleConnected(true);
@@ -939,16 +939,30 @@ const totalDuration = filteredCalls.reduce((acc, c) => acc + (c.duration || 0), 
                 <h1 style={{ fontSize: isMobile ? '1.3rem' : '1.5rem', fontWeight: 800, letterSpacing: '-0.03em', marginBottom: '4px' }}>Settings</h1>
                 <p style={{ fontSize: '0.85rem', color: C.text }}>Manage your account and integrations.</p>
               </div>
-              <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', padding: '20px', display: 'flex', flexDirection: isMobile ? 'column' : 'row', alignItems: isMobile ? 'flex-start' : 'center', justifyContent: 'space-between', gap: '12px' }}>
-                <div>
-                  <p style={{ fontSize: '0.75rem', color: C.text, textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600, marginBottom: '6px' }}>Google Calendar</p>
-                  <p style={{ fontWeight: 600, fontSize: '1rem', marginBottom: '4px' }}>{googleConnected ? 'Connected' : 'Not connected'}</p>
-                  <p style={{ fontSize: '0.85rem', color: C.text }}>{googleConnected ? 'Appointments are booked automatically.' : 'Connect your calendar for automatic scheduling.'}</p>
+              <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', padding: '20px' }}>
+                <p style={{ fontSize: '0.75rem', color: C.text, textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600, marginBottom: '16px' }}>Calendar integration</p>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 16px', background: C.bg, border: `1px solid ${googleConnected ? 'rgba(74,222,128,0.2)' : C.border}`, borderRadius: '12px' }}>
+                    <div>
+                      <p style={{ fontWeight: 600, fontSize: '0.9rem', marginBottom: '2px' }}>Google Calendar</p>
+                      <p style={{ fontSize: '0.78rem', color: C.text }}>{googleConnected ? 'Connected — appointments booked automatically' : 'Connect to book appointments directly'}</p>
+                    </div>
+                    {!googleConnected
+                      ? <a href="/api/google/auth" style={{ padding: '8px 16px', background: '#1a73e8', color: 'white', textDecoration: 'none', borderRadius: '8px', fontSize: '0.82rem', fontWeight: 600, whiteSpace: 'nowrap' }}>Connect →</a>
+                      : <span style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '6px 12px', background: 'rgba(34,197,94,0.08)', border: '1px solid rgba(34,197,94,0.2)', borderRadius: '8px', color: '#4ade80', fontSize: '0.82rem', fontWeight: 600 }}><IconCheck /> Connected</span>
+                    }
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 16px', background: C.bg, border: `1px solid ${clientData?.calendly_token ? 'rgba(74,222,128,0.2)' : C.border}`, borderRadius: '12px' }}>
+                    <div>
+                      <p style={{ fontWeight: 600, fontSize: '0.9rem', marginBottom: '2px' }}>Calendly</p>
+                      <p style={{ fontSize: '0.78rem', color: C.text }}>{clientData?.calendly_token ? 'Connected — appointments sent via Calendly' : 'Connect to use Calendly scheduling links'}</p>
+                    </div>
+                    {clientData?.calendly_token
+                      ? <span style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '6px 12px', background: 'rgba(34,197,94,0.08)', border: '1px solid rgba(34,197,94,0.2)', borderRadius: '8px', color: '#4ade80', fontSize: '0.82rem', fontWeight: 600 }}><IconCheck /> Connected</span>
+                      : <button onClick={() => setShowCalendlyModal(true)} style={{ padding: '8px 16px', background: '#006bff', color: 'white', border: 'none', borderRadius: '8px', fontSize: '0.82rem', fontWeight: 600, cursor: 'pointer', whiteSpace: 'nowrap' }}>Connect →</button>
+                    }
+                  </div>
                 </div>
-                {!googleConnected
-                  ? <a href="/api/google/auth" style={{ padding: '9px 20px', background: '#1a73e8', color: 'white', textDecoration: 'none', borderRadius: '9px', fontSize: '0.875rem', fontWeight: 600 }}>Connect Google</a>
-                  : <span style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '9px 16px', background: 'rgba(34,197,94,0.08)', border: '1px solid rgba(34,197,94,0.2)', borderRadius: '9px', color: '#4ade80', fontSize: '0.875rem', fontWeight: 600 }}><IconCheck /> Connected</span>
-                }
               </div>
               <ScriptSettings clientPlan={clientData?.plan} userId={user?.id} allNumbers={[...(clientData?.twilio_number ? [clientData.twilio_number] : []), ...(clientData?.twilio_numbers || [])]} />
               <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', padding: '20px' }}>
@@ -1101,6 +1115,34 @@ const totalDuration = filteredCalls.reduce((acc, c) => acc + (c.duration || 0), 
   return (
     <div style={{ minHeight: '100vh', background: C.bg, color: 'white', fontFamily: 'system-ui, sans-serif' }}>
       {showChangePlan && <ChangePlanModal currentPlan={clientData?.plan} userId={user?.id} onClose={() => setShowChangePlan(false)} onSuccess={handlePlanChangeSuccess} />}
+      {showCalendlyModal && (
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.7)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: '20px' }}>
+          <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '20px', padding: '28px', width: '100%', maxWidth: '480px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px' }}>
+              <h2 style={{ fontSize: '1.1rem', fontWeight: 700 }}>Connect Calendly</h2>
+              <button onClick={() => setShowCalendlyModal(false)} style={{ background: 'none', border: 'none', color: C.text, cursor: 'pointer' }}><IconX /></button>
+            </div>
+            <p style={{ fontSize: '0.85rem', color: C.text, marginBottom: '16px' }}>Enter your Calendly Personal Access Token to connect your account.</p>
+            <input
+              id="calendly-token-input"
+              placeholder="eyJraWQiOiI..."
+              style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: `1px solid ${C.border}`, background: C.bg, color: 'white', fontSize: '0.875rem', outline: 'none', boxSizing: 'border-box', marginBottom: '16px' }}
+            />
+            <div style={{ display: 'flex', gap: '10px' }}>
+              <button onClick={() => setShowCalendlyModal(false)} style={{ flex: 1, padding: '11px', background: 'transparent', border: `1px solid ${C.border}`, color: C.text, borderRadius: '10px', fontWeight: 600, fontSize: '0.875rem', cursor: 'pointer' }}>Cancel</button>
+              <button onClick={async () => {
+                const token = document.getElementById('calendly-token-input').value;
+                if (!token) return;
+                await supabase.from('clients').update({ calendly_token: token, calendar_type: 'calendly' }).eq('user_id', user.id);
+                setClientData(prev => ({ ...prev, calendly_token: token, calendar_type: 'calendly' }));
+                setShowCalendlyModal(false);
+              }} style={{ flex: 1, padding: '11px', background: '#006bff', color: 'white', border: 'none', borderRadius: '10px', fontWeight: 700, fontSize: '0.875rem', cursor: 'pointer' }}>
+                Connect
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
       <SetupProgress plan={clientData?.plan} googleConnected={googleConnected} twilioNumber={clientData?.twilio_number} callsCount={calls.length} onGoSetup={() => setActivePage('setup')} />
 
       {!isMobile && (
