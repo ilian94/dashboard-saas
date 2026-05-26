@@ -239,7 +239,7 @@ function SetupProgress({ plan, googleConnected, twilioNumber, callsCount, onGoSe
             onMouseLeave={e => e.currentTarget.style.background = 'rgba(79,70,229,0.12)'}
           >
             <p style={{ fontSize: '0.68rem', color: '#818cf8', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '2px' }}>Next step</p>
-            <p style={{ fontSize: '0.82rem', fontWeight: 700, color: 'white' }}>{nextStep.label} →</p>
+            <p style={{ fontSize: '0.82rem', fontWeight: 700, color: 'white' }}>{nextStep.label} â†’</p>
           </div>
         </div>
       )}
@@ -344,10 +344,10 @@ function ChangePlanModal({ currentPlan, userId, onClose, onSuccess }) {
 function OnboardingBanner({ plan, googleConnected, twilioNumber, onDismiss }) {
   const steps = [
     { label: 'Account created', done: true, action: null },
-    { label: 'Choose a plan', done: !!plan, action: !plan ? <a href="/pricing" style={{ fontSize: '0.78rem', fontWeight: 600, color: '#818cf8', textDecoration: 'none', whiteSpace: 'nowrap' }}>Choose →</a> : null },
-    { label: 'Connect Google Calendar', done: googleConnected, action: !googleConnected ? <a href="/api/google/auth" style={{ fontSize: '0.78rem', fontWeight: 600, color: '#60a5fa', textDecoration: 'none', whiteSpace: 'nowrap' }}>Connect →</a> : null },
+    { label: 'Choose a plan', done: !!plan, action: !plan ? <a href="/pricing" style={{ fontSize: '0.78rem', fontWeight: 600, color: '#818cf8', textDecoration: 'none', whiteSpace: 'nowrap' }}>Choose â†’</a> : null },
+    { label: 'Connect Google Calendar', done: googleConnected, action: !googleConnected ? <a href="/api/google/auth" style={{ fontSize: '0.78rem', fontWeight: 600, color: '#60a5fa', textDecoration: 'none', whiteSpace: 'nowrap' }}>Connect â†’</a> : null },
     { label: 'Phone number assigned', done: !!twilioNumber, action: !twilioNumber && !!plan ? <span style={{ fontSize: '0.78rem', color: C.text }}>Pending...</span> : null },
-    { label: 'Forward your number', done: false, action: twilioNumber ? <a href="#" onClick={(e) => { e.preventDefault(); onDismiss(); }} style={{ fontSize: '0.78rem', fontWeight: 600, color: '#4ade80', textDecoration: 'none', whiteSpace: 'nowrap' }}>Mark done →</a> : null },
+    { label: 'Forward your number', done: false, action: twilioNumber ? <a href="#" onClick={(e) => { e.preventDefault(); onDismiss(); }} style={{ fontSize: '0.78rem', fontWeight: 600, color: '#4ade80', textDecoration: 'none', whiteSpace: 'nowrap' }}>Mark done â†’</a> : null },
   ];
 
   const completedCount = steps.filter(s => s.done).length;
@@ -411,8 +411,8 @@ function ScriptSettings({ clientPlan, userId, allNumbers }) {
   const handleSave = async () => {
     setSaving(true);
     const scriptToSave = clientPlan === 'scale'
-  ? { business_name: script.business_name }
-  : { business_name: script.business_name, services: script.services, questions: script.questions, tone: script.tone };
+      ? { business_name: script.business_name }
+      : { business_name: script.business_name, services: script.services, questions: script.questions, tone: script.tone };
     const updatedScripts = { ...scripts, [selectedNumber]: scriptToSave };
     await supabase.from('clients').update({ bot_script: updatedScripts }).eq('user_id', userId);
     setScripts(updatedScripts);
@@ -440,7 +440,7 @@ function ScriptSettings({ clientPlan, userId, allNumbers }) {
             <p style={{ fontWeight: 600, color: '#818cf8', marginBottom: '4px', fontSize: '0.9rem' }}>Available on Scale & Business</p>
             <p style={{ fontSize: '0.82rem', color: C.text }}>Upgrade to customize your VoiceBot's script and personality.</p>
           </div>
-          <a href="/pricing" style={{ padding: '8px 16px', background: '#4f46e5', color: 'white', textDecoration: 'none', borderRadius: '8px', fontSize: '0.82rem', fontWeight: 600, whiteSpace: 'nowrap' }}>Upgrade →</a>
+          <a href="/pricing" style={{ padding: '8px 16px', background: '#4f46e5', color: 'white', textDecoration: 'none', borderRadius: '8px', fontSize: '0.82rem', fontWeight: 600, whiteSpace: 'nowrap' }}>Upgrade â†’</a>
         </div>
       </div>
     );
@@ -493,38 +493,38 @@ function ScriptSettings({ clientPlan, userId, allNumbers }) {
           </>
         )}
         <div style={{ borderTop: `1px solid ${C.border}`, paddingTop: '16px' }}>
-  <p style={{ fontSize: '0.78rem', fontWeight: 600, color: C.label, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '12px' }}>Bot capabilities</p>
-  <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-    {[
-      { key: 'allow_modify', label: 'Allow appointment modification', desc: 'Callers can ask to reschedule existing appointments' },
-      { key: 'allow_cancel', label: 'Allow appointment cancellation', desc: 'Callers can ask to cancel existing appointments' },
-    ].map(cap => (
-      <div key={cap.key} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 14px', background: C.bg, border: `1px solid ${C.border}`, borderRadius: '10px' }}>
-        <div>
-          <p style={{ fontSize: '0.85rem', fontWeight: 600, color: 'white', marginBottom: '2px' }}>{cap.label}</p>
-          <p style={{ fontSize: '0.75rem', color: C.text }}>{cap.desc}</p>
+          <p style={{ fontSize: '0.78rem', fontWeight: 600, color: C.label, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '12px' }}>Bot capabilities</p>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+            {[
+              { key: 'allow_modify', label: 'Allow appointment modification', desc: 'Callers can ask to reschedule existing appointments' },
+              { key: 'allow_cancel', label: 'Allow appointment cancellation', desc: 'Callers can ask to cancel existing appointments' },
+            ].map(cap => (
+              <div key={cap.key} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 14px', background: C.bg, border: `1px solid ${C.border}`, borderRadius: '10px' }}>
+                <div>
+                  <p style={{ fontSize: '0.85rem', fontWeight: 600, color: 'white', marginBottom: '2px' }}>{cap.label}</p>
+                  <p style={{ fontSize: '0.75rem', color: C.text }}>{cap.desc}</p>
+                </div>
+                <button
+                  onClick={() => setField(cap.key, script[cap.key] === false ? true : false)}
+                  style={{
+                    width: '40px', height: '22px', borderRadius: '100px', border: 'none', cursor: 'pointer', flexShrink: 0,
+                    background: script[cap.key] === false ? C.border : '#4f46e5',
+                    position: 'relative', transition: 'background 0.2s',
+                  }}
+                >
+                  <div style={{
+                    width: '16px', height: '16px', borderRadius: '50%', background: 'white',
+                    position: 'absolute', top: '3px',
+                    left: script[cap.key] === false ? '3px' : '21px',
+                    transition: 'left 0.2s',
+                  }} />
+                </button>
+              </div>
+            ))}
+          </div>
         </div>
-        <button
-          onClick={() => setField(cap.key, script[cap.key] === false ? true : false)}
-          style={{
-            width: '40px', height: '22px', borderRadius: '100px', border: 'none', cursor: 'pointer', flexShrink: 0,
-            background: script[cap.key] === false ? C.border : '#4f46e5',
-            position: 'relative', transition: 'background 0.2s',
-          }}
-        >
-          <div style={{
-            width: '16px', height: '16px', borderRadius: '50%', background: 'white',
-            position: 'absolute', top: '3px',
-            left: script[cap.key] === false ? '3px' : '21px',
-            transition: 'left 0.2s',
-          }} />
-        </button>
-      </div>
-    ))}
-  </div>
-</div>
         <button onClick={handleSave} disabled={saving} style={{ padding: '10px 20px', background: saved ? 'rgba(34,197,94,0.12)' : 'white', color: saved ? '#4ade80' : 'black', border: saved ? '1px solid rgba(34,197,94,0.3)' : 'none', borderRadius: '10px', fontWeight: 700, fontSize: '0.875rem', cursor: 'pointer', alignSelf: 'flex-start', transition: 'all 0.2s' }}>
-          {saving ? 'Saving...' : saved ? '✓ Saved' : 'Save changes'}
+          {saving ? 'Saving...' : saved ? 'âœ“ Saved' : 'Save changes'}
         </button>
       </div>
     </div>
@@ -608,7 +608,7 @@ export default function Dashboard() {
   const [showCalendlyModal, setShowCalendlyModal] = useState(false);
   const [showChangePlan, setShowChangePlan] = useState(false);
   const [selectedNumber, setSelectedNumber] = useState('all');
-const [showNumberDropdown, setShowNumberDropdown] = useState(false);
+  const [showNumberDropdown, setShowNumberDropdown] = useState(false);
 
   useEffect(() => {
     const check = () => setIsMobile(window.innerWidth < 768);
@@ -665,6 +665,27 @@ const [showNumberDropdown, setShowNumberDropdown] = useState(false);
     setShowChangePlan(false);
   };
 
+  // âœ… NOUVEAU â€” Disconnect Google Calendar
+  const handleDisconnectGoogle = async () => {
+    await supabase.from('clients').update({
+      google_refresh_token: null,
+      google_connected: false,
+      calendar_type: null
+    }).eq('user_id', user.id);
+    setGoogleConnected(false);
+    setClientData(prev => ({ ...prev, google_connected: false, calendar_type: null }));
+  };
+
+  // âœ… NOUVEAU â€” Disconnect Calendly
+  const handleDisconnectCalendly = async () => {
+    await supabase.from('clients').update({
+      calendly_token: null,
+      calendly_uri: null,
+      calendar_type: null
+    }).eq('user_id', user.id);
+    setClientData(prev => ({ ...prev, calendly_token: null, calendar_type: null }));
+  };
+
   if (loading) return (
     <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: C.bg }}>
       <p style={{ color: C.text, fontSize: '0.9rem' }}>Loading...</p>
@@ -672,14 +693,14 @@ const [showNumberDropdown, setShowNumberDropdown] = useState(false);
   );
 
   const allNumbers = [
-  ...(clientData?.twilio_number ? [clientData.twilio_number] : []),
-  ...(clientData?.twilio_numbers || [])
-];
-const filteredCalls = selectedNumber === 'all' 
-  ? calls 
-  : calls.filter(c => c.twilio_number === selectedNumber);
-const rdvCount = filteredCalls.filter(c => c.rdv_pris).length;
-const totalDuration = filteredCalls.reduce((acc, c) => acc + (c.duration || 0), 0);
+    ...(clientData?.twilio_number ? [clientData.twilio_number] : []),
+    ...(clientData?.twilio_numbers || [])
+  ];
+  const filteredCalls = selectedNumber === 'all'
+    ? calls
+    : calls.filter(c => c.twilio_number === selectedNumber);
+  const rdvCount = filteredCalls.filter(c => c.rdv_pris).length;
+  const totalDuration = filteredCalls.reduce((acc, c) => acc + (c.duration || 0), 0);
   const plan = clientData?.plan ? PLAN_LABELS[clientData.plan] : null;
 
   const navItems = [
@@ -692,8 +713,8 @@ const totalDuration = filteredCalls.reduce((acc, c) => acc + (c.duration || 0), 
   ];
 
   const setupSteps = [
-    { number: '01', title: 'Choose a plan', done: !!plan, desc: 'Subscribe to one of our plans to activate your VoiceBot. You can upgrade or cancel anytime.', action: !plan ? <a href="/pricing" style={{ display: 'inline-block', marginTop: '12px', padding: '8px 18px', background: '#4f46e5', color: 'white', textDecoration: 'none', borderRadius: '8px', fontSize: '0.85rem', fontWeight: 600 }}>View plans →</a> : null },
-    { number: '02', title: 'Connect Google Calendar', done: googleConnected, desc: 'Link your Google Calendar so your VoiceBot can automatically book appointments in real time.', action: !googleConnected ? <a href="/api/google/auth" style={{ display: 'inline-block', marginTop: '12px', padding: '8px 18px', background: '#1a73e8', color: 'white', textDecoration: 'none', borderRadius: '8px', fontSize: '0.85rem', fontWeight: 600 }}>Connect Google →</a> : null },
+    { number: '01', title: 'Choose a plan', done: !!plan, desc: 'Subscribe to one of our plans to activate your VoiceBot. You can upgrade or cancel anytime.', action: !plan ? <a href="/pricing" style={{ display: 'inline-block', marginTop: '12px', padding: '8px 18px', background: '#4f46e5', color: 'white', textDecoration: 'none', borderRadius: '8px', fontSize: '0.85rem', fontWeight: 600 }}>View plans â†’</a> : null },
+    { number: '02', title: 'Connect Google Calendar', done: googleConnected, desc: 'Link your Google Calendar so your VoiceBot can automatically book appointments in real time.', action: !googleConnected ? <a href="/api/google/auth" style={{ display: 'inline-block', marginTop: '12px', padding: '8px 18px', background: '#1a73e8', color: 'white', textDecoration: 'none', borderRadius: '8px', fontSize: '0.85rem', fontWeight: 600 }}>Connect Google â†’</a> : null },
     { number: '03', title: 'Receive your phone number', done: !!clientData?.twilio_number, desc: clientData?.twilio_number ? `Your dedicated number is ${clientData.twilio_number}.` : 'Once your plan is active, we will assign you a dedicated phone number within 24 hours.' },
     {
       number: '04', title: 'Forward your business number to VoiceBot', done: false,
@@ -703,7 +724,7 @@ const totalDuration = filteredCalls.reduce((acc, c) => acc + (c.duration || 0), 
           {[
             { label: 'Mobile (AT&T, Verizon, T-Mobile)', value: `Dial **21*${clientData?.twilio_number || '+1XXXXXXXXXX'}# from your phone` },
             { label: 'Landline / VoIP', value: 'Contact your provider and ask to enable unconditional call forwarding to your VoiceBot number' },
-            { label: 'Business phone (RingCentral, Dialpad, Nextiva)', value: 'Go to your admin settings → Call forwarding → Enter your VoiceBot number' },
+            { label: 'Business phone (RingCentral, Dialpad, Nextiva)', value: 'Go to your admin settings â†’ Call forwarding â†’ Enter your VoiceBot number' },
           ].map(item => (
             <div key={item.label} style={{ background: C.bg, border: `1px solid ${C.border}`, borderRadius: '10px', padding: '12px 16px' }}>
               <p style={{ fontSize: '0.75rem', color: C.label, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '4px' }}>{item.label}</p>
@@ -812,7 +833,7 @@ const totalDuration = filteredCalls.reduce((acc, c) => acc + (c.duration || 0), 
                     {usedPercent >= 80 && (
                       <div style={{ marginTop: '12px', padding: '10px 14px', background: 'rgba(251,191,36,0.08)', border: '1px solid rgba(251,191,36,0.2)', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px' }}>
                         <p style={{ fontSize: '0.82rem', color: '#fbbf24' }}>You're running low on minutes.</p>
-                        <button onClick={() => setActivePage('billing')} style={{ fontSize: '0.78rem', fontWeight: 600, color: '#fbbf24', background: 'none', border: '1px solid rgba(251,191,36,0.3)', borderRadius: '6px', padding: '4px 10px', cursor: 'pointer', whiteSpace: 'nowrap' }}>Buy more →</button>
+                        <button onClick={() => setActivePage('billing')} style={{ fontSize: '0.78rem', fontWeight: 600, color: '#fbbf24', background: 'none', border: '1px solid rgba(251,191,36,0.3)', borderRadius: '6px', padding: '4px 10px', cursor: 'pointer', whiteSpace: 'nowrap' }}>Buy more â†’</button>
                       </div>
                     )}
                   </div>
@@ -822,7 +843,7 @@ const totalDuration = filteredCalls.reduce((acc, c) => acc + (c.duration || 0), 
               <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', padding: '20px' }}>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
                   <p style={{ fontSize: '0.75rem', color: C.text, textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600 }}>Recent calls</p>
-                  {calls.length > 0 && <button onClick={() => setActivePage('calls')} style={{ fontSize: '0.78rem', color: '#818cf8', background: 'none', border: 'none', cursor: 'pointer', padding: 0, fontWeight: 600 }}>View all →</button>}
+                  {calls.length > 0 && <button onClick={() => setActivePage('calls')} style={{ fontSize: '0.78rem', color: '#818cf8', background: 'none', border: 'none', cursor: 'pointer', padding: 0, fontWeight: 600 }}>View all â†’</button>}
                 </div>
                 {filteredCalls.length === 0 ? (
                   <div style={{ textAlign: 'center', padding: '24px 0' }}>
@@ -940,31 +961,86 @@ const totalDuration = filteredCalls.reduce((acc, c) => acc + (c.duration || 0), 
                 <h1 style={{ fontSize: isMobile ? '1.3rem' : '1.5rem', fontWeight: 800, letterSpacing: '-0.03em', marginBottom: '4px' }}>Settings</h1>
                 <p style={{ fontSize: '0.85rem', color: C.text }}>Manage your account and integrations.</p>
               </div>
+
+              {/* âœ… CALENDAR INTEGRATION â€” sÃ©lection exclusive */}
               <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', padding: '20px' }}>
                 <p style={{ fontSize: '0.75rem', color: C.text, textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600, marginBottom: '16px' }}>Calendar integration</p>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 16px', background: C.bg, border: `1px solid ${googleConnected ? 'rgba(74,222,128,0.2)' : C.border}`, borderRadius: '12px' }}>
-                    <div>
-                      <p style={{ fontWeight: 600, fontSize: '0.9rem', marginBottom: '2px' }}>Google Calendar</p>
-                      <p style={{ fontSize: '0.78rem', color: C.text }}>{googleConnected ? 'Connected — appointments created automatically on your calendar' : 'Appointments booked automatically — no action needed'}</p>
+                {(() => {
+                  const activeCalendar = clientData?.calendar_type || (googleConnected ? 'google' : null);
+                  return (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                      {/* Google Calendar */}
+                      <div style={{
+                        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                        padding: '14px 16px', background: C.bg,
+                        border: `1px solid ${activeCalendar === 'google' ? 'rgba(74,222,128,0.2)' : C.border}`,
+                        borderRadius: '12px',
+                        opacity: activeCalendar && activeCalendar !== 'google' ? 0.4 : 1,
+                        pointerEvents: activeCalendar && activeCalendar !== 'google' ? 'none' : 'auto',
+                        transition: 'opacity 0.2s',
+                      }}>
+                        <div>
+                          <p style={{ fontWeight: 600, fontSize: '0.9rem', marginBottom: '2px' }}>Google Calendar</p>
+                          <p style={{ fontSize: '0.78rem', color: C.text }}>
+                            {activeCalendar === 'google'
+                              ? 'Connected â€” appointments created automatically on your calendar'
+                              : 'Appointments booked automatically â€” no action needed'}
+                          </p>
+                        </div>
+                        {activeCalendar === 'google' ? (
+                          <button onClick={handleDisconnectGoogle} style={{
+                            padding: '8px 16px',
+                            background: 'rgba(255,255,255,0.06)',
+                            border: `1px solid ${C.border}`,
+                            color: '#e5e7eb',
+                            borderRadius: '8px', fontSize: '0.82rem', fontWeight: 600, cursor: 'pointer', whiteSpace: 'nowrap'
+                          }}>Disconnect</button>
+                        ) : (
+                          <a href="/api/google/auth" style={{
+                            padding: '8px 16px', background: '#1a73e8', color: 'white',
+                            textDecoration: 'none', borderRadius: '8px', fontSize: '0.82rem', fontWeight: 600, whiteSpace: 'nowrap'
+                          }}>Connect â†’</a>
+                        )}
+                      </div>
+
+                      {/* Calendly */}
+                      <div style={{
+                        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                        padding: '14px 16px', background: C.bg,
+                        border: `1px solid ${activeCalendar === 'calendly' ? 'rgba(74,222,128,0.2)' : C.border}`,
+                        borderRadius: '12px',
+                        opacity: activeCalendar && activeCalendar !== 'calendly' ? 0.4 : 1,
+                        pointerEvents: activeCalendar && activeCalendar !== 'calendly' ? 'none' : 'auto',
+                        transition: 'opacity 0.2s',
+                      }}>
+                        <div>
+                          <p style={{ fontWeight: 600, fontSize: '0.9rem', marginBottom: '2px' }}>Calendly</p>
+                          <p style={{ fontSize: '0.78rem', color: C.text }}>
+                            {activeCalendar === 'calendly'
+                              ? 'Connected â€” caller receives a Calendly link by SMS to confirm'
+                              : 'Bot collects info & sends caller a Calendly link to confirm'}
+                          </p>
+                        </div>
+                        {activeCalendar === 'calendly' ? (
+                          <button onClick={handleDisconnectCalendly} style={{
+                            padding: '8px 16px',
+                            background: 'rgba(255,255,255,0.06)',
+                            border: `1px solid ${C.border}`,
+                            color: '#e5e7eb',
+                            borderRadius: '8px', fontSize: '0.82rem', fontWeight: 600, cursor: 'pointer', whiteSpace: 'nowrap'
+                          }}>Disconnect</button>
+                        ) : (
+                          <button onClick={() => setShowCalendlyModal(true)} style={{
+                            padding: '8px 16px', background: '#006bff', color: 'white',
+                            border: 'none', borderRadius: '8px', fontSize: '0.82rem', fontWeight: 600, cursor: 'pointer', whiteSpace: 'nowrap'
+                          }}>Connect â†’</button>
+                        )}
+                      </div>
                     </div>
-                    {!googleConnected
-                      ? <a href="/api/google/auth" style={{ padding: '8px 16px', background: '#1a73e8', color: 'white', textDecoration: 'none', borderRadius: '8px', fontSize: '0.82rem', fontWeight: 600, whiteSpace: 'nowrap' }}>Connect →</a>
-                      : <span style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '6px 12px', background: 'rgba(34,197,94,0.08)', border: '1px solid rgba(34,197,94,0.2)', borderRadius: '8px', color: '#4ade80', fontSize: '0.82rem', fontWeight: 600 }}><IconCheck /> Connected</span>
-                    }
-                  </div>
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 16px', background: C.bg, border: `1px solid ${clientData?.calendly_token ? 'rgba(74,222,128,0.2)' : C.border}`, borderRadius: '12px' }}>
-                    <div>
-                      <p style={{ fontWeight: 600, fontSize: '0.9rem', marginBottom: '2px' }}>Calendly</p>
-                      <p style={{ fontSize: '0.78rem', color: C.text }}>{clientData?.calendly_token ? 'Connected — caller receives a Calendly link by SMS to confirm' : 'Bot collects info & sends caller a Calendly link to confirm'}</p>
-                    </div>
-                    {clientData?.calendly_token
-                      ? <span style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '6px 12px', background: 'rgba(34,197,94,0.08)', border: '1px solid rgba(34,197,94,0.2)', borderRadius: '8px', color: '#4ade80', fontSize: '0.82rem', fontWeight: 600 }}><IconCheck /> Connected</span>
-                      : <button onClick={() => setShowCalendlyModal(true)} style={{ padding: '8px 16px', background: '#006bff', color: 'white', border: 'none', borderRadius: '8px', fontSize: '0.82rem', fontWeight: 600, cursor: 'pointer', whiteSpace: 'nowrap' }}>Connect →</button>
-                    }
-                  </div>
-                </div>
+                  );
+                })()}
               </div>
+
               <ScriptSettings clientPlan={clientData?.plan} userId={user?.id} allNumbers={[...(clientData?.twilio_number ? [clientData.twilio_number] : []), ...(clientData?.twilio_numbers || [])]} />
               <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', padding: '20px' }}>
                 <p style={{ fontSize: '0.75rem', color: C.text, textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600, marginBottom: '16px' }}>Account</p>
@@ -1000,7 +1076,7 @@ const totalDuration = filteredCalls.reduce((acc, c) => acc + (c.duration || 0), 
                       <p style={{ fontWeight: 600, color: '#818cf8', marginBottom: '4px' }}>No active plan</p>
                       <p style={{ fontSize: '0.85rem', color: C.text }}>Subscribe to activate your VoiceBot.</p>
                     </div>
-                    <a href="/pricing" style={{ padding: '9px 20px', background: '#4f46e5', color: 'white', textDecoration: 'none', borderRadius: '9px', fontSize: '0.875rem', fontWeight: 600 }}>View plans →</a>
+                    <a href="/pricing" style={{ padding: '9px 20px', background: '#4f46e5', color: 'white', textDecoration: 'none', borderRadius: '9px', fontSize: '0.875rem', fontWeight: 600 }}>View plans â†’</a>
                   </div>
                 )}
               </div>
@@ -1014,7 +1090,7 @@ const totalDuration = filteredCalls.reduce((acc, c) => acc + (c.duration || 0), 
                     {clientData?.plan === 'business' ? (
                       <button onClick={() => handleCheckout('price_1Ta0HrFbv1QHIqBx45XsDToe', 'subscription')} style={{ padding: '8px 16px', background: '#4f46e5', color: 'white', border: 'none', borderRadius: '8px', fontSize: '0.82rem', fontWeight: 600, cursor: 'pointer', whiteSpace: 'nowrap' }}>+ Add number</button>
                     ) : (
-                      <a href="/pricing" style={{ fontSize: '0.78rem', color: '#818cf8', background: 'rgba(79,70,229,0.08)', border: '1px solid rgba(79,70,229,0.2)', padding: '6px 12px', borderRadius: '8px', textDecoration: 'none', fontWeight: 600, whiteSpace: 'nowrap' }}>Upgrade →</a>
+                      <a href="/pricing" style={{ fontSize: '0.78rem', color: '#818cf8', background: 'rgba(79,70,229,0.08)', border: '1px solid rgba(79,70,229,0.2)', padding: '6px 12px', borderRadius: '8px', textDecoration: 'none', fontWeight: 600, whiteSpace: 'nowrap' }}>Upgrade â†’</a>
                     )}
                   </div>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
