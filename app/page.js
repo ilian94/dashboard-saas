@@ -325,11 +325,14 @@ export default function Home() {
         </div>
       </section>
 
-      {/* CTA INTERMEDIAIRE */}
-      <section style={{ textAlign: 'center', padding: '72px 20px', borderTop: `1px solid ${C.border}`, borderBottom: `1px solid ${C.border}`, background: C.bgSecondary }}>
-        <h2 style={{ fontSize: 'clamp(1.4rem, 3vw, 2rem)', fontWeight: 700, letterSpacing: '-0.03em', marginBottom: '12px', color: C.text }}>Stop losing clients to voicemail</h2>
-        <p style={{ color: C.textSecondary, marginBottom: '28px', fontSize: '0.95rem' }}>7-day money-back guarantee. No credit card required.</p>
-        <Link href="/register" style={{ background: C.accent, color: '#fff', textDecoration: 'none', fontWeight: 700, fontSize: '0.95rem', padding: '14px 32px', borderRadius: '10px' }}>Start for free</Link>
+      {/* CTA FINAL */}
+      <section style={{ margin: '0 auto 80px', background: C.text, borderRadius: '20px', textAlign: 'center', padding: '80px 40px', maxWidth: '1060px' }}>
+        <h2 style={{ fontSize: 'clamp(1.8rem, 4vw, 3rem)', fontWeight: 700, letterSpacing: '-0.04em', marginBottom: '14px', color: '#fff' }}>Your AI receptionist<br />starts today.</h2>
+        <p style={{ color: '#9ca3af', marginBottom: '36px', fontSize: '0.95rem' }}>Join 500+ businesses that never miss a call. 7-day money-back guarantee.</p>
+        <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
+          <Link href="/register" style={{ background: '#fff', color: C.text, textDecoration: 'none', fontWeight: 700, fontSize: '1rem', padding: '14px 32px', borderRadius: '10px' }}>Start for free</Link>
+          <Link href="/pricing" style={{ background: 'transparent', color: '#9ca3af', textDecoration: 'none', fontWeight: 500, fontSize: '1rem', padding: '14px 32px', borderRadius: '10px', border: '1px solid #333' }}>See pricing</Link>
+        </div>
       </section>
 
       {/* FAQ */}
@@ -348,24 +351,6 @@ export default function Home() {
                 <p style={{ fontSize: '0.875rem', color: C.textSecondary, lineHeight: 1.7, paddingBottom: '20px', margin: 0 }}>{faq.a}</p>
               )}
             </div>
-          ))}
-        </div>
-      </section>
-
-      {/* CTA FINAL */}
-      <section style={{ margin: '0 auto 80px', background: C.text, borderRadius: '20px', textAlign: 'center', padding: '80px 40px', maxWidth: '1060px' }}>
-        <h2 style={{ fontSize: 'clamp(1.8rem, 4vw, 3rem)', fontWeight: 700, letterSpacing: '-0.04em', marginBottom: '14px', color: '#fff' }}>Your AI receptionist<br />starts today.</h2>
-        <p style={{ color: '#9ca3af', marginBottom: '36px', fontSize: '0.95rem' }}>Join 500+ businesses that never miss a call.</p>
-        <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
-          <Link href="/register" style={{ background: '#fff', color: C.text, textDecoration: 'none', fontWeight: 700, fontSize: '1rem', padding: '14px 32px', borderRadius: '10px' }}>Start for free</Link>
-          <Link href="/pricing" style={{ background: 'transparent', color: '#9ca3af', textDecoration: 'none', fontWeight: 500, fontSize: '1rem', padding: '14px 32px', borderRadius: '10px', border: '1px solid #333' }}>See pricing</Link>
-        </div>
-        <div style={{ display: 'flex', justifyContent: 'center', gap: '28px', marginTop: '24px', flexWrap: 'wrap' }}>
-          {['No credit card required', 'Cancel anytime', 'Live in 5 minutes'].map(t => (
-            <span key={t} style={{ fontSize: '0.8rem', color: '#6b7280', display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#6b7280" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-              {t}
-            </span>
           ))}
         </div>
       </section>
