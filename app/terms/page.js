@@ -1,10 +1,10 @@
 export default function Terms() {
   return (
-    <div style={{ minHeight: '100vh', background: '#0f1117', color: 'white', fontFamily: 'system-ui, sans-serif', padding: '80px 20px' }}>
+    <div style={{ minHeight: '100vh', background: '#f9fafb', color: '#0f0f0f', fontFamily: "'DM Sans', system-ui, sans-serif", padding: '80px 20px' }}>
       <div style={{ maxWidth: '720px', margin: '0 auto' }}>
-        <a href="/" style={{ color: '#6b7280', textDecoration: 'none', fontSize: '0.85rem', display: 'inline-block', marginBottom: '40px' }}>← Back</a>
-        <h1 style={{ fontSize: '2rem', fontWeight: 800, letterSpacing: '-0.03em', marginBottom: '8px' }}>Terms of Service</h1>
-        <p style={{ color: '#6b7280', marginBottom: '48px', fontSize: '0.9rem' }}>Last updated: May 21, 2026</p>
+        <a href="/" style={{ color: '#6b7280', textDecoration: 'none', fontSize: '0.85rem', display: 'inline-block', marginBottom: '40px' }}>Back</a>
+        <h1 style={{ fontSize: '2rem', fontWeight: 700, letterSpacing: '-0.03em', marginBottom: '8px', color: '#0f0f0f' }}>Terms of Service</h1>
+        <p style={{ color: '#9ca3af', marginBottom: '48px', fontSize: '0.9rem' }}>Last updated: May 21, 2026</p>
 
         {[
           { title: '1. Acceptance of Terms', content: 'By accessing or using VoiceBot AI, you agree to be bound by these Terms of Service. If you do not agree to these terms, please do not use our service.' },
@@ -21,9 +21,9 @@ export default function Terms() {
           { title: '12. Changes to Terms', content: 'We reserve the right to modify these terms at any time. We will notify you of significant changes via email. Your continued use of the service after changes constitutes acceptance of the new terms.' },
           { title: '13. Contact Us', content: 'If you have any questions about these Terms of Service, please contact us at: legal@voicebotai.com' },
         ].map(section => (
-          <div key={section.title} style={{ marginBottom: '32px' }}>
-            <h2 style={{ fontSize: '1.1rem', fontWeight: 700, marginBottom: '12px', color: 'white' }}>{section.title}</h2>
-            <p style={{ color: '#6b7280', lineHeight: 1.8, fontSize: '0.95rem' }}>{section.content}</p>
+          <div key={section.title} style={{ marginBottom: '32px', paddingBottom: '32px', borderBottom: '1px solid #e5e7eb' }}>
+            <h2 style={{ fontSize: '1rem', fontWeight: 700, marginBottom: '10px', color: '#0f0f0f' }}>{section.title}</h2>
+            <p style={{ color: '#6b7280', lineHeight: 1.8, fontSize: '0.9rem', margin: 0 }}>{section.content}</p>
           </div>
         ))}
       </div>
