@@ -4,7 +4,17 @@ import { createClient } from "@/lib/supabase/client";
 import Link from "next/link";
 
 const supabase = createClient();
-const C = { bg: '#0f1117', card: '#161b27', border: '#1e2433', input: '#0f1117', text: '#6b7280', label: '#9ca3af' };
+
+const C = {
+  bg: '#f9fafb',
+  card: '#ffffff',
+  border: '#e5e7eb',
+  input: '#f9fafb',
+  text: '#6b7280',
+  label: '#9ca3af',
+  textPrimary: '#0f0f0f',
+  accent: '#6366f1',
+};
 
 const GoogleIcon = () => (
   <svg width="18" height="18" viewBox="0 0 48 48">
@@ -48,48 +58,60 @@ export default function Register() {
   };
 
   return (
-    <div style={{ minHeight: '100vh', background: C.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px', fontFamily: 'system-ui, sans-serif' }}>
-      <div style={{ width: '100%', maxWidth: '420px', background: C.card, border: `1px solid ${C.border}`, borderRadius: '20px', padding: '40px', display: 'flex', flexDirection: 'column', gap: '28px' }}>
-        <div>
-          <Link href="/" style={{ color: C.text, textDecoration: 'none', fontSize: '0.85rem', display: 'inline-block', marginBottom: '20px' }}>← Back</Link>
-          <h1 style={{ fontSize: '1.6rem', fontWeight: 800, color: 'white', letterSpacing: '-0.03em', marginBottom: '6px' }}>Create your account</h1>
-          <p style={{ fontSize: '0.875rem', color: C.text }}>Get started in minutes. No credit card required.</p>
+    <div style={{ minHeight: '100vh', background: C.bg, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '20px', fontFamily: "'DM Sans', system-ui, sans-serif" }}>
+      <div style={{ width: '100%', maxWidth: '420px' }}>
+
+        <div style={{ marginBottom: '32px', textAlign: 'center' }}>
+          <Link href="/" style={{ fontWeight: 700, fontSize: '1rem', color: C.textPrimary, textDecoration: 'none', letterSpacing: '-0.02em' }}>VoiceBot AI</Link>
         </div>
 
-        {/* Google Button */}
-        <button onClick={handleGoogle} disabled={googleLoading} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', padding: '13px', background: 'white', color: '#111', border: 'none', borderRadius: '10px', fontWeight: 700, fontSize: '0.95rem', cursor: 'pointer', width: '100%' }}>
-          <GoogleIcon />
-          {googleLoading ? 'Redirecting...' : 'Continue with Google'}
-        </button>
+        <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '20px', padding: '40px', display: 'flex', flexDirection: 'column', gap: '24px', boxShadow: '0 1px 4px rgba(0,0,0,0.04)' }}>
 
-        {/* Divider */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <div style={{ flex: 1, height: 1, background: C.border }} />
-          <span style={{ color: C.text, fontSize: '0.8rem' }}>or</span>
-          <div style={{ flex: 1, height: 1, background: C.border }} />
-        </div>
+          <div>
+            <h1 style={{ fontSize: '1.5rem', fontWeight: 700, color: C.textPrimary, letterSpacing: '-0.03em', marginBottom: '6px' }}>Create your account</h1>
+            <p style={{ fontSize: '0.875rem', color: C.text }}>Get started in minutes. No credit card required.</p>
+          </div>
 
-        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-          {[
-            { name: 'company', label: 'Company name', type: 'text', placeholder: 'Acme Inc.' },
-            { name: 'email', label: 'Email', type: 'email', placeholder: 'you@company.com' },
-            { name: 'password', label: 'Password', type: 'password', placeholder: 'Min. 6 characters', minLength: 6 },
-          ].map(field => (
-            <div key={field.name} style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-              <label style={{ fontSize: '0.8rem', fontWeight: 600, color: C.label, letterSpacing: '0.05em', textTransform: 'uppercase' }}>{field.label}</label>
-              <input type={field.type} name={field.name} value={form[field.name]} onChange={handleChange} placeholder={field.placeholder} required minLength={field.minLength}
-                style={{ padding: '12px 16px', borderRadius: '10px', border: `1px solid ${C.border}`, background: C.input, color: 'white', fontSize: '0.9rem', outline: 'none' }} />
-            </div>
-          ))}
-          {error && <p style={{ fontSize: '0.85rem', color: '#f87171', background: 'rgba(248,113,113,0.08)', padding: '10px 14px', borderRadius: '8px', border: '1px solid rgba(248,113,113,0.2)' }}>{error}</p>}
-          <button type="submit" disabled={loading} style={{ padding: '13px', background: '#4f46e5', color: 'white', border: 'none', borderRadius: '10px', fontWeight: 700, fontSize: '0.95rem', cursor: 'pointer', marginTop: '4px' }}>
-            {loading ? 'Creating account...' : 'Create account →'}
+          <button onClick={handleGoogle} disabled={googleLoading} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', padding: '12px', background: '#fff', color: C.textPrimary, border: `1px solid ${C.border}`, borderRadius: '10px', fontWeight: 600, fontSize: '0.9rem', cursor: 'pointer', width: '100%', fontFamily: "'DM Sans', system-ui, sans-serif" }}>
+            <GoogleIcon />
+            {googleLoading ? 'Redirecting...' : 'Continue with Google'}
           </button>
-        </form>
 
-        <p style={{ fontSize: '0.85rem', textAlign: 'center', color: C.text }}>
-          Already have an account?{' '}<Link href="/login" style={{ color: 'white', textDecoration: 'none', fontWeight: 600 }}>Sign in</Link>
-        </p>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <div style={{ flex: 1, height: 1, background: C.border }} />
+            <span style={{ color: C.label, fontSize: '0.8rem' }}>or</span>
+            <div style={{ flex: 1, height: 1, background: C.border }} />
+          </div>
+
+          <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            {[
+              { name: 'company', label: 'Company name', type: 'text', placeholder: 'Acme Inc.' },
+              { name: 'email', label: 'Email', type: 'email', placeholder: 'you@company.com' },
+              { name: 'password', label: 'Password', type: 'password', placeholder: 'Min. 6 characters', minLength: 6 },
+            ].map(field => (
+              <div key={field.name} style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                <label style={{ fontSize: '0.78rem', fontWeight: 600, color: C.label, letterSpacing: '0.05em', textTransform: 'uppercase' }}>{field.label}</label>
+                <input type={field.type} name={field.name} value={form[field.name]} onChange={handleChange} placeholder={field.placeholder} required minLength={field.minLength}
+                  style={{ padding: '12px 16px', borderRadius: '10px', border: `1px solid ${C.border}`, background: C.input, color: C.textPrimary, fontSize: '0.9rem', outline: 'none', width: '100%', boxSizing: 'border-box' }} />
+              </div>
+            ))}
+            {error && <p style={{ fontSize: '0.85rem', color: '#ef4444', background: '#fef2f2', padding: '10px 14px', borderRadius: '8px', border: '1px solid #fecaca' }}>{error}</p>}
+            <button type="submit" disabled={loading} style={{ padding: '13px', background: C.accent, color: 'white', border: 'none', borderRadius: '10px', fontWeight: 700, fontSize: '0.95rem', cursor: 'pointer', marginTop: '4px', fontFamily: "'DM Sans', system-ui, sans-serif" }}>
+              {loading ? 'Creating account...' : 'Create account'}
+            </button>
+          </form>
+
+          <p style={{ fontSize: '0.85rem', textAlign: 'center', color: C.text }}>
+            Already have an account?{' '}<Link href="/login" style={{ color: C.accent, textDecoration: 'none', fontWeight: 600 }}>Sign in</Link>
+          </p>
+
+          <p style={{ fontSize: '0.78rem', textAlign: 'center', color: C.label, lineHeight: 1.5 }}>
+            By creating an account, you agree to our{' '}
+            <Link href="/terms" style={{ color: C.text, textDecoration: 'underline' }}>Terms</Link>
+            {' '}and{' '}
+            <Link href="/privacy" style={{ color: C.text, textDecoration: 'underline' }}>Privacy Policy</Link>.
+          </p>
+        </div>
       </div>
     </div>
   );
