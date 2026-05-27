@@ -4,12 +4,22 @@ import { createClient } from "@/lib/supabase/client";
 
 const supabase = createClient();
 
-const C = { bg: '#0f1117', sidebar: '#0d1117', card: '#161b27', border: '#1e2433', text: '#6b7280', label: '#9ca3af' };
+const C = {
+  bg: '#ffffff',
+  sidebar: '#fafafa',
+  card: '#ffffff',
+  cardHover: '#f9fafb',
+  border: '#e5e7eb',
+  text: '#6b7280',
+  label: '#9ca3af',
+  textPrimary: '#0f0f0f',
+  accent: '#6366f1',
+};
 
 const PLAN_LABELS = {
-  starter: { label: "Starter Plan", color: "#60a5fa", minutes: 500 },
-  scale: { label: "Scale Plan", color: "#a78bfa", minutes: 2000 },
-  business: { label: "Business Plan", color: "#fbbf24", minutes: 6000 },
+  starter: { label: "Starter Plan", color: "#6366f1", minutes: 500 },
+  scale: { label: "Scale Plan", color: "#8b5cf6", minutes: 2000 },
+  business: { label: "Business Plan", color: "#f59e0b", minutes: 6000 },
 };
 
 const PLAN_RANK = { starter: 1, scale: 2, business: 3 };
@@ -119,28 +129,12 @@ function SetupProgress({ plan, googleConnected, twilioNumber, callsCount, onGoSe
           from { transform: rotate(-180deg) scale(0.4); opacity: 0; }
           to { transform: rotate(0deg) scale(1); opacity: 1; }
         }
-        .setup-float-btn {
-          animation: setupBtnAppear 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
-        }
-        .setup-float-btn:hover {
-          transform: scale(1.1) !important;
-          box-shadow: 0 0 0 4px rgba(79,70,229,0.25), 0 8px 32px rgba(79,70,229,0.35) !important;
-        }
-        .setup-float-btn:active {
-          transform: scale(0.96) !important;
-        }
-        .setup-popup-card {
-          transition: opacity 0.22s ease, transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-        .setup-popup-card.hidden {
-          opacity: 0;
-          transform: translateY(8px) scale(0.95);
-          pointer-events: none;
-        }
-        .setup-popup-card.shown {
-          opacity: 1;
-          transform: translateY(0) scale(1);
-        }
+        .setup-float-btn { animation: setupBtnAppear 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both; }
+        .setup-float-btn:hover { transform: scale(1.1) !important; box-shadow: 0 0 0 4px rgba(99,102,241,0.2), 0 8px 32px rgba(99,102,241,0.25) !important; }
+        .setup-float-btn:active { transform: scale(0.96) !important; }
+        .setup-popup-card { transition: opacity 0.22s ease, transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1); }
+        .setup-popup-card.hidden { opacity: 0; transform: translateY(8px) scale(0.95); pointer-events: none; }
+        .setup-popup-card.shown { opacity: 1; transform: translateY(0) scale(1); }
       `}</style>
 
       <button
@@ -157,22 +151,22 @@ function SetupProgress({ plan, googleConnected, twilioNumber, callsCount, onGoSe
         }}
         style={{
           position: 'fixed', left: pos.x, top: pos.y, zIndex: 500,
-          background: C.card, border: `1px solid ${C.border}`,
+          background: '#fff', border: `1px solid ${C.border}`,
           borderRadius: '50%', width: '56px', height: '56px',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
           cursor: 'pointer', padding: 0, touchAction: 'none',
           transition: dragging ? 'none' : 'left 0.25s ease, top 0.25s ease, transform 0.18s ease, box-shadow 0.18s ease',
-          boxShadow: '0 4px 20px rgba(0,0,0,0.4)',
+          boxShadow: '0 4px 20px rgba(0,0,0,0.1)',
         }}
         title="Setup progress"
       >
         <svg width="56" height="56" viewBox="0 0 56 56">
           <circle cx="28" cy="28" r={radius} fill="none" stroke={C.border} strokeWidth="3" />
-          <circle cx="28" cy="28" r={radius} fill="none" stroke="#4f46e5" strokeWidth="3"
+          <circle cx="28" cy="28" r={radius} fill="none" stroke={C.accent} strokeWidth="3"
             strokeDasharray={circumference} strokeDashoffset={strokeDashoffset}
             strokeLinecap="round" transform="rotate(-90 28 28)"
             style={{ transition: 'stroke-dashoffset 0.4s ease' }} />
-          <text x="28" y="28" textAnchor="middle" dominantBaseline="central" fill="white" fontSize="11" fontWeight="700">{completed}/{total}</text>
+          <text x="28" y="28" textAnchor="middle" dominantBaseline="central" fill={C.textPrimary} fontSize="11" fontWeight="700">{completed}/{total}</text>
         </svg>
       </button>
 
@@ -186,60 +180,40 @@ function SetupProgress({ plan, googleConnected, twilioNumber, callsCount, onGoSe
             left: isRight ? 'auto' : pos.x,
             right: isRight ? window.innerWidth - pos.x + 12 : 'auto',
             top: popupAbove ? pos.y - 210 : pos.y + 64,
-            zIndex: 501, background: C.card, border: `1px solid ${C.border}`,
+            zIndex: 501, background: '#fff', border: `1px solid ${C.border}`,
             borderRadius: '16px', padding: '16px 18px', width: '240px',
-            boxShadow: '0 12px 40px rgba(0,0,0,0.6)', cursor: 'default',
+            boxShadow: '0 12px 40px rgba(0,0,0,0.12)', cursor: 'default',
           }}
         >
           <div style={{ marginBottom: '12px' }}>
-            <p style={{ fontSize: '0.68rem', color: C.text, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '6px' }}>
-              Setup progress
-            </p>
+            <p style={{ fontSize: '0.68rem', color: C.text, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '6px' }}>Setup progress</p>
             <div style={{ height: '3px', background: C.border, borderRadius: '100px', overflow: 'hidden' }}>
-              <div style={{ height: '100%', width: `${percentage}%`, background: 'linear-gradient(90deg, #4f46e5, #818cf8)', borderRadius: '100px', transition: 'width 0.4s ease' }} />
+              <div style={{ height: '100%', width: `${percentage}%`, background: C.accent, borderRadius: '100px', transition: 'width 0.4s ease' }} />
             </div>
           </div>
-
           <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', marginBottom: '12px' }}>
             {steps.map((s, i) => (
               <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <div style={{
-                  width: '16px', height: '16px', borderRadius: '50%', flexShrink: 0,
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  background: s.done ? 'rgba(74,222,128,0.12)' : C.bg,
-                  border: `1px solid ${s.done ? 'rgba(74,222,128,0.35)' : C.border}`,
-                }}>
+                <div style={{ width: '16px', height: '16px', borderRadius: '50%', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', background: s.done ? '#f0fdf4' : '#f9fafb', border: `1px solid ${s.done ? '#bbf7d0' : C.border}` }}>
                   {s.done
-                    ? <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="#4ade80" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                    ? <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="#16a34a" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
                     : <span style={{ width: '4px', height: '4px', borderRadius: '50%', background: C.border, display: 'block' }} />
                   }
                 </div>
-                <span style={{
-                  fontSize: '0.78rem',
-                  color: s.done ? '#6b7280' : 'white',
-                  fontWeight: s.done ? 400 : 500,
-                  textDecoration: s.done ? 'line-through' : 'none',
-                }}>
+                <span style={{ fontSize: '0.78rem', color: s.done ? C.text : C.textPrimary, fontWeight: s.done ? 400 : 500, textDecoration: s.done ? 'line-through' : 'none' }}>
                   {s.label}
                 </span>
               </div>
             ))}
           </div>
-
           <div
             onClick={() => { setVisible(false); setTimeout(() => setShowPopup(false), 250); onGoSetup(); }}
-            style={{
-              padding: '10px 14px',
-              background: 'rgba(79,70,229,0.12)',
-              border: '1px solid rgba(79,70,229,0.25)',
-              borderRadius: '10px',
-              cursor: 'pointer',
-            }}
-            onMouseEnter={e => e.currentTarget.style.background = 'rgba(79,70,229,0.22)'}
-            onMouseLeave={e => e.currentTarget.style.background = 'rgba(79,70,229,0.12)'}
+            style={{ padding: '10px 14px', background: '#ede9fe', border: '1px solid #c4b5fd', borderRadius: '10px', cursor: 'pointer' }}
+            onMouseEnter={e => e.currentTarget.style.background = '#ddd6fe'}
+            onMouseLeave={e => e.currentTarget.style.background = '#ede9fe'}
           >
-            <p style={{ fontSize: '0.68rem', color: '#818cf8', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '2px' }}>Next step</p>
-            <p style={{ fontSize: '0.82rem', fontWeight: 700, color: 'white' }}>{nextStep.label} â†’</p>
+            <p style={{ fontSize: '0.68rem', color: C.accent, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '2px' }}>Next step</p>
+            <p style={{ fontSize: '0.82rem', fontWeight: 700, color: C.textPrimary }}>{nextStep.label}</p>
           </div>
         </div>
       )}
@@ -287,10 +261,10 @@ function ChangePlanModal({ currentPlan, userId, onClose, onSuccess }) {
   const isUpgrade = selectedPlan ? PLAN_RANK[selectedPlan] > PLAN_RANK[currentPlan] : false;
 
   return (
-    <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.7)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: '20px' }}>
-      <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '20px', padding: '28px', width: '100%', maxWidth: '480px' }}>
+    <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: '20px' }}>
+      <div style={{ background: '#fff', border: `1px solid ${C.border}`, borderRadius: '20px', padding: '28px', width: '100%', maxWidth: '480px', boxShadow: '0 24px 64px rgba(0,0,0,0.12)' }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px' }}>
-          <h2 style={{ fontSize: '1.1rem', fontWeight: 700 }}>Change plan</h2>
+          <h2 style={{ fontSize: '1.1rem', fontWeight: 700, color: C.textPrimary }}>Change plan</h2>
           <button onClick={onClose} style={{ background: 'none', border: 'none', color: C.text, cursor: 'pointer' }}><IconX /></button>
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '20px' }}>
@@ -299,31 +273,31 @@ function ChangePlanModal({ currentPlan, userId, onClose, onSuccess }) {
             const isSelected = p.key === selectedPlan;
             return (
               <div key={p.key} onClick={() => !isCurrent && handleSelectPlan(p.key)}
-                style={{ padding: '14px 16px', borderRadius: '12px', border: `1px solid ${isSelected ? '#4f46e5' : isCurrent ? 'rgba(74,222,128,0.3)' : C.border}`, background: isSelected ? 'rgba(79,70,229,0.08)' : C.bg, cursor: isCurrent ? 'default' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                style={{ padding: '14px 16px', borderRadius: '12px', border: `1px solid ${isSelected ? C.accent : isCurrent ? '#bbf7d0' : C.border}`, background: isSelected ? '#ede9fe' : isCurrent ? '#f0fdf4' : '#fafafa', cursor: isCurrent ? 'default' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 <div>
-                  <p style={{ fontWeight: 600, fontSize: '0.9rem', marginBottom: '2px' }}>{p.label}</p>
+                  <p style={{ fontWeight: 600, fontSize: '0.9rem', marginBottom: '2px', color: C.textPrimary }}>{p.label}</p>
                   <p style={{ fontSize: '0.78rem', color: C.text }}>{p.minutes}/month</p>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  <span style={{ fontWeight: 700, fontSize: '0.9rem' }}>{p.price}</span>
-                  {isCurrent && <span style={{ fontSize: '0.7rem', color: '#4ade80', background: 'rgba(74,222,128,0.08)', padding: '2px 8px', borderRadius: '100px', border: '1px solid rgba(74,222,128,0.2)', fontWeight: 600 }}>Current</span>}
+                  <span style={{ fontWeight: 700, fontSize: '0.9rem', color: C.textPrimary }}>{p.price}</span>
+                  {isCurrent && <span style={{ fontSize: '0.7rem', color: '#16a34a', background: '#f0fdf4', padding: '2px 8px', borderRadius: '100px', border: '1px solid #bbf7d0', fontWeight: 600 }}>Current</span>}
                 </div>
               </div>
             );
           })}
         </div>
         {selectedPlan && (
-          <div style={{ background: C.bg, border: `1px solid ${C.border}`, borderRadius: '12px', padding: '14px', marginBottom: '16px' }}>
+          <div style={{ background: '#f9fafb', border: `1px solid ${C.border}`, borderRadius: '12px', padding: '14px', marginBottom: '16px' }}>
             {loadingPreview ? (
               <p style={{ fontSize: '0.85rem', color: C.text }}>Calculating...</p>
             ) : isUpgrade && preview ? (
               <>
-                <p style={{ fontSize: '0.85rem', color: '#e5e7eb', marginBottom: '4px' }}>You'll be charged <span style={{ fontWeight: 700, color: 'white' }}>${preview.amountDue?.toFixed(2)}</span> today (prorated)</p>
+                <p style={{ fontSize: '0.85rem', color: C.textPrimary, marginBottom: '4px' }}>You'll be charged <span style={{ fontWeight: 700 }}>${preview.amountDue?.toFixed(2)}</span> today (prorated)</p>
                 <p style={{ fontSize: '0.8rem', color: C.text }}>Then ${PLAN_OPTIONS.find(p => p.key === selectedPlan)?.price} starting {preview.nextBillingDate}</p>
               </>
             ) : !isUpgrade ? (
               <>
-                <p style={{ fontSize: '0.85rem', color: '#e5e7eb', marginBottom: '4px' }}>Your plan will change at the end of your current billing period.</p>
+                <p style={{ fontSize: '0.85rem', color: C.textPrimary, marginBottom: '4px' }}>Your plan will change at the end of your current billing period.</p>
                 <p style={{ fontSize: '0.8rem', color: C.text }}>You keep your current plan until then.</p>
               </>
             ) : null}
@@ -332,7 +306,7 @@ function ChangePlanModal({ currentPlan, userId, onClose, onSuccess }) {
         <div style={{ display: 'flex', gap: '10px' }}>
           <button onClick={onClose} style={{ flex: 1, padding: '11px', background: 'transparent', border: `1px solid ${C.border}`, color: C.text, borderRadius: '10px', fontWeight: 600, fontSize: '0.875rem', cursor: 'pointer' }}>Cancel</button>
           <button onClick={handleConfirm} disabled={!selectedPlan || confirming || loadingPreview}
-            style={{ flex: 1, padding: '11px', background: selectedPlan ? '#4f46e5' : C.border, color: 'white', border: 'none', borderRadius: '10px', fontWeight: 700, fontSize: '0.875rem', cursor: selectedPlan ? 'pointer' : 'default', opacity: confirming ? 0.7 : 1 }}>
+            style={{ flex: 1, padding: '11px', background: selectedPlan ? C.accent : C.border, color: 'white', border: 'none', borderRadius: '10px', fontWeight: 700, fontSize: '0.875rem', cursor: selectedPlan ? 'pointer' : 'default', opacity: confirming ? 0.7 : 1 }}>
             {confirming ? 'Processing...' : isUpgrade ? 'Confirm upgrade' : 'Confirm downgrade'}
           </button>
         </div>
@@ -344,10 +318,10 @@ function ChangePlanModal({ currentPlan, userId, onClose, onSuccess }) {
 function OnboardingBanner({ plan, googleConnected, twilioNumber, onDismiss }) {
   const steps = [
     { label: 'Account created', done: true, action: null },
-    { label: 'Choose a plan', done: !!plan, action: !plan ? <a href="/pricing" style={{ fontSize: '0.78rem', fontWeight: 600, color: '#818cf8', textDecoration: 'none', whiteSpace: 'nowrap' }}>Choose â†’</a> : null },
-    { label: 'Connect Google Calendar', done: googleConnected, action: !googleConnected ? <a href="/api/google/auth" style={{ fontSize: '0.78rem', fontWeight: 600, color: '#60a5fa', textDecoration: 'none', whiteSpace: 'nowrap' }}>Connect â†’</a> : null },
+    { label: 'Choose a plan', done: !!plan, action: !plan ? <a href="/pricing" style={{ fontSize: '0.78rem', fontWeight: 600, color: C.accent, textDecoration: 'none', whiteSpace: 'nowrap' }}>Choose</a> : null },
+    { label: 'Connect Google Calendar', done: googleConnected, action: !googleConnected ? <a href="/api/google/auth" style={{ fontSize: '0.78rem', fontWeight: 600, color: '#1a73e8', textDecoration: 'none', whiteSpace: 'nowrap' }}>Connect</a> : null },
     { label: 'Phone number assigned', done: !!twilioNumber, action: !twilioNumber && !!plan ? <span style={{ fontSize: '0.78rem', color: C.text }}>Pending...</span> : null },
-    { label: 'Forward your number', done: false, action: twilioNumber ? <a href="#" onClick={(e) => { e.preventDefault(); onDismiss(); }} style={{ fontSize: '0.78rem', fontWeight: 600, color: '#4ade80', textDecoration: 'none', whiteSpace: 'nowrap' }}>Mark done â†’</a> : null },
+    { label: 'Forward your number', done: false, action: twilioNumber ? <a href="#" onClick={(e) => { e.preventDefault(); onDismiss(); }} style={{ fontSize: '0.78rem', fontWeight: 600, color: '#16a34a', textDecoration: 'none', whiteSpace: 'nowrap' }}>Mark done</a> : null },
   ];
 
   const completedCount = steps.filter(s => s.done).length;
@@ -355,25 +329,25 @@ function OnboardingBanner({ plan, googleConnected, twilioNumber, onDismiss }) {
   if (completedCount === steps.length) return null;
 
   return (
-    <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', padding: '20px', position: 'relative' }}>
+    <div style={{ background: '#fff', border: `1px solid ${C.border}`, borderRadius: '16px', padding: '20px', boxShadow: '0 1px 4px rgba(0,0,0,0.04)' }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
         <div>
-          <p style={{ fontWeight: 700, fontSize: '0.95rem', marginBottom: '2px' }}>Get started with VoiceBot AI</p>
+          <p style={{ fontWeight: 700, fontSize: '0.95rem', marginBottom: '2px', color: C.textPrimary }}>Get started with VoiceBot AI</p>
           <p style={{ fontSize: '0.8rem', color: C.text }}>{completedCount} of {steps.length} steps completed</p>
         </div>
         <button onClick={onDismiss} style={{ background: 'none', border: 'none', color: C.text, cursor: 'pointer', padding: '4px' }}><IconX /></button>
       </div>
       <div style={{ height: '4px', background: C.border, borderRadius: '100px', marginBottom: '16px', overflow: 'hidden' }}>
-        <div style={{ height: '100%', width: `${progress}%`, background: 'linear-gradient(90deg, #4f46e5, #4ade80)', borderRadius: '100px', transition: 'width 0.4s ease' }} />
+        <div style={{ height: '100%', width: `${progress}%`, background: C.accent, borderRadius: '100px', transition: 'width 0.4s ease' }} />
       </div>
       <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
         {steps.map((step, i) => (
           <div key={i} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-              <div style={{ width: '20px', height: '20px', borderRadius: '50%', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', background: step.done ? 'rgba(74,222,128,0.12)' : C.bg, border: `1px solid ${step.done ? 'rgba(74,222,128,0.3)' : C.border}` }}>
-                {step.done ? <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#4ade80" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg> : <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: C.border, display: 'block' }} />}
+              <div style={{ width: '20px', height: '20px', borderRadius: '50%', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', background: step.done ? '#f0fdf4' : '#f9fafb', border: `1px solid ${step.done ? '#bbf7d0' : C.border}` }}>
+                {step.done ? <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#16a34a" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg> : <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: C.border, display: 'block' }} />}
               </div>
-              <span style={{ fontSize: '0.85rem', color: step.done ? '#e5e7eb' : C.text, fontWeight: step.done ? 500 : 400 }}>{step.label}</span>
+              <span style={{ fontSize: '0.85rem', color: step.done ? C.text : C.textPrimary, fontWeight: step.done ? 400 : 500 }}>{step.label}</span>
             </div>
             {step.action}
           </div>
@@ -422,49 +396,43 @@ function ScriptSettings({ clientPlan, userId, allNumbers }) {
   };
 
   const setField = (field, value) => {
-    setScripts(prev => ({
-      ...prev,
-      [selectedNumber]: { ...(prev[selectedNumber] || {}), [field]: value }
-    }));
+    setScripts(prev => ({ ...prev, [selectedNumber]: { ...(prev[selectedNumber] || {}), [field]: value } }));
   };
 
-  const inputStyle = { width: '100%', padding: '10px 14px', borderRadius: '10px', border: `1px solid ${C.border}`, background: C.bg, color: 'white', fontSize: '0.875rem', outline: 'none', boxSizing: 'border-box' };
+  const inputStyle = { width: '100%', padding: '10px 14px', borderRadius: '10px', border: `1px solid ${C.border}`, background: '#f9fafb', color: C.textPrimary, fontSize: '0.875rem', outline: 'none', boxSizing: 'border-box' };
   const labelStyle = { fontSize: '0.78rem', fontWeight: 600, color: C.label, textTransform: 'uppercase', letterSpacing: '0.05em', display: 'block', marginBottom: '6px' };
 
   if (!clientPlan || clientPlan === 'starter') {
     return (
-      <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', padding: '20px' }}>
+      <div style={{ background: '#fff', border: `1px solid ${C.border}`, borderRadius: '16px', padding: '20px' }}>
         <p style={{ fontSize: '0.75rem', color: C.text, textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600, marginBottom: '12px' }}>VoiceBot Script</p>
-        <div style={{ background: 'rgba(79,70,229,0.08)', border: '1px solid rgba(79,70,229,0.2)', borderRadius: '12px', padding: '16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px', flexWrap: 'wrap' }}>
+        <div style={{ background: '#ede9fe', border: '1px solid #c4b5fd', borderRadius: '12px', padding: '16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px', flexWrap: 'wrap' }}>
           <div>
-            <p style={{ fontWeight: 600, color: '#818cf8', marginBottom: '4px', fontSize: '0.9rem' }}>Available on Scale & Business</p>
-            <p style={{ fontSize: '0.82rem', color: C.text }}>Upgrade to customize your VoiceBot's script and personality.</p>
+            <p style={{ fontWeight: 600, color: C.accent, marginBottom: '4px', fontSize: '0.9rem' }}>Available on Scale & Business</p>
+            <p style={{ fontSize: '0.82rem', color: '#6d28d9' }}>Upgrade to customize your VoiceBot's script and personality.</p>
           </div>
-          <a href="/pricing" style={{ padding: '8px 16px', background: '#4f46e5', color: 'white', textDecoration: 'none', borderRadius: '8px', fontSize: '0.82rem', fontWeight: 600, whiteSpace: 'nowrap' }}>Upgrade â†’</a>
+          <a href="/pricing" style={{ padding: '8px 16px', background: C.accent, color: 'white', textDecoration: 'none', borderRadius: '8px', fontSize: '0.82rem', fontWeight: 600, whiteSpace: 'nowrap' }}>Upgrade</a>
         </div>
       </div>
     );
   }
 
   return (
-    <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', padding: '20px' }}>
+    <div style={{ background: '#fff', border: `1px solid ${C.border}`, borderRadius: '16px', padding: '20px' }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px' }}>
         <div>
           <p style={{ fontSize: '0.75rem', color: C.text, textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600, marginBottom: '4px' }}>VoiceBot Script</p>
           <p style={{ fontSize: '0.82rem', color: C.text }}>Customize how your VoiceBot talks to callers.</p>
         </div>
-        {clientPlan === 'scale' && <span style={{ fontSize: '0.7rem', padding: '3px 10px', borderRadius: '100px', border: `1px solid rgba(167,139,250,0.3)`, color: '#a78bfa', fontWeight: 600 }}>Scale</span>}
-        {clientPlan === 'business' && <span style={{ fontSize: '0.7rem', padding: '3px 10px', borderRadius: '100px', border: `1px solid rgba(251,191,36,0.3)`, color: '#fbbf24', fontWeight: 600 }}>Business</span>}
+        {clientPlan === 'scale' && <span style={{ fontSize: '0.7rem', padding: '3px 10px', borderRadius: '100px', border: '1px solid #c4b5fd', color: '#7c3aed', fontWeight: 600, background: '#ede9fe' }}>Scale</span>}
+        {clientPlan === 'business' && <span style={{ fontSize: '0.7rem', padding: '3px 10px', borderRadius: '100px', border: '1px solid #fde68a', color: '#d97706', fontWeight: 600, background: '#fef3c7' }}>Business</span>}
       </div>
 
       {allNumbers?.length > 1 && (
         <div style={{ marginBottom: '20px' }}>
           <label style={labelStyle}>Phone number</label>
-          <select value={selectedNumber} onChange={e => setSelectedNumber(e.target.value)}
-            style={{ ...inputStyle, cursor: 'pointer' }}>
-            {allNumbers.map(num => (
-              <option key={num} value={num}>{num}</option>
-            ))}
+          <select value={selectedNumber} onChange={e => setSelectedNumber(e.target.value)} style={{ ...inputStyle, cursor: 'pointer' }}>
+            {allNumbers.map(num => <option key={num} value={num}>{num}</option>)}
           </select>
           <p style={{ fontSize: '0.75rem', color: C.text, marginTop: '4px' }}>Each number can have its own script.</p>
         </div>
@@ -499,32 +467,20 @@ function ScriptSettings({ clientPlan, userId, allNumbers }) {
               { key: 'allow_modify', label: 'Allow appointment modification', desc: 'Callers can ask to reschedule existing appointments' },
               { key: 'allow_cancel', label: 'Allow appointment cancellation', desc: 'Callers can ask to cancel existing appointments' },
             ].map(cap => (
-              <div key={cap.key} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 14px', background: C.bg, border: `1px solid ${C.border}`, borderRadius: '10px' }}>
+              <div key={cap.key} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 14px', background: '#f9fafb', border: `1px solid ${C.border}`, borderRadius: '10px' }}>
                 <div>
-                  <p style={{ fontSize: '0.85rem', fontWeight: 600, color: 'white', marginBottom: '2px' }}>{cap.label}</p>
+                  <p style={{ fontSize: '0.85rem', fontWeight: 600, color: C.textPrimary, marginBottom: '2px' }}>{cap.label}</p>
                   <p style={{ fontSize: '0.75rem', color: C.text }}>{cap.desc}</p>
                 </div>
-                <button
-                  onClick={() => setField(cap.key, script[cap.key] === false ? true : false)}
-                  style={{
-                    width: '40px', height: '22px', borderRadius: '100px', border: 'none', cursor: 'pointer', flexShrink: 0,
-                    background: script[cap.key] === false ? C.border : '#4f46e5',
-                    position: 'relative', transition: 'background 0.2s',
-                  }}
-                >
-                  <div style={{
-                    width: '16px', height: '16px', borderRadius: '50%', background: 'white',
-                    position: 'absolute', top: '3px',
-                    left: script[cap.key] === false ? '3px' : '21px',
-                    transition: 'left 0.2s',
-                  }} />
+                <button onClick={() => setField(cap.key, script[cap.key] === false ? true : false)} style={{ width: '40px', height: '22px', borderRadius: '100px', border: 'none', cursor: 'pointer', flexShrink: 0, background: script[cap.key] === false ? C.border : C.accent, position: 'relative', transition: 'background 0.2s' }}>
+                  <div style={{ width: '16px', height: '16px', borderRadius: '50%', background: 'white', position: 'absolute', top: '3px', left: script[cap.key] === false ? '3px' : '21px', transition: 'left 0.2s' }} />
                 </button>
               </div>
             ))}
           </div>
         </div>
-        <button onClick={handleSave} disabled={saving} style={{ padding: '10px 20px', background: saved ? 'rgba(34,197,94,0.12)' : 'white', color: saved ? '#4ade80' : 'black', border: saved ? '1px solid rgba(34,197,94,0.3)' : 'none', borderRadius: '10px', fontWeight: 700, fontSize: '0.875rem', cursor: 'pointer', alignSelf: 'flex-start', transition: 'all 0.2s' }}>
-          {saving ? 'Saving...' : saved ? 'âœ“ Saved' : 'Save changes'}
+        <button onClick={handleSave} disabled={saving} style={{ padding: '10px 20px', background: saved ? '#f0fdf4' : C.textPrimary, color: saved ? '#16a34a' : 'white', border: saved ? '1px solid #bbf7d0' : 'none', borderRadius: '10px', fontWeight: 700, fontSize: '0.875rem', cursor: 'pointer', alignSelf: 'flex-start', transition: 'all 0.2s' }}>
+          {saving ? 'Saving...' : saved ? 'Saved' : 'Save changes'}
         </button>
       </div>
     </div>
@@ -561,20 +517,20 @@ function WeeklyReport({ userId }) {
     loadReport();
   }, [userId]);
 
-  if (loading) return <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', padding: '40px', textAlign: 'center' }}><p style={{ color: C.text, fontSize: '0.9rem' }}>Loading...</p></div>;
+  if (loading) return <div style={{ background: '#fff', border: `1px solid ${C.border}`, borderRadius: '16px', padding: '40px', textAlign: 'center' }}><p style={{ color: C.text, fontSize: '0.9rem' }}>Loading...</p></div>;
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
       {weeks.length === 0 ? (
-        <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', padding: '40px', textAlign: 'center' }}>
-          <p style={{ color: C.text, fontSize: '0.875rem' }}>No call data yet. Reports will appear once your VoiceBot starts handling calls.</p>
+        <div style={{ background: '#fff', border: `1px solid ${C.border}`, borderRadius: '16px', padding: '40px', textAlign: 'center' }}>
+          <p style={{ fontSize: '0.875rem', color: C.text }}>No call data yet. Reports will appear once your VoiceBot starts handling calls.</p>
         </div>
       ) : weeks.map((week, i) => (
-        <div key={i} style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', padding: '20px' }}>
+        <div key={i} style={{ background: '#fff', border: `1px solid ${C.border}`, borderRadius: '16px', padding: '20px' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
             <div>
-              <p style={{ fontWeight: 700, fontSize: '0.95rem' }}>Week of {week.label}</p>
-              {i === 0 && <span style={{ fontSize: '0.72rem', color: '#4ade80', fontWeight: 600, background: 'rgba(74,222,128,0.08)', padding: '2px 8px', borderRadius: '100px', border: '1px solid rgba(74,222,128,0.2)' }}>Current week</span>}
+              <p style={{ fontWeight: 700, fontSize: '0.95rem', color: C.textPrimary }}>Week of {week.label}</p>
+              {i === 0 && <span style={{ fontSize: '0.72rem', color: '#16a34a', fontWeight: 600, background: '#f0fdf4', padding: '2px 8px', borderRadius: '100px', border: '1px solid #bbf7d0' }}>Current week</span>}
             </div>
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '12px' }}>
@@ -583,9 +539,9 @@ function WeeklyReport({ userId }) {
               { label: 'Appointments', value: week.totalRdv, icon: <IconCalendar /> },
               { label: 'Minutes', value: week.totalMinutes, icon: <IconClock /> },
             ].map(s => (
-              <div key={s.label} style={{ background: C.bg, border: `1px solid ${C.border}`, borderRadius: '12px', padding: '14px' }}>
-                <div style={{ color: C.text, marginBottom: '6px' }}>{s.icon}</div>
-                <div style={{ fontSize: '1.5rem', fontWeight: 800, letterSpacing: '-0.03em', lineHeight: 1, marginBottom: '3px' }}>{s.value}</div>
+              <div key={s.label} style={{ background: '#f9fafb', border: `1px solid ${C.border}`, borderRadius: '12px', padding: '14px' }}>
+                <div style={{ color: C.accent, marginBottom: '6px' }}>{s.icon}</div>
+                <div style={{ fontSize: '1.5rem', fontWeight: 800, letterSpacing: '-0.03em', lineHeight: 1, marginBottom: '3px', color: C.textPrimary }}>{s.value}</div>
                 <div style={{ fontSize: '0.72rem', color: C.text }}>{s.label}</div>
               </div>
             ))}
@@ -665,40 +621,25 @@ export default function Dashboard() {
     setShowChangePlan(false);
   };
 
-  // âœ… NOUVEAU â€” Disconnect Google Calendar
   const handleDisconnectGoogle = async () => {
-    await supabase.from('clients').update({
-      google_refresh_token: null,
-      google_connected: false,
-      calendar_type: null
-    }).eq('user_id', user.id);
+    await supabase.from('clients').update({ google_refresh_token: null, google_connected: false, calendar_type: null }).eq('user_id', user.id);
     setGoogleConnected(false);
     setClientData(prev => ({ ...prev, google_connected: false, calendar_type: null }));
   };
 
-  // âœ… NOUVEAU â€” Disconnect Calendly
   const handleDisconnectCalendly = async () => {
-    await supabase.from('clients').update({
-      calendly_token: null,
-      calendly_uri: null,
-      calendar_type: null
-    }).eq('user_id', user.id);
+    await supabase.from('clients').update({ calendly_token: null, calendly_uri: null, calendar_type: null }).eq('user_id', user.id);
     setClientData(prev => ({ ...prev, calendly_token: null, calendar_type: null }));
   };
 
   if (loading) return (
-    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: C.bg }}>
+    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#fff' }}>
       <p style={{ color: C.text, fontSize: '0.9rem' }}>Loading...</p>
     </div>
   );
 
-  const allNumbers = [
-    ...(clientData?.twilio_number ? [clientData.twilio_number] : []),
-    ...(clientData?.twilio_numbers || [])
-  ];
-  const filteredCalls = selectedNumber === 'all'
-    ? calls
-    : calls.filter(c => c.twilio_number === selectedNumber);
+  const allNumbers = [...(clientData?.twilio_number ? [clientData.twilio_number] : []), ...(clientData?.twilio_numbers || [])];
+  const filteredCalls = selectedNumber === 'all' ? calls : calls.filter(c => c.twilio_number === selectedNumber);
   const rdvCount = filteredCalls.filter(c => c.rdv_pris).length;
   const totalDuration = filteredCalls.reduce((acc, c) => acc + (c.duration || 0), 0);
   const plan = clientData?.plan ? PLAN_LABELS[clientData.plan] : null;
@@ -713,22 +654,22 @@ export default function Dashboard() {
   ];
 
   const setupSteps = [
-    { number: '01', title: 'Choose a plan', done: !!plan, desc: 'Subscribe to one of our plans to activate your VoiceBot. You can upgrade or cancel anytime.', action: !plan ? <a href="/pricing" style={{ display: 'inline-block', marginTop: '12px', padding: '8px 18px', background: '#4f46e5', color: 'white', textDecoration: 'none', borderRadius: '8px', fontSize: '0.85rem', fontWeight: 600 }}>View plans â†’</a> : null },
-    { number: '02', title: 'Connect Google Calendar', done: googleConnected, desc: 'Link your Google Calendar so your VoiceBot can automatically book appointments in real time.', action: !googleConnected ? <a href="/api/google/auth" style={{ display: 'inline-block', marginTop: '12px', padding: '8px 18px', background: '#1a73e8', color: 'white', textDecoration: 'none', borderRadius: '8px', fontSize: '0.85rem', fontWeight: 600 }}>Connect Google â†’</a> : null },
+    { number: '01', title: 'Choose a plan', done: !!plan, desc: 'Subscribe to one of our plans to activate your VoiceBot.', action: !plan ? <a href="/pricing" style={{ display: 'inline-block', marginTop: '12px', padding: '8px 18px', background: C.accent, color: 'white', textDecoration: 'none', borderRadius: '8px', fontSize: '0.85rem', fontWeight: 600 }}>View plans</a> : null },
+    { number: '02', title: 'Connect Google Calendar', done: googleConnected, desc: 'Link your Google Calendar so your VoiceBot can automatically book appointments in real time.', action: !googleConnected ? <a href="/api/google/auth" style={{ display: 'inline-block', marginTop: '12px', padding: '8px 18px', background: '#1a73e8', color: 'white', textDecoration: 'none', borderRadius: '8px', fontSize: '0.85rem', fontWeight: 600 }}>Connect Google</a> : null },
     { number: '03', title: 'Receive your phone number', done: !!clientData?.twilio_number, desc: clientData?.twilio_number ? `Your dedicated number is ${clientData.twilio_number}.` : 'Once your plan is active, we will assign you a dedicated phone number within 24 hours.' },
     {
       number: '04', title: 'Forward your business number to VoiceBot', done: false,
-      desc: "Redirect your existing business number to your VoiceBot number so every call is handled automatically.",
+      desc: 'Redirect your existing business number to your VoiceBot number so every call is handled automatically.',
       extra: (
         <div style={{ marginTop: '16px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
           {[
             { label: 'Mobile (AT&T, Verizon, T-Mobile)', value: `Dial **21*${clientData?.twilio_number || '+1XXXXXXXXXX'}# from your phone` },
             { label: 'Landline / VoIP', value: 'Contact your provider and ask to enable unconditional call forwarding to your VoiceBot number' },
-            { label: 'Business phone (RingCentral, Dialpad, Nextiva)', value: 'Go to your admin settings â†’ Call forwarding â†’ Enter your VoiceBot number' },
+            { label: 'Business phone (RingCentral, Dialpad, Nextiva)', value: 'Go to your admin settings - Call forwarding - Enter your VoiceBot number' },
           ].map(item => (
-            <div key={item.label} style={{ background: C.bg, border: `1px solid ${C.border}`, borderRadius: '10px', padding: '12px 16px' }}>
+            <div key={item.label} style={{ background: '#f9fafb', border: `1px solid ${C.border}`, borderRadius: '10px', padding: '12px 16px' }}>
               <p style={{ fontSize: '0.75rem', color: C.label, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '4px' }}>{item.label}</p>
-              <p style={{ fontSize: '0.85rem', color: '#e5e7eb', fontFamily: item.value.startsWith('Dial') ? 'monospace' : 'inherit' }}>{item.value}</p>
+              <p style={{ fontSize: '0.85rem', color: C.textPrimary, fontFamily: item.value.startsWith('Dial') ? 'monospace' : 'inherit' }}>{item.value}</p>
             </div>
           ))}
         </div>
@@ -739,50 +680,45 @@ export default function Dashboard() {
   ];
 
   const pageContent = (
-    <main style={{ padding: isMobile ? '72px 16px 90px' : '48px 40px' }}>
-      <div style={{ display: isMobile || activePage !== 'dashboard' ? 'flex' : 'grid', gridTemplateColumns: '1fr 320px', gap: '24px', flexDirection: 'column', maxWidth: activePage === 'dashboard' && !isMobile ? '1200px' : '900px', alignItems: 'flex-start' }}>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', minWidth: 0, width: '100%' }}>
+    <main style={{ padding: isMobile ? '72px 16px 90px' : '40px 40px' }}>
+      <div style={{ display: isMobile || activePage !== 'dashboard' ? 'flex' : 'grid', gridTemplateColumns: '1fr 300px', gap: '24px', flexDirection: 'column', maxWidth: activePage === 'dashboard' && !isMobile ? '1100px' : '860px', alignItems: 'flex-start' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', minWidth: 0, width: '100%' }}>
 
           {activePage === 'dashboard' && (
             <>
               {showOnboarding && <OnboardingBanner plan={clientData?.plan} googleConnected={googleConnected} twilioNumber={clientData?.twilio_number} onDismiss={handleDismissOnboarding} />}
 
               {!plan && !showOnboarding && (
-                <div style={{ background: 'rgba(79,70,229,0.08)', border: '1px solid rgba(79,70,229,0.2)', borderRadius: '16px', padding: '20px', display: 'flex', flexDirection: isMobile ? 'column' : 'row', alignItems: isMobile ? 'flex-start' : 'center', justifyContent: 'space-between', gap: '12px' }}>
+                <div style={{ background: '#ede9fe', border: '1px solid #c4b5fd', borderRadius: '16px', padding: '20px', display: 'flex', flexDirection: isMobile ? 'column' : 'row', alignItems: isMobile ? 'flex-start' : 'center', justifyContent: 'space-between', gap: '12px' }}>
                   <div>
-                    <p style={{ fontWeight: 600, color: '#818cf8', marginBottom: '4px' }}>No active plan</p>
-                    <p style={{ fontSize: '0.85rem', color: C.text }}>Subscribe to a plan to activate your VoiceBot.</p>
+                    <p style={{ fontWeight: 600, color: C.accent, marginBottom: '4px' }}>No active plan</p>
+                    <p style={{ fontSize: '0.85rem', color: '#6d28d9' }}>Subscribe to a plan to activate your VoiceBot.</p>
                   </div>
-                  <a href="/pricing" style={{ padding: '9px 20px', background: '#4f46e5', color: 'white', textDecoration: 'none', borderRadius: '9px', fontSize: '0.875rem', fontWeight: 600, whiteSpace: 'nowrap' }}>View plans</a>
+                  <a href="/pricing" style={{ padding: '9px 20px', background: C.accent, color: 'white', textDecoration: 'none', borderRadius: '9px', fontSize: '0.875rem', fontWeight: 600, whiteSpace: 'nowrap' }}>View plans</a>
                 </div>
               )}
 
               {plan && (
-                <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', padding: '20px', display: 'flex', flexDirection: isMobile ? 'column' : 'row', alignItems: isMobile ? 'flex-start' : 'center', justifyContent: 'space-between', gap: '12px' }}>
+                <div style={{ background: '#fff', border: `1px solid ${C.border}`, borderRadius: '16px', padding: '20px', display: 'flex', flexDirection: isMobile ? 'column' : 'row', alignItems: isMobile ? 'flex-start' : 'center', justifyContent: 'space-between', gap: '12px' }}>
                   <div>
-                    <p style={{ fontSize: '0.75rem', color: C.text, textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600, marginBottom: '6px' }}>Current plan</p>
+                    <p style={{ fontSize: '0.72rem', color: C.text, textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600, marginBottom: '6px' }}>Current plan</p>
                     <p style={{ fontWeight: 700, fontSize: '1.1rem', color: plan.color }}>{plan.label}</p>
                     <p style={{ fontSize: '0.8rem', color: C.text, marginTop: '4px' }}>{plan.minutes.toLocaleString()} minutes/month included</p>
                   </div>
                   {allNumbers.length > 0 && (
                     <div style={{ position: 'relative' }}>
-                      <p style={{ fontSize: '0.75rem', color: C.text, textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600, marginBottom: '6px', textAlign: isMobile ? 'left' : 'right' }}>Viewing stats for</p>
-                      <button
-                        onClick={(e) => { e.stopPropagation(); setShowNumberDropdown(!showNumberDropdown); }}
-                        style={{ display: 'flex', alignItems: 'center', gap: '6px', background: 'rgba(255,255,255,0.06)', border: `1px solid rgba(255,255,255,0.1)`, borderRadius: '8px', padding: '6px 12px', cursor: 'pointer', color: '#e5e7eb', fontFamily: 'system-ui, sans-serif', fontSize: '0.85rem', fontWeight: 600 }}
-                      >
+                      <p style={{ fontSize: '0.72rem', color: C.text, textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600, marginBottom: '6px', textAlign: isMobile ? 'left' : 'right' }}>Viewing stats for</p>
+                      <button onClick={(e) => { e.stopPropagation(); setShowNumberDropdown(!showNumberDropdown); }} style={{ display: 'flex', alignItems: 'center', gap: '6px', background: '#f9fafb', border: `1px solid ${C.border}`, borderRadius: '8px', padding: '6px 12px', cursor: 'pointer', color: C.textPrimary, fontFamily: 'inherit', fontSize: '0.85rem', fontWeight: 600 }}>
                         {selectedNumber === 'all' ? 'All numbers' : selectedNumber}
                         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="6 9 12 15 18 9"/></svg>
                       </button>
                       {showNumberDropdown && (
-                        <div style={{ position: 'absolute', top: '100%', right: 0, marginTop: '6px', background: C.card, border: `1px solid ${C.border}`, borderRadius: '12px', overflow: 'hidden', zIndex: 50, minWidth: '180px', boxShadow: '0 8px 24px rgba(0,0,0,0.4)' }}>
-                          <button onClick={() => { setSelectedNumber('all'); setShowNumberDropdown(false); }}
-                            style={{ width: '100%', padding: '10px 14px', background: selectedNumber === 'all' ? 'rgba(79,70,229,0.12)' : 'transparent', border: 'none', color: selectedNumber === 'all' ? '#818cf8' : '#e5e7eb', fontSize: '0.85rem', fontWeight: selectedNumber === 'all' ? 600 : 400, cursor: 'pointer', textAlign: 'left' }}>
+                        <div style={{ position: 'absolute', top: '100%', right: 0, marginTop: '6px', background: '#fff', border: `1px solid ${C.border}`, borderRadius: '12px', overflow: 'hidden', zIndex: 50, minWidth: '180px', boxShadow: '0 8px 24px rgba(0,0,0,0.1)' }}>
+                          <button onClick={() => { setSelectedNumber('all'); setShowNumberDropdown(false); }} style={{ width: '100%', padding: '10px 14px', background: selectedNumber === 'all' ? '#ede9fe' : 'transparent', border: 'none', color: selectedNumber === 'all' ? C.accent : C.textPrimary, fontSize: '0.85rem', fontWeight: selectedNumber === 'all' ? 600 : 400, cursor: 'pointer', textAlign: 'left' }}>
                             All numbers
                           </button>
                           {allNumbers.map(num => (
-                            <button key={num} onClick={() => { setSelectedNumber(num); setShowNumberDropdown(false); }}
-                              style={{ width: '100%', padding: '10px 14px', background: selectedNumber === num ? 'rgba(79,70,229,0.12)' : 'transparent', border: 'none', color: selectedNumber === num ? '#818cf8' : '#e5e7eb', fontFamily: 'monospace', fontSize: '0.85rem', fontWeight: selectedNumber === num ? 600 : 400, cursor: 'pointer', textAlign: 'left' }}>
+                            <button key={num} onClick={() => { setSelectedNumber(num); setShowNumberDropdown(false); }} style={{ width: '100%', padding: '10px 14px', background: selectedNumber === num ? '#ede9fe' : 'transparent', border: 'none', color: selectedNumber === num ? C.accent : C.textPrimary, fontFamily: 'monospace', fontSize: '0.85rem', fontWeight: selectedNumber === num ? 600 : 400, cursor: 'pointer', textAlign: 'left' }}>
                               {num}
                             </button>
                           ))}
@@ -793,16 +729,16 @@ export default function Dashboard() {
                 </div>
               )}
 
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '10px' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '12px' }}>
                 {[
                   { label: 'Calls', value: filteredCalls.length, icon: <IconPhone /> },
                   { label: 'Appointments', value: rdvCount, icon: <IconCalendar /> },
                   { label: 'Minutes', value: Math.round(totalDuration / 60), icon: <IconClock /> },
                 ].map(s => (
-                  <div key={s.label} style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '14px', padding: isMobile ? '14px 10px' : '24px' }}>
-                    <div style={{ color: C.text, marginBottom: '8px' }}>{s.icon}</div>
-                    <div style={{ fontSize: isMobile ? '1.5rem' : '2.2rem', fontWeight: 800, letterSpacing: '-0.04em', lineHeight: 1, marginBottom: '4px' }}>{s.value}</div>
-                    <div style={{ fontSize: '0.72rem', color: C.text }}>{s.label}</div>
+                  <div key={s.label} style={{ background: '#fff', border: `1px solid ${C.border}`, borderRadius: '14px', padding: isMobile ? '14px 12px' : '20px 24px' }}>
+                    <div style={{ color: C.accent, marginBottom: '8px' }}>{s.icon}</div>
+                    <div style={{ fontSize: isMobile ? '1.5rem' : '2rem', fontWeight: 700, letterSpacing: '-0.04em', lineHeight: 1, marginBottom: '4px', color: C.textPrimary }}>{s.value}</div>
+                    <div style={{ fontSize: '0.72rem', color: C.text, textTransform: 'uppercase', letterSpacing: '0.05em', fontWeight: 600 }}>{s.label}</div>
                   </div>
                 ))}
               </div>
@@ -813,37 +749,36 @@ export default function Dashboard() {
                 const totalMinutes = planMinutes + extraMinutes;
                 const usedMinutes = Math.round(totalDuration / 60);
                 const usedPercent = Math.min(Math.round((usedMinutes / totalMinutes) * 100), 100);
-                const barColor = usedPercent >= 90 ? '#f87171' : usedPercent >= 70 ? '#fbbf24' : '#4f46e5';
+                const barColor = usedPercent >= 90 ? '#ef4444' : usedPercent >= 70 ? '#f59e0b' : C.accent;
                 return (
-                  <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', padding: '20px' }}>
+                  <div style={{ background: '#fff', border: `1px solid ${C.border}`, borderRadius: '16px', padding: '20px' }}>
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
                       <div>
-                        <p style={{ fontSize: '0.75rem', color: C.text, textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600, marginBottom: '4px' }}>Minutes used this month</p>
-                        <p style={{ fontSize: '0.95rem', fontWeight: 700 }}>
-                          <span style={{ color: 'white' }}>{usedMinutes.toLocaleString()}</span>
-                          <span style={{ color: C.text, fontWeight: 400 }}> / {totalMinutes.toLocaleString()} min</span>
+                        <p style={{ fontSize: '0.72rem', color: C.text, textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600, marginBottom: '4px' }}>Minutes used this month</p>
+                        <p style={{ fontSize: '0.95rem', fontWeight: 700, color: C.textPrimary }}>
+                          {usedMinutes.toLocaleString()} <span style={{ color: C.text, fontWeight: 400 }}>/ {totalMinutes.toLocaleString()} min</span>
                         </p>
                       </div>
                       <span style={{ fontSize: '1.1rem', fontWeight: 800, color: barColor }}>{usedPercent}%</span>
                     </div>
-                    <div style={{ height: '6px', background: C.border, borderRadius: '100px', overflow: 'hidden' }}>
+                    <div style={{ height: '6px', background: '#f3f4f6', borderRadius: '100px', overflow: 'hidden' }}>
                       <div style={{ height: '100%', width: `${usedPercent}%`, background: barColor, borderRadius: '100px', transition: 'width 0.4s ease' }} />
                     </div>
-                    {extraMinutes > 0 && <p style={{ fontSize: '0.78rem', color: '#4ade80', marginTop: '8px' }}>Includes {extraMinutes.toLocaleString()} extra minutes</p>}
+                    {extraMinutes > 0 && <p style={{ fontSize: '0.78rem', color: '#16a34a', marginTop: '8px' }}>Includes {extraMinutes.toLocaleString()} extra minutes</p>}
                     {usedPercent >= 80 && (
-                      <div style={{ marginTop: '12px', padding: '10px 14px', background: 'rgba(251,191,36,0.08)', border: '1px solid rgba(251,191,36,0.2)', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px' }}>
-                        <p style={{ fontSize: '0.82rem', color: '#fbbf24' }}>You're running low on minutes.</p>
-                        <button onClick={() => setActivePage('billing')} style={{ fontSize: '0.78rem', fontWeight: 600, color: '#fbbf24', background: 'none', border: '1px solid rgba(251,191,36,0.3)', borderRadius: '6px', padding: '4px 10px', cursor: 'pointer', whiteSpace: 'nowrap' }}>Buy more â†’</button>
+                      <div style={{ marginTop: '12px', padding: '10px 14px', background: '#fef3c7', border: '1px solid #fde68a', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px' }}>
+                        <p style={{ fontSize: '0.82rem', color: '#d97706' }}>You're running low on minutes.</p>
+                        <button onClick={() => setActivePage('billing')} style={{ fontSize: '0.78rem', fontWeight: 600, color: '#d97706', background: 'none', border: '1px solid #fde68a', borderRadius: '6px', padding: '4px 10px', cursor: 'pointer', whiteSpace: 'nowrap' }}>Buy more</button>
                       </div>
                     )}
                   </div>
                 );
               })()}
 
-              <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', padding: '20px' }}>
+              <div style={{ background: '#fff', border: `1px solid ${C.border}`, borderRadius: '16px', padding: '20px' }}>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
-                  <p style={{ fontSize: '0.75rem', color: C.text, textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600 }}>Recent calls</p>
-                  {calls.length > 0 && <button onClick={() => setActivePage('calls')} style={{ fontSize: '0.78rem', color: '#818cf8', background: 'none', border: 'none', cursor: 'pointer', padding: 0, fontWeight: 600 }}>View all â†’</button>}
+                  <p style={{ fontSize: '0.72rem', color: C.text, textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600 }}>Recent calls</p>
+                  {calls.length > 0 && <button onClick={() => setActivePage('calls')} style={{ fontSize: '0.78rem', color: C.accent, background: 'none', border: 'none', cursor: 'pointer', padding: 0, fontWeight: 600 }}>View all</button>}
                 </div>
                 {filteredCalls.length === 0 ? (
                   <div style={{ textAlign: 'center', padding: '24px 0' }}>
@@ -852,14 +787,14 @@ export default function Dashboard() {
                 ) : (
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                     {filteredCalls.slice(0, 3).map(call => (
-                      <div key={call.id} style={{ padding: '12px 14px', background: C.bg, border: `1px solid ${C.border}`, borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px' }}>
+                      <div key={call.id} style={{ padding: '12px 14px', background: '#f9fafb', border: `1px solid ${C.border}`, borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px' }}>
                         <div style={{ flex: 1, minWidth: 0 }}>
-                          <p style={{ fontSize: '0.875rem', fontWeight: 600, marginBottom: '2px' }}>{call.caller_number}</p>
+                          <p style={{ fontSize: '0.875rem', fontWeight: 600, marginBottom: '2px', color: C.textPrimary }}>{call.caller_number}</p>
                           <p style={{ fontSize: '0.78rem', color: C.text, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{call.summary || 'No summary'}</p>
                         </div>
                         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '4px', flexShrink: 0 }}>
                           <span style={{ fontSize: '0.72rem', color: C.text }}>{call.duration}s</span>
-                          {call.rdv_pris && <span style={{ display: 'flex', alignItems: 'center', gap: '3px', fontSize: '0.7rem', color: '#4ade80', background: 'rgba(34,197,94,0.08)', padding: '2px 7px', borderRadius: '100px' }}><IconCheck /> Booked</span>}
+                          {call.rdv_pris && <span style={{ display: 'flex', alignItems: 'center', gap: '3px', fontSize: '0.7rem', color: '#16a34a', background: '#f0fdf4', padding: '2px 7px', borderRadius: '100px', border: '1px solid #bbf7d0' }}><IconCheck /> Booked</span>}
                         </div>
                       </div>
                     ))}
@@ -867,15 +802,15 @@ export default function Dashboard() {
                 )}
               </div>
 
-              <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', padding: '20px', display: 'flex', flexDirection: isMobile ? 'column' : 'row', alignItems: isMobile ? 'flex-start' : 'center', justifyContent: 'space-between', gap: '12px' }}>
+              <div style={{ background: '#fff', border: `1px solid ${C.border}`, borderRadius: '16px', padding: '20px', display: 'flex', flexDirection: isMobile ? 'column' : 'row', alignItems: isMobile ? 'flex-start' : 'center', justifyContent: 'space-between', gap: '12px' }}>
                 <div>
-                  <p style={{ fontSize: '0.75rem', color: C.text, textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600, marginBottom: '6px' }}>Google Calendar</p>
-                  <p style={{ fontWeight: 600, fontSize: '1rem', marginBottom: '4px' }}>{googleConnected ? 'Connected' : 'Not connected'}</p>
+                  <p style={{ fontSize: '0.72rem', color: C.text, textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600, marginBottom: '6px' }}>Google Calendar</p>
+                  <p style={{ fontWeight: 600, fontSize: '1rem', marginBottom: '4px', color: C.textPrimary }}>{googleConnected ? 'Connected' : 'Not connected'}</p>
                   <p style={{ fontSize: '0.85rem', color: C.text }}>{googleConnected ? 'Appointments are booked automatically.' : 'Connect your calendar for automatic scheduling.'}</p>
                 </div>
                 {!googleConnected
                   ? <a href="/api/google/auth" style={{ padding: '9px 20px', background: '#1a73e8', color: 'white', textDecoration: 'none', borderRadius: '9px', fontSize: '0.875rem', fontWeight: 600, whiteSpace: 'nowrap' }}>Connect Google</a>
-                  : <span style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '9px 16px', background: 'rgba(34,197,94,0.08)', border: '1px solid rgba(34,197,94,0.2)', borderRadius: '9px', color: '#4ade80', fontSize: '0.875rem', fontWeight: 600 }}><IconCheck /> Connected</span>
+                  : <span style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '9px 16px', background: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: '9px', color: '#16a34a', fontSize: '0.875rem', fontWeight: 600 }}><IconCheck /> Connected</span>
                 }
               </div>
             </>
@@ -884,10 +819,10 @@ export default function Dashboard() {
           {activePage === 'calls' && (
             <>
               <div>
-                <h1 style={{ fontSize: isMobile ? '1.3rem' : '1.5rem', fontWeight: 800, letterSpacing: '-0.03em', marginBottom: '4px' }}>Calls</h1>
+                <h1 style={{ fontSize: isMobile ? '1.3rem' : '1.5rem', fontWeight: 700, letterSpacing: '-0.03em', marginBottom: '4px', color: C.textPrimary }}>Calls</h1>
                 <p style={{ fontSize: '0.85rem', color: C.text }}>All calls handled by your VoiceBot.</p>
               </div>
-              <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', padding: '20px' }}>
+              <div style={{ background: '#fff', border: `1px solid ${C.border}`, borderRadius: '16px', padding: '20px' }}>
                 {calls.length === 0 ? (
                   <div style={{ textAlign: 'center', padding: '40px 0' }}>
                     <p style={{ fontSize: '0.875rem', color: C.text }}>No calls yet. Your VoiceBot is ready.</p>
@@ -895,20 +830,20 @@ export default function Dashboard() {
                 ) : (
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                     {calls.map(call => (
-                      <div key={call.id} style={{ padding: '12px 14px', background: C.bg, border: `1px solid ${C.border}`, borderRadius: '12px' }}>
+                      <div key={call.id} style={{ padding: '12px 14px', background: '#f9fafb', border: `1px solid ${C.border}`, borderRadius: '12px' }}>
                         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                           <div>
-                            <p style={{ fontSize: '0.875rem', fontWeight: 600, marginBottom: '3px' }}>{call.caller_number}</p>
+                            <p style={{ fontSize: '0.875rem', fontWeight: 600, marginBottom: '3px', color: C.textPrimary }}>{call.caller_number}</p>
                             <p style={{ fontSize: '0.8rem', color: C.text }}>{call.summary}</p>
                           </div>
                           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '6px' }}>
                             <span style={{ fontSize: '0.75rem', color: C.text }}>{call.duration}s</span>
-                            {call.rdv_pris && <span style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '0.75rem', color: '#4ade80', background: 'rgba(34,197,94,0.08)', padding: '2px 8px', borderRadius: '100px' }}><IconCheck /> Booked</span>}
+                            {call.rdv_pris && <span style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '0.75rem', color: '#16a34a', background: '#f0fdf4', padding: '2px 8px', borderRadius: '100px', border: '1px solid #bbf7d0' }}><IconCheck /> Booked</span>}
                           </div>
                         </div>
                         {call.recording_url && (
                           <div style={{ marginTop: '10px', paddingTop: '10px', borderTop: `1px solid ${C.border}` }}>
-                            <audio controls style={{ width: '100%', height: '32px', accentColor: '#4f46e5' }}>
+                            <audio controls style={{ width: '100%', height: '32px', accentColor: C.accent }}>
                               <source src={call.recording_url} type="audio/mpeg" />
                             </audio>
                           </div>
@@ -924,7 +859,7 @@ export default function Dashboard() {
           {activePage === 'reports' && (
             <>
               <div>
-                <h1 style={{ fontSize: isMobile ? '1.3rem' : '1.5rem', fontWeight: 800, letterSpacing: '-0.03em', marginBottom: '4px' }}>Weekly Reports</h1>
+                <h1 style={{ fontSize: isMobile ? '1.3rem' : '1.5rem', fontWeight: 700, letterSpacing: '-0.03em', marginBottom: '4px', color: C.textPrimary }}>Weekly Reports</h1>
                 <p style={{ fontSize: '0.85rem', color: C.text }}>Your VoiceBot performance, week by week.</p>
               </div>
               <WeeklyReport userId={user?.id} />
@@ -934,17 +869,17 @@ export default function Dashboard() {
           {activePage === 'setup' && (
             <>
               <div>
-                <h1 style={{ fontSize: isMobile ? '1.3rem' : '1.5rem', fontWeight: 800, letterSpacing: '-0.03em', marginBottom: '4px' }}>Setup guide</h1>
+                <h1 style={{ fontSize: isMobile ? '1.3rem' : '1.5rem', fontWeight: 700, letterSpacing: '-0.03em', marginBottom: '4px', color: C.textPrimary }}>Setup guide</h1>
                 <p style={{ fontSize: '0.85rem', color: C.text }}>Follow these steps to get your VoiceBot up and running.</p>
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                 {setupSteps.map((step, i) => (
-                  <div key={i} style={{ background: C.card, border: `1px solid ${step.done ? 'rgba(74,222,128,0.2)' : C.border}`, borderRadius: '16px', padding: '20px', display: 'flex', gap: '16px', alignItems: 'flex-start' }}>
-                    <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: step.done ? 'rgba(74,222,128,0.12)' : C.bg, border: `1px solid ${step.done ? 'rgba(74,222,128,0.3)' : C.border}`, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                      {step.done ? <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#4ade80" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg> : <span style={{ fontSize: '0.7rem', fontWeight: 700, color: C.text }}>{step.number}</span>}
+                  <div key={i} style={{ background: '#fff', border: `1px solid ${step.done ? '#bbf7d0' : C.border}`, borderRadius: '16px', padding: '20px', display: 'flex', gap: '16px', alignItems: 'flex-start' }}>
+                    <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: step.done ? '#f0fdf4' : '#f9fafb', border: `1px solid ${step.done ? '#bbf7d0' : C.border}`, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                      {step.done ? <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#16a34a" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg> : <span style={{ fontSize: '0.7rem', fontWeight: 700, color: C.text }}>{step.number}</span>}
                     </div>
                     <div style={{ flex: 1 }}>
-                      <p style={{ fontWeight: 700, fontSize: '0.95rem', marginBottom: '6px', color: step.done ? '#4ade80' : 'white' }}>{step.title}</p>
+                      <p style={{ fontWeight: 700, fontSize: '0.95rem', marginBottom: '6px', color: step.done ? '#16a34a' : C.textPrimary }}>{step.title}</p>
                       <p style={{ fontSize: '0.85rem', color: C.text, lineHeight: 1.6 }}>{step.desc}</p>
                       {step.action}
                       {step.extra}
@@ -958,82 +893,37 @@ export default function Dashboard() {
           {activePage === 'settings' && (
             <>
               <div>
-                <h1 style={{ fontSize: isMobile ? '1.3rem' : '1.5rem', fontWeight: 800, letterSpacing: '-0.03em', marginBottom: '4px' }}>Settings</h1>
+                <h1 style={{ fontSize: isMobile ? '1.3rem' : '1.5rem', fontWeight: 700, letterSpacing: '-0.03em', marginBottom: '4px', color: C.textPrimary }}>Settings</h1>
                 <p style={{ fontSize: '0.85rem', color: C.text }}>Manage your account and integrations.</p>
               </div>
 
-              {/* âœ… CALENDAR INTEGRATION â€” sÃ©lection exclusive */}
-              <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', padding: '20px' }}>
-                <p style={{ fontSize: '0.75rem', color: C.text, textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600, marginBottom: '16px' }}>Calendar integration</p>
+              <div style={{ background: '#fff', border: `1px solid ${C.border}`, borderRadius: '16px', padding: '20px' }}>
+                <p style={{ fontSize: '0.72rem', color: C.text, textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600, marginBottom: '16px' }}>Calendar integration</p>
                 {(() => {
                   const activeCalendar = clientData?.calendar_type || (googleConnected ? 'google' : null);
                   return (
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                      {/* Google Calendar */}
-                      <div style={{
-                        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                        padding: '14px 16px', background: C.bg,
-                        border: `1px solid ${activeCalendar === 'google' ? 'rgba(74,222,128,0.2)' : C.border}`,
-                        borderRadius: '12px',
-                        opacity: activeCalendar && activeCalendar !== 'google' ? 0.4 : 1,
-                        pointerEvents: activeCalendar && activeCalendar !== 'google' ? 'none' : 'auto',
-                        transition: 'opacity 0.2s',
-                      }}>
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 16px', background: '#f9fafb', border: `1px solid ${activeCalendar === 'google' ? '#bbf7d0' : C.border}`, borderRadius: '12px', opacity: activeCalendar && activeCalendar !== 'google' ? 0.4 : 1, pointerEvents: activeCalendar && activeCalendar !== 'google' ? 'none' : 'auto', transition: 'opacity 0.2s' }}>
                         <div>
-                          <p style={{ fontWeight: 600, fontSize: '0.9rem', marginBottom: '2px' }}>Google Calendar</p>
-                          <p style={{ fontSize: '0.78rem', color: C.text }}>
-                            {activeCalendar === 'google'
-                              ? 'Connected â€” appointments created automatically on your calendar'
-                              : 'Appointments booked automatically â€” no action needed'}
-                          </p>
+                          <p style={{ fontWeight: 600, fontSize: '0.9rem', marginBottom: '2px', color: C.textPrimary }}>Google Calendar</p>
+                          <p style={{ fontSize: '0.78rem', color: C.text }}>{activeCalendar === 'google' ? 'Connected - appointments created automatically' : 'Appointments booked automatically'}</p>
                         </div>
                         {activeCalendar === 'google' ? (
-                          <button onClick={handleDisconnectGoogle} style={{
-                            padding: '8px 16px',
-                            background: 'rgba(255,255,255,0.06)',
-                            border: `1px solid ${C.border}`,
-                            color: '#e5e7eb',
-                            borderRadius: '8px', fontSize: '0.82rem', fontWeight: 600, cursor: 'pointer', whiteSpace: 'nowrap'
-                          }}>Disconnect</button>
+                          <button onClick={handleDisconnectGoogle} style={{ padding: '8px 16px', background: '#f9fafb', border: `1px solid ${C.border}`, color: C.textPrimary, borderRadius: '8px', fontSize: '0.82rem', fontWeight: 600, cursor: 'pointer', whiteSpace: 'nowrap' }}>Disconnect</button>
                         ) : (
-                          <a href="/api/google/auth" style={{
-                            padding: '8px 16px', background: '#1a73e8', color: 'white',
-                            textDecoration: 'none', borderRadius: '8px', fontSize: '0.82rem', fontWeight: 600, whiteSpace: 'nowrap'
-                          }}>Connect â†’</a>
+                          <a href="/api/google/auth" style={{ padding: '8px 16px', background: '#1a73e8', color: 'white', textDecoration: 'none', borderRadius: '8px', fontSize: '0.82rem', fontWeight: 600, whiteSpace: 'nowrap' }}>Connect</a>
                         )}
                       </div>
 
-                      {/* Calendly */}
-                      <div style={{
-                        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                        padding: '14px 16px', background: C.bg,
-                        border: `1px solid ${activeCalendar === 'calendly' ? 'rgba(74,222,128,0.2)' : C.border}`,
-                        borderRadius: '12px',
-                        opacity: activeCalendar && activeCalendar !== 'calendly' ? 0.4 : 1,
-                        pointerEvents: activeCalendar && activeCalendar !== 'calendly' ? 'none' : 'auto',
-                        transition: 'opacity 0.2s',
-                      }}>
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 16px', background: '#f9fafb', border: `1px solid ${activeCalendar === 'calendly' ? '#bbf7d0' : C.border}`, borderRadius: '12px', opacity: activeCalendar && activeCalendar !== 'calendly' ? 0.4 : 1, pointerEvents: activeCalendar && activeCalendar !== 'calendly' ? 'none' : 'auto', transition: 'opacity 0.2s' }}>
                         <div>
-                          <p style={{ fontWeight: 600, fontSize: '0.9rem', marginBottom: '2px' }}>Calendly</p>
-                          <p style={{ fontSize: '0.78rem', color: C.text }}>
-                            {activeCalendar === 'calendly'
-                              ? 'Connected â€” caller receives a Calendly link by SMS to confirm'
-                              : 'Bot collects info & sends caller a Calendly link to confirm'}
-                          </p>
+                          <p style={{ fontWeight: 600, fontSize: '0.9rem', marginBottom: '2px', color: C.textPrimary }}>Calendly</p>
+                          <p style={{ fontSize: '0.78rem', color: C.text }}>{activeCalendar === 'calendly' ? 'Connected - caller receives a Calendly link by SMS' : 'Bot collects info & sends caller a Calendly link'}</p>
                         </div>
                         {activeCalendar === 'calendly' ? (
-                          <button onClick={handleDisconnectCalendly} style={{
-                            padding: '8px 16px',
-                            background: 'rgba(255,255,255,0.06)',
-                            border: `1px solid ${C.border}`,
-                            color: '#e5e7eb',
-                            borderRadius: '8px', fontSize: '0.82rem', fontWeight: 600, cursor: 'pointer', whiteSpace: 'nowrap'
-                          }}>Disconnect</button>
+                          <button onClick={handleDisconnectCalendly} style={{ padding: '8px 16px', background: '#f9fafb', border: `1px solid ${C.border}`, color: C.textPrimary, borderRadius: '8px', fontSize: '0.82rem', fontWeight: 600, cursor: 'pointer', whiteSpace: 'nowrap' }}>Disconnect</button>
                         ) : (
-                          <button onClick={() => setShowCalendlyModal(true)} style={{
-                            padding: '8px 16px', background: '#006bff', color: 'white',
-                            border: 'none', borderRadius: '8px', fontSize: '0.82rem', fontWeight: 600, cursor: 'pointer', whiteSpace: 'nowrap'
-                          }}>Connect â†’</button>
+                          <button onClick={() => setShowCalendlyModal(true)} style={{ padding: '8px 16px', background: '#006bff', color: 'white', border: 'none', borderRadius: '8px', fontSize: '0.82rem', fontWeight: 600, cursor: 'pointer', whiteSpace: 'nowrap' }}>Connect</button>
                         )}
                       </div>
                     </div>
@@ -1042,11 +932,12 @@ export default function Dashboard() {
               </div>
 
               <ScriptSettings clientPlan={clientData?.plan} userId={user?.id} allNumbers={[...(clientData?.twilio_number ? [clientData.twilio_number] : []), ...(clientData?.twilio_numbers || [])]} />
-              <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', padding: '20px' }}>
-                <p style={{ fontSize: '0.75rem', color: C.text, textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600, marginBottom: '16px' }}>Account</p>
+
+              <div style={{ background: '#fff', border: `1px solid ${C.border}`, borderRadius: '16px', padding: '20px' }}>
+                <p style={{ fontSize: '0.72rem', color: C.text, textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600, marginBottom: '16px' }}>Account</p>
                 <p style={{ fontSize: '0.875rem', color: C.label, marginBottom: '4px' }}>Email</p>
-                <p style={{ fontSize: '0.95rem', color: '#e5e7eb', fontWeight: 500 }}>{user.email}</p>
-                <button onClick={handleLogout} style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#f87171', background: 'none', border: 'none', cursor: 'pointer', fontSize: '0.875rem', padding: 0, marginTop: '20px', fontWeight: 600 }}>
+                <p style={{ fontSize: '0.95rem', color: C.textPrimary, fontWeight: 500 }}>{user.email}</p>
+                <button onClick={handleLogout} style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#ef4444', background: 'none', border: 'none', cursor: 'pointer', fontSize: '0.875rem', padding: 0, marginTop: '20px', fontWeight: 600 }}>
                   <IconLogout /> Sign out
                 </button>
               </div>
@@ -1056,62 +947,62 @@ export default function Dashboard() {
           {activePage === 'billing' && (
             <>
               <div>
-                <h1 style={{ fontSize: isMobile ? '1.3rem' : '1.5rem', fontWeight: 800, letterSpacing: '-0.03em', marginBottom: '4px' }}>Billing</h1>
+                <h1 style={{ fontSize: isMobile ? '1.3rem' : '1.5rem', fontWeight: 700, letterSpacing: '-0.03em', marginBottom: '4px', color: C.textPrimary }}>Billing</h1>
                 <p style={{ fontSize: '0.85rem', color: C.text }}>Manage your subscription and add-ons.</p>
               </div>
-              <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', padding: '20px' }}>
+              <div style={{ background: '#fff', border: `1px solid ${C.border}`, borderRadius: '16px', padding: '20px' }}>
                 {plan ? (
                   <div style={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', alignItems: isMobile ? 'flex-start' : 'center', justifyContent: 'space-between', gap: '12px' }}>
                     <div>
-                      <p style={{ fontSize: '0.75rem', color: C.text, textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600, marginBottom: '6px' }}>Current plan</p>
+                      <p style={{ fontSize: '0.72rem', color: C.text, textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600, marginBottom: '6px' }}>Current plan</p>
                       <p style={{ fontWeight: 700, fontSize: '1.2rem', color: plan.color, marginBottom: '4px' }}>{plan.label}</p>
                       <p style={{ fontSize: '0.85rem', color: C.text }}>{plan.minutes.toLocaleString()} minutes/month included</p>
-                      {clientData?.extra_minutes > 0 && <p style={{ fontSize: '0.82rem', color: '#4ade80', marginTop: '4px' }}>+ {clientData.extra_minutes.toLocaleString()} extra minutes available</p>}
+                      {clientData?.extra_minutes > 0 && <p style={{ fontSize: '0.82rem', color: '#16a34a', marginTop: '4px' }}>+ {clientData.extra_minutes.toLocaleString()} extra minutes available</p>}
                     </div>
-                    <button onClick={() => setShowChangePlan(true)} style={{ padding: '9px 20px', background: C.bg, border: `1px solid ${C.border}`, color: '#e5e7eb', borderRadius: '9px', fontSize: '0.875rem', fontWeight: 600, cursor: 'pointer' }}>Change plan</button>
+                    <button onClick={() => setShowChangePlan(true)} style={{ padding: '9px 20px', background: '#f9fafb', border: `1px solid ${C.border}`, color: C.textPrimary, borderRadius: '9px', fontSize: '0.875rem', fontWeight: 600, cursor: 'pointer' }}>Change plan</button>
                   </div>
                 ) : (
                   <div style={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', alignItems: isMobile ? 'flex-start' : 'center', justifyContent: 'space-between', gap: '12px' }}>
                     <div>
-                      <p style={{ fontWeight: 600, color: '#818cf8', marginBottom: '4px' }}>No active plan</p>
+                      <p style={{ fontWeight: 600, color: C.accent, marginBottom: '4px' }}>No active plan</p>
                       <p style={{ fontSize: '0.85rem', color: C.text }}>Subscribe to activate your VoiceBot.</p>
                     </div>
-                    <a href="/pricing" style={{ padding: '9px 20px', background: '#4f46e5', color: 'white', textDecoration: 'none', borderRadius: '9px', fontSize: '0.875rem', fontWeight: 600 }}>View plans â†’</a>
+                    <a href="/pricing" style={{ padding: '9px 20px', background: C.accent, color: 'white', textDecoration: 'none', borderRadius: '9px', fontSize: '0.875rem', fontWeight: 600 }}>View plans</a>
                   </div>
                 )}
               </div>
               {plan && (
-                <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', padding: '20px' }}>
+                <div style={{ background: '#fff', border: `1px solid ${C.border}`, borderRadius: '16px', padding: '20px' }}>
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
                     <div>
-                      <p style={{ fontSize: '0.75rem', color: C.text, textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600, marginBottom: '4px' }}>Phone numbers</p>
+                      <p style={{ fontSize: '0.72rem', color: C.text, textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600, marginBottom: '4px' }}>Phone numbers</p>
                       <p style={{ fontSize: '0.82rem', color: C.text }}>{clientData?.plan === 'business' ? '$15/month per additional number' : 'Additional numbers available on Business plan'}</p>
                     </div>
                     {clientData?.plan === 'business' ? (
-                      <button onClick={() => handleCheckout('price_1Ta0HrFbv1QHIqBx45XsDToe', 'subscription')} style={{ padding: '8px 16px', background: '#4f46e5', color: 'white', border: 'none', borderRadius: '8px', fontSize: '0.82rem', fontWeight: 600, cursor: 'pointer', whiteSpace: 'nowrap' }}>+ Add number</button>
+                      <button onClick={() => handleCheckout('price_1Ta0HrFbv1QHIqBx45XsDToe', 'subscription')} style={{ padding: '8px 16px', background: C.accent, color: 'white', border: 'none', borderRadius: '8px', fontSize: '0.82rem', fontWeight: 600, cursor: 'pointer', whiteSpace: 'nowrap' }}>+ Add number</button>
                     ) : (
-                      <a href="/pricing" style={{ fontSize: '0.78rem', color: '#818cf8', background: 'rgba(79,70,229,0.08)', border: '1px solid rgba(79,70,229,0.2)', padding: '6px 12px', borderRadius: '8px', textDecoration: 'none', fontWeight: 600, whiteSpace: 'nowrap' }}>Upgrade â†’</a>
+                      <a href="/pricing" style={{ fontSize: '0.78rem', color: C.accent, background: '#ede9fe', border: '1px solid #c4b5fd', padding: '6px 12px', borderRadius: '8px', textDecoration: 'none', fontWeight: 600, whiteSpace: 'nowrap' }}>Upgrade</a>
                     )}
                   </div>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                     {clientData?.twilio_number && (
-                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 14px', background: C.bg, border: `1px solid ${C.border}`, borderRadius: '10px' }}>
-                        <p style={{ fontFamily: 'monospace', fontSize: '0.9rem', color: '#e5e7eb' }}>{clientData.twilio_number}</p>
-                        <span style={{ fontSize: '0.72rem', color: C.text, background: C.card, padding: '2px 8px', borderRadius: '100px', border: `1px solid ${C.border}` }}>Included</span>
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 14px', background: '#f9fafb', border: `1px solid ${C.border}`, borderRadius: '10px' }}>
+                        <p style={{ fontFamily: 'monospace', fontSize: '0.9rem', color: C.textPrimary }}>{clientData.twilio_number}</p>
+                        <span style={{ fontSize: '0.72rem', color: C.text, background: '#fff', padding: '2px 8px', borderRadius: '100px', border: `1px solid ${C.border}` }}>Included</span>
                       </div>
                     )}
                     {(clientData?.twilio_numbers || []).map((num, i) => (
-                      <div key={i} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 14px', background: C.bg, border: `1px solid ${C.border}`, borderRadius: '10px' }}>
-                        <p style={{ fontFamily: 'monospace', fontSize: '0.9rem', color: '#e5e7eb' }}>{num}</p>
-                        <span style={{ fontSize: '0.72rem', color: '#60a5fa', background: 'rgba(96,165,250,0.08)', padding: '2px 8px', borderRadius: '100px', border: '1px solid rgba(96,165,250,0.2)' }}>$15/mo</span>
+                      <div key={i} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 14px', background: '#f9fafb', border: `1px solid ${C.border}`, borderRadius: '10px' }}>
+                        <p style={{ fontFamily: 'monospace', fontSize: '0.9rem', color: C.textPrimary }}>{num}</p>
+                        <span style={{ fontSize: '0.72rem', color: '#2563eb', background: '#eff6ff', padding: '2px 8px', borderRadius: '100px', border: '1px solid #bfdbfe' }}>$15/mo</span>
                       </div>
                     ))}
                   </div>
                 </div>
               )}
               {plan && (
-                <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', padding: '20px' }}>
-                  <p style={{ fontSize: '0.75rem', color: C.text, textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600, marginBottom: '4px' }}>Extra minutes</p>
+                <div style={{ background: '#fff', border: `1px solid ${C.border}`, borderRadius: '16px', padding: '20px' }}>
+                  <p style={{ fontSize: '0.72rem', color: C.text, textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600, marginBottom: '4px' }}>Extra minutes</p>
                   <p style={{ fontSize: '0.82rem', color: C.text, marginBottom: '16px' }}>One-time purchase, added immediately to your account.</p>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                     {(clientData?.plan === 'business' ? [
@@ -1123,14 +1014,14 @@ export default function Dashboard() {
                       { label: '1,000 minutes', price: '$45', priceId: 'price_1Tb2lMFbv1QHIqBxTbNNU8FK' },
                       { label: '2,000 minutes', price: '$70', priceId: 'price_1Tb2lmFbv1QHIqBxjHqbrZbr' },
                     ]).map(pack => (
-                      <div key={pack.priceId} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 16px', background: C.bg, border: `1px solid ${C.border}`, borderRadius: '10px' }}>
+                      <div key={pack.priceId} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 16px', background: '#f9fafb', border: `1px solid ${C.border}`, borderRadius: '10px' }}>
                         <div>
-                          <p style={{ fontSize: '0.9rem', fontWeight: 600, marginBottom: '2px' }}>{pack.label}</p>
+                          <p style={{ fontSize: '0.9rem', fontWeight: 600, marginBottom: '2px', color: C.textPrimary }}>{pack.label}</p>
                           <p style={{ fontSize: '0.78rem', color: C.text }}>One-time payment</p>
                         </div>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                          <span style={{ fontWeight: 700, fontSize: '0.95rem' }}>{pack.price}</span>
-                          <button onClick={() => handleCheckout(pack.priceId, 'payment')} style={{ padding: '7px 14px', background: '#4f46e5', color: 'white', border: 'none', borderRadius: '8px', fontSize: '0.82rem', fontWeight: 600, cursor: 'pointer' }}>Buy</button>
+                          <span style={{ fontWeight: 700, fontSize: '0.95rem', color: C.textPrimary }}>{pack.price}</span>
+                          <button onClick={() => handleCheckout(pack.priceId, 'payment')} style={{ padding: '7px 14px', background: C.accent, color: 'white', border: 'none', borderRadius: '8px', fontSize: '0.82rem', fontWeight: 600, cursor: 'pointer' }}>Buy</button>
                         </div>
                       </div>
                     ))}
@@ -1139,23 +1030,23 @@ export default function Dashboard() {
               )}
             </>
           )}
-
         </div>
 
         {!isMobile && activePage === 'dashboard' && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', position: 'sticky', top: '48px' }}>
-            <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', padding: '20px' }}>
-              <p style={{ fontSize: '0.75rem', color: C.text, textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600, marginBottom: '14px' }}>Bot status</p>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', position: 'sticky', top: '40px' }}>
+            <div style={{ background: '#fff', border: `1px solid ${C.border}`, borderRadius: '16px', padding: '20px' }}>
+              <p style={{ fontSize: '0.72rem', color: C.text, textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600, marginBottom: '14px' }}>Bot status</p>
               <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <div style={{ width: '10px', height: '10px', borderRadius: '50%', background: plan ? '#4ade80' : '#f87171', boxShadow: plan ? '0 0 8px rgba(74,222,128,0.5)' : '0 0 8px rgba(248,113,113,0.5)' }} />
-                <span style={{ fontWeight: 700, fontSize: '0.95rem', color: plan ? '#4ade80' : '#f87171' }}>{plan ? 'Active' : 'Inactive'}</span>
+                <div style={{ width: '10px', height: '10px', borderRadius: '50%', background: plan ? '#22c55e' : '#ef4444', boxShadow: plan ? '0 0 8px rgba(34,197,94,0.4)' : '0 0 8px rgba(239,68,68,0.4)' }} />
+                <span style={{ fontWeight: 700, fontSize: '0.95rem', color: plan ? '#16a34a' : '#ef4444' }}>{plan ? 'Active' : 'Inactive'}</span>
               </div>
               {plan && clientData?.twilio_number && (
-                <p style={{ fontSize: '0.78rem', color: C.text, marginTop: '8px' }}>Answering calls on <span style={{ fontFamily: 'monospace', color: '#e5e7eb' }}>{clientData.twilio_number}</span></p>
+                <p style={{ fontSize: '0.78rem', color: C.text, marginTop: '8px' }}>Answering calls on <span style={{ fontFamily: 'monospace', color: C.textPrimary }}>{clientData.twilio_number}</span></p>
               )}
             </div>
-            <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', padding: '20px' }}>
-              <p style={{ fontSize: '0.75rem', color: C.text, textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600, marginBottom: '14px' }}>This month</p>
+
+            <div style={{ background: '#fff', border: `1px solid ${C.border}`, borderRadius: '16px', padding: '20px' }}>
+              <p style={{ fontSize: '0.72rem', color: C.text, textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600, marginBottom: '14px' }}>This month</p>
               {(() => {
                 const now = new Date();
                 const firstOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
@@ -1167,20 +1058,21 @@ export default function Dashboard() {
                     {[{ label: 'Calls', value: monthCalls.length }, { label: 'Appointments', value: monthRdv }, { label: 'Minutes used', value: monthMinutes }].map(s => (
                       <div key={s.label} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                         <span style={{ fontSize: '0.85rem', color: C.text }}>{s.label}</span>
-                        <span style={{ fontSize: '0.95rem', fontWeight: 700, color: 'white' }}>{s.value}</span>
+                        <span style={{ fontSize: '0.95rem', fontWeight: 700, color: C.textPrimary }}>{s.value}</span>
                       </div>
                     ))}
                   </div>
                 );
               })()}
             </div>
-            <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', padding: '20px' }}>
-              <p style={{ fontSize: '0.75rem', color: C.text, textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600, marginBottom: '14px' }}>Quick actions</p>
+
+            <div style={{ background: '#fff', border: `1px solid ${C.border}`, borderRadius: '16px', padding: '20px' }}>
+              <p style={{ fontSize: '0.72rem', color: C.text, textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600, marginBottom: '14px' }}>Quick actions</p>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                {!googleConnected && <a href="/api/google/auth" style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '10px 14px', background: 'rgba(26,115,232,0.08)', border: '1px solid rgba(26,115,232,0.2)', borderRadius: '10px', textDecoration: 'none', color: '#60a5fa', fontSize: '0.85rem', fontWeight: 600 }}><IconCalendar /> Connect Calendar</a>}
-                {clientData?.plan && clientData.plan !== 'starter' && <button onClick={() => setActivePage('settings')} style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '10px 14px', background: 'rgba(79,70,229,0.08)', border: '1px solid rgba(79,70,229,0.2)', borderRadius: '10px', color: '#818cf8', fontSize: '0.85rem', fontWeight: 600, cursor: 'pointer', textAlign: 'left' }}><IconSettings /> Customize script</button>}
-                <button onClick={() => setActivePage('setup')} style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '10px 14px', background: C.bg, border: `1px solid ${C.border}`, borderRadius: '10px', color: C.text, fontSize: '0.85rem', fontWeight: 600, cursor: 'pointer', textAlign: 'left' }}><IconSetup /> Setup guide</button>
-                <button onClick={() => setActivePage('billing')} style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '10px 14px', background: C.bg, border: `1px solid ${C.border}`, borderRadius: '10px', color: C.text, fontSize: '0.85rem', fontWeight: 600, cursor: 'pointer', textAlign: 'left' }}><IconBilling /> Manage billing</button>
+                {!googleConnected && <a href="/api/google/auth" style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '10px 14px', background: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: '10px', textDecoration: 'none', color: '#2563eb', fontSize: '0.85rem', fontWeight: 600 }}><IconCalendar /> Connect Calendar</a>}
+                {clientData?.plan && clientData.plan !== 'starter' && <button onClick={() => setActivePage('settings')} style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '10px 14px', background: '#ede9fe', border: '1px solid #c4b5fd', borderRadius: '10px', color: C.accent, fontSize: '0.85rem', fontWeight: 600, cursor: 'pointer', textAlign: 'left' }}><IconSettings /> Customize script</button>}
+                <button onClick={() => setActivePage('setup')} style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '10px 14px', background: '#f9fafb', border: `1px solid ${C.border}`, borderRadius: '10px', color: C.textPrimary, fontSize: '0.85rem', fontWeight: 600, cursor: 'pointer', textAlign: 'left' }}><IconSetup /> Setup guide</button>
+                <button onClick={() => setActivePage('billing')} style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '10px 14px', background: '#f9fafb', border: `1px solid ${C.border}`, borderRadius: '10px', color: C.textPrimary, fontSize: '0.85rem', fontWeight: 600, cursor: 'pointer', textAlign: 'left' }}><IconBilling /> Manage billing</button>
               </div>
             </div>
           </div>
@@ -1190,21 +1082,18 @@ export default function Dashboard() {
   );
 
   return (
-    <div style={{ minHeight: '100vh', background: C.bg, color: 'white', fontFamily: 'system-ui, sans-serif' }}>
+    <div style={{ minHeight: '100vh', background: '#f9fafb', color: C.textPrimary, fontFamily: "'DM Sans', system-ui, sans-serif" }}>
       {showChangePlan && <ChangePlanModal currentPlan={clientData?.plan} userId={user?.id} onClose={() => setShowChangePlan(false)} onSuccess={handlePlanChangeSuccess} />}
+
       {showCalendlyModal && (
-        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.7)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: '20px' }}>
-          <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '20px', padding: '28px', width: '100%', maxWidth: '480px' }}>
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: '20px' }}>
+          <div style={{ background: '#fff', border: `1px solid ${C.border}`, borderRadius: '20px', padding: '28px', width: '100%', maxWidth: '480px', boxShadow: '0 24px 64px rgba(0,0,0,0.12)' }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px' }}>
-              <h2 style={{ fontSize: '1.1rem', fontWeight: 700 }}>Connect Calendly</h2>
+              <h2 style={{ fontSize: '1.1rem', fontWeight: 700, color: C.textPrimary }}>Connect Calendly</h2>
               <button onClick={() => setShowCalendlyModal(false)} style={{ background: 'none', border: 'none', color: C.text, cursor: 'pointer' }}><IconX /></button>
             </div>
             <p style={{ fontSize: '0.85rem', color: C.text, marginBottom: '16px' }}>Enter your Calendly Personal Access Token to connect your account.</p>
-            <input
-              id="calendly-token-input"
-              placeholder="eyJraWQiOiI..."
-              style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: `1px solid ${C.border}`, background: C.bg, color: 'white', fontSize: '0.875rem', outline: 'none', boxSizing: 'border-box', marginBottom: '16px' }}
-            />
+            <input id="calendly-token-input" placeholder="eyJraWQiOiI..." style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: `1px solid ${C.border}`, background: '#f9fafb', color: C.textPrimary, fontSize: '0.875rem', outline: 'none', boxSizing: 'border-box', marginBottom: '16px' }} />
             <div style={{ display: 'flex', gap: '10px' }}>
               <button onClick={() => setShowCalendlyModal(false)} style={{ flex: 1, padding: '11px', background: 'transparent', border: `1px solid ${C.border}`, color: C.text, borderRadius: '10px', fontWeight: 600, fontSize: '0.875rem', cursor: 'pointer' }}>Cancel</button>
               <button onClick={async () => {
@@ -1220,24 +1109,24 @@ export default function Dashboard() {
           </div>
         </div>
       )}
+
       <SetupProgress plan={clientData?.plan} googleConnected={googleConnected} twilioNumber={clientData?.twilio_number} callsCount={calls.length} onGoSetup={() => setActivePage('setup')} />
 
       {!isMobile && (
-        <aside style={{ width: '220px', minHeight: '100vh', background: C.sidebar, borderRight: `1px solid ${C.border}`, display: 'flex', flexDirection: 'column', padding: '24px 12px', position: 'fixed', top: 0, left: 0, zIndex: 100 }}>
+        <aside style={{ width: '220px', minHeight: '100vh', background: '#fff', borderRight: `1px solid ${C.border}`, display: 'flex', flexDirection: 'column', padding: '24px 12px', position: 'fixed', top: 0, left: 0, zIndex: 100 }}>
           <div style={{ padding: '0 12px', marginBottom: '32px' }}>
-            <a href="/" style={{ fontWeight: 700, fontSize: '1rem', letterSpacing: '-0.02em', color: 'white', textDecoration: 'none' }}>VoiceBot AI</a>
+            <a href="/" style={{ fontWeight: 700, fontSize: '1rem', letterSpacing: '-0.02em', color: C.textPrimary, textDecoration: 'none' }}>VoiceBot AI</a>
           </div>
           <nav style={{ display: 'flex', flexDirection: 'column', gap: '2px', flex: 1 }}>
             {navItems.map(item => (
-              <button key={item.id} onClick={() => setActivePage(item.id)}
-                style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '9px 12px', borderRadius: '8px', border: 'none', background: activePage === item.id ? C.card : 'transparent', color: activePage === item.id ? 'white' : C.text, cursor: 'pointer', fontSize: '0.875rem', fontWeight: activePage === item.id ? 600 : 400, textAlign: 'left', width: '100%', transition: 'all 0.15s' }}>
+              <button key={item.id} onClick={() => setActivePage(item.id)} style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '9px 12px', borderRadius: '8px', border: 'none', background: activePage === item.id ? '#ede9fe' : 'transparent', color: activePage === item.id ? C.accent : C.text, cursor: 'pointer', fontSize: '0.875rem', fontWeight: activePage === item.id ? 600 : 400, textAlign: 'left', width: '100%', transition: 'all 0.15s' }}>
                 {item.icon}{item.label}
               </button>
             ))}
           </nav>
           <div style={{ borderTop: `1px solid ${C.border}`, paddingTop: '16px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
             {plan && (
-              <div style={{ padding: '10px 12px', background: C.card, borderRadius: '8px', marginBottom: '4px' }}>
+              <div style={{ padding: '10px 12px', background: '#f9fafb', borderRadius: '8px', border: `1px solid ${C.border}`, marginBottom: '4px' }}>
                 <p style={{ fontSize: '0.7rem', color: C.text, textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600, marginBottom: '3px' }}>Plan</p>
                 <p style={{ fontSize: '0.8rem', fontWeight: 600, color: plan.color }}>{plan.label}</p>
               </div>
@@ -1254,15 +1143,11 @@ export default function Dashboard() {
 
       <div style={{ marginLeft: isMobile ? '0' : '220px' }}>
         {isMobile && (
-          <div style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 100, background: C.sidebar, borderBottom: `1px solid ${C.border}`, padding: '0 16px', height: '56px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <a href="/" style={{ fontWeight: 700, fontSize: '0.95rem', color: 'white', textDecoration: 'none' }}>VoiceBot AI</a>
+          <div style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 100, background: '#fff', borderBottom: `1px solid ${C.border}`, padding: '0 16px', height: '56px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <a href="/" style={{ fontWeight: 700, fontSize: '0.95rem', color: C.textPrimary, textDecoration: 'none' }}>VoiceBot AI</a>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              {plan && (
-                <span style={{ fontSize: '0.7rem', fontWeight: 600, color: plan.color, background: 'rgba(255,255,255,0.06)', padding: '3px 10px', borderRadius: '100px', border: `1px solid ${C.border}` }}>
-                  {plan.label}
-                </span>
-              )}
-              <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: plan ? '#4ade80' : '#f87171', boxShadow: plan ? '0 0 6px rgba(74,222,128,0.6)' : '0 0 6px rgba(248,113,113,0.6)' }} />
+              {plan && <span style={{ fontSize: '0.7rem', fontWeight: 600, color: plan.color, background: '#f9fafb', padding: '3px 10px', borderRadius: '100px', border: `1px solid ${C.border}` }}>{plan.label}</span>}
+              <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: plan ? '#22c55e' : '#ef4444' }} />
             </div>
           </div>
         )}
@@ -1270,20 +1155,13 @@ export default function Dashboard() {
       </div>
 
       {isMobile && (
-        <nav style={{ position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 100, background: C.sidebar, borderTop: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', justifyContent: 'space-around', padding: '8px 0 20px' }}>
+        <nav style={{ position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 100, background: '#fff', borderTop: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', justifyContent: 'space-around', padding: '8px 0 20px' }}>
           {navItems.map(item => {
             const isActive = activePage === item.id;
             return (
-              <button key={item.id} onClick={() => setActivePage(item.id)} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px', background: 'none', border: 'none', cursor: 'pointer', padding: '6px 12px', borderRadius: '10px', position: 'relative' }}>
-                <div style={{ color: isActive ? '#818cf8' : C.text, transition: 'color 0.15s' }}>
-                  {item.icon}
-                </div>
-                <span style={{ fontSize: '0.65rem', fontWeight: isActive ? 600 : 400, color: isActive ? 'white' : C.text, transition: 'color 0.15s' }}>
-                  {item.label}
-                </span>
-                {isActive && (
-                  <div style={{ position: 'absolute', bottom: '-8px', left: '50%', transform: 'translateX(-50%)', width: '4px', height: '4px', borderRadius: '50%', background: '#818cf8' }} />
-                )}
+              <button key={item.id} onClick={() => setActivePage(item.id)} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px', background: 'none', border: 'none', cursor: 'pointer', padding: '6px 12px', borderRadius: '10px' }}>
+                <div style={{ color: isActive ? C.accent : C.text, transition: 'color 0.15s' }}>{item.icon}</div>
+                <span style={{ fontSize: '0.65rem', fontWeight: isActive ? 600 : 400, color: isActive ? C.accent : C.text, transition: 'color 0.15s' }}>{item.label}</span>
               </button>
             );
           })}
