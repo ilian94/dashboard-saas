@@ -53,7 +53,7 @@ export default function Register() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: form.email, businessName: form.company }),
       });
-      window.location.href = "/dashboard";
+      window.location.href = "/pricing";
     } else { setError("Check your email to confirm your account."); setLoading(false); }
   };
 
