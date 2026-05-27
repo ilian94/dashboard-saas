@@ -15,6 +15,78 @@ const C = {
   accent: '#6366f1',
 };
 
+const useCases = [
+  {
+    icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#6366f1" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>,
+    industry: 'Dental Clinics',
+    desc: 'Book cleanings, confirm appointments, handle cancellations — without lifting a finger.',
+    stat: 'Avg. 40 hours/month saved',
+  },
+  {
+    icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#6366f1" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>,
+    industry: 'Law Firms',
+    desc: 'Qualify leads, schedule consultations, and capture every potential client after hours.',
+    stat: 'Never miss a case again',
+  },
+  {
+    icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#6366f1" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>,
+    industry: 'Real Estate',
+    desc: 'Answer property inquiries 24/7 and book viewings directly into your calendar.',
+    stat: 'Convert more leads',
+  },
+  {
+    icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#6366f1" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>,
+    industry: 'Spas & Salons',
+    desc: 'Let clients book, reschedule, or cancel appointments anytime — no hold music.',
+    stat: '30% fewer no-shows',
+  },
+  {
+    icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#6366f1" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg>,
+    industry: 'Home Services',
+    desc: 'Capture service requests and dispatch efficiently, even on weekends and holidays.',
+    stat: 'Always on call',
+  },
+  {
+    icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#6366f1" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81a19.79 19.79 0 01-3.07-8.68A2 2 0 012 .95h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 8.84a16 16 0 006.07 6.07l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>,
+    industry: 'Medical Practices',
+    desc: 'Handle appointment scheduling and patient inquiries with HIPAA-conscious AI.',
+    stat: 'Reduce front desk load',
+  },
+];
+
+const featuresList = [
+  {
+    icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6366f1" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81a19.79 19.79 0 01-3.07-8.68A2 2 0 012 .95h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 8.84a16 16 0 006.07 6.07l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>,
+    title: 'Instant Answer',
+    desc: 'Picks up in under 2 seconds, 24/7, including weekends and holidays.',
+  },
+  {
+    icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6366f1" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>,
+    title: 'Automatic Booking',
+    desc: 'Direct sync with Google Calendar and Calendly. Real-time appointment booking.',
+  },
+  {
+    icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6366f1" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>,
+    title: 'Conversational AI',
+    desc: 'Powered by Claude AI — understands context, qualifies leads, handles objections.',
+  },
+  {
+    icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6366f1" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>,
+    title: 'Call Summaries',
+    desc: 'Every call transcribed and summarized in your dashboard. Nothing slips through.',
+  },
+  {
+    icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6366f1" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>,
+    title: 'SMS Confirmations',
+    desc: 'Automatically sends SMS booking confirmations to callers after every appointment.',
+  },
+  {
+    icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6366f1" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>,
+    title: '5-Minute Setup',
+    desc: 'Connect your calendar, activate your number, forward your line. Done.',
+  },
+];
+
 const faqs = [
   { q: 'How does VoiceBot AI work?', a: 'VoiceBot AI uses Claude AI to answer your incoming calls in real time. When a client calls your number, the bot picks up instantly, understands what they need, and books appointments directly into your Google Calendar.' },
   { q: 'Does it work with my existing phone number?', a: 'Yes. You keep your existing business number and simply forward calls to your VoiceBot number. Setup takes less than 5 minutes — no porting required.' },
@@ -59,7 +131,7 @@ export default function Home() {
           ) : (
             <>
               <Link href="/login" style={{ color: C.textSecondary, textDecoration: 'none', fontSize: '0.875rem' }}>Sign in</Link>
-              <Link href="/register" style={{ background: C.text, color: '#fff', textDecoration: 'none', fontSize: '0.85rem', fontWeight: 600, padding: '8px 16px', borderRadius: '8px' }}>Start for free</Link>
+              <Link href="/register" style={{ background: C.accent, color: '#fff', textDecoration: 'none', fontSize: '0.85rem', fontWeight: 600, padding: '8px 16px', borderRadius: '8px' }}>Start for free</Link>
             </>
           )}
         </div>
@@ -84,7 +156,7 @@ export default function Home() {
         <p style={{ marginTop: '20px', fontSize: '0.8rem', color: C.textMuted }}>7-day money-back guarantee · No credit card required</p>
       </section>
 
-      {/* SOCIAL PROOF STATS */}
+      {/* STATS */}
       <section style={{ borderTop: `1px solid ${C.border}`, borderBottom: `1px solid ${C.border}`, padding: '40px 60px', display: 'flex', justifyContent: 'center', gap: '80px', flexWrap: 'wrap', background: C.bgSecondary }}>
         {[
           { value: '500+', label: 'Businesses served' },
@@ -99,24 +171,17 @@ export default function Home() {
         ))}
       </section>
 
-      {/* USE CASES PAR INDUSTRIE */}
+      {/* USE CASES */}
       <section style={{ maxWidth: '1100px', margin: '0 auto', padding: '96px 40px' }}>
         <p style={{ textAlign: 'center', fontSize: '0.78rem', fontWeight: 700, color: C.accent, letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '12px' }}>Use cases</p>
         <h2 style={{ textAlign: 'center', fontSize: 'clamp(1.6rem, 3vw, 2.4rem)', fontWeight: 700, letterSpacing: '-0.03em', marginBottom: '12px', color: C.text }}>Built for every business</h2>
         <p style={{ textAlign: 'center', color: C.textSecondary, marginBottom: '56px', fontSize: '0.95rem' }}>From solo practitioners to multi-location teams.</p>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '16px' }}>
-          {[
-            { emoji: '🦷', industry: 'Dental Clinics', desc: 'Book cleanings, confirm appointments, handle cancellations — without lifting a finger.', stat: 'Avg. 40 hours/month saved' },
-            { emoji: '⚖️', industry: 'Law Firms', desc: 'Qualify leads, schedule consultations, and capture every potential client after hours.', stat: 'Never miss a case again' },
-            { emoji: '🏠', industry: 'Real Estate', desc: 'Answer property inquiries 24/7 and book viewings directly into your calendar.', stat: 'Convert more leads' },
-            { emoji: '💆', industry: 'Spas & Salons', desc: 'Let clients book, reschedule, or cancel appointments anytime — no hold music.', stat: '30% fewer no-shows' },
-            { emoji: '🔧', industry: 'Home Services', desc: 'Capture service requests and dispatch efficiently, even on weekends and holidays.', stat: 'Always on call' },
-            { emoji: '🏥', industry: 'Medical Practices', desc: 'Handle appointment scheduling and patient inquiries with HIPAA-conscious AI.', stat: 'Reduce front desk load' },
-          ].map(u => (
+          {useCases.map(u => (
             <div key={u.industry} style={{ background: '#fff', border: `1px solid ${C.border}`, borderRadius: '16px', padding: '28px', transition: 'box-shadow 0.2s' }}
               onMouseEnter={e => e.currentTarget.style.boxShadow = '0 8px 32px rgba(0,0,0,0.08)'}
               onMouseLeave={e => e.currentTarget.style.boxShadow = 'none'}>
-              <div style={{ fontSize: '2rem', marginBottom: '16px' }}>{u.emoji}</div>
+              <div style={{ width: '40px', height: '40px', background: '#ede9fe', border: '1px solid #c4b5fd', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '16px' }}>{u.icon}</div>
               <h3 style={{ fontSize: '1rem', fontWeight: 700, marginBottom: '8px', color: C.text }}>{u.industry}</h3>
               <p style={{ fontSize: '0.85rem', color: C.textSecondary, lineHeight: 1.65, marginBottom: '16px' }}>{u.desc}</p>
               <span style={{ fontSize: '0.75rem', fontWeight: 600, color: C.accent, background: '#ede9fe', padding: '4px 12px', borderRadius: '100px' }}>{u.stat}</span>
@@ -125,20 +190,18 @@ export default function Home() {
         </div>
       </section>
 
-      {/* DEMO VISUELLE */}
+      {/* DEMO */}
       <section style={{ background: C.bgSecondary, borderTop: `1px solid ${C.border}`, borderBottom: `1px solid ${C.border}`, padding: '96px 40px' }}>
         <div style={{ maxWidth: '900px', margin: '0 auto' }}>
           <p style={{ textAlign: 'center', fontSize: '0.78rem', fontWeight: 700, color: C.accent, letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '12px' }}>Live demo</p>
           <h2 style={{ textAlign: 'center', fontSize: 'clamp(1.6rem, 3vw, 2.4rem)', fontWeight: 700, letterSpacing: '-0.03em', marginBottom: '12px', color: C.text }}>Hear it in action</h2>
           <p style={{ textAlign: 'center', color: C.textSecondary, marginBottom: '48px', fontSize: '0.95rem' }}>A real conversation between VoiceBot AI and a caller booking an appointment.</p>
-
           <div style={{ background: '#fff', border: `1px solid ${C.border}`, borderRadius: '20px', padding: '32px', maxWidth: '640px', margin: '0 auto' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '24px' }}>
               <div style={{ width: '10px', height: '10px', borderRadius: '50%', background: '#22c55e', boxShadow: '0 0 8px rgba(34,197,94,0.5)' }} />
               <span style={{ fontSize: '0.85rem', fontWeight: 600, color: C.text }}>Live call transcript</span>
               <span style={{ fontSize: '0.75rem', color: C.textMuted, marginLeft: 'auto' }}>Duration: 1m 23s</span>
             </div>
-
             <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
               {[
                 { role: 'bot', msg: "Thank you for calling Smith Dental. This is your AI assistant. How can I help you today?" },
@@ -159,7 +222,6 @@ export default function Home() {
                 </div>
               ))}
             </div>
-
             <div style={{ marginTop: '20px', paddingTop: '20px', borderTop: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <span style={{ fontSize: '0.75rem', color: C.textMuted }}>Appointment booked automatically in Google Calendar</span>
               <span style={{ fontSize: '0.75rem', fontWeight: 600, color: '#16a34a', background: '#f0fdf4', border: '1px solid #bbf7d0', padding: '3px 10px', borderRadius: '100px' }}>Booked</span>
@@ -175,13 +237,14 @@ export default function Home() {
         <p style={{ textAlign: 'center', color: C.textSecondary, marginBottom: '56px', fontSize: '0.95rem' }}>No developers. No complex setup. Just results.</p>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '20px' }}>
           {[
-            { step: '01', title: 'Create your account', desc: 'Sign up in 30 seconds. Choose a plan that fits your call volume.', icon: '👤' },
-            { step: '02', title: 'Connect Google Calendar', desc: 'Link your calendar so the bot books appointments in real time, automatically.', icon: '📅' },
-            { step: '03', title: 'Forward your number', desc: "Redirect your existing business number to your VoiceBot. You're live.", icon: '📞' },
+            { step: '01', title: 'Create your account', desc: 'Sign up in 30 seconds. Choose a plan that fits your call volume.' },
+            { step: '02', title: 'Connect Google Calendar', desc: 'Link your calendar so the bot books appointments in real time, automatically.' },
+            { step: '03', title: 'Forward your number', desc: "Redirect your existing business number to your VoiceBot. You're live." },
           ].map(s => (
             <div key={s.step} style={{ background: '#fff', border: `1px solid ${C.border}`, borderRadius: '16px', padding: '28px' }}>
-              <div style={{ fontSize: '1.8rem', marginBottom: '16px' }}>{s.icon}</div>
-              <div style={{ fontSize: '0.7rem', fontWeight: 700, color: C.accent, letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '10px' }}>Step {s.step}</div>
+              <div style={{ width: '36px', height: '36px', borderRadius: '10px', background: '#ede9fe', border: '1px solid #c4b5fd', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '16px' }}>
+                <span style={{ fontSize: '0.8rem', fontWeight: 700, color: C.accent }}>{s.step}</span>
+              </div>
               <h3 style={{ fontSize: '1rem', fontWeight: 700, marginBottom: '10px', color: C.text }}>{s.title}</h3>
               <p style={{ fontSize: '0.875rem', color: C.textSecondary, lineHeight: 1.65 }}>{s.desc}</p>
             </div>
@@ -209,7 +272,7 @@ export default function Home() {
                 <p style={{ fontSize: '0.9rem', color: C.text, lineHeight: 1.7, marginBottom: '20px', fontStyle: 'italic' }}>"{t.quote}"</p>
                 <div>
                   <p style={{ fontSize: '0.875rem', fontWeight: 700, color: C.text, marginBottom: '2px' }}>{t.name}</p>
-                  <p style={{ fontSize: '0.8rem', color: C.textMuted }}>{t.role}</p>
+                  <p style={{ fontSize: '0.8rem', color: C.textMuted, margin: 0 }}>{t.role}</p>
                 </div>
               </div>
             ))}
@@ -223,16 +286,9 @@ export default function Home() {
         <h2 style={{ textAlign: 'center', fontSize: 'clamp(1.6rem, 3vw, 2.4rem)', fontWeight: 700, letterSpacing: '-0.03em', marginBottom: '12px', color: C.text }}>Everything your front desk does, automated</h2>
         <p style={{ textAlign: 'center', color: C.textSecondary, marginBottom: '56px', fontSize: '0.95rem' }}>Without the salary, sick days, or training.</p>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '16px' }}>
-          {[
-            { icon: '📞', title: 'Instant Answer', desc: 'Picks up in under 2 seconds, 24/7, including weekends and holidays.' },
-            { icon: '📅', title: 'Automatic Booking', desc: 'Direct sync with Google Calendar and Calendly. Real-time appointment booking.' },
-            { icon: '🧠', title: 'Conversational AI', desc: 'Powered by Claude AI — understands context, qualifies leads, handles objections.' },
-            { icon: '📝', title: 'Call Summaries', desc: 'Every call transcribed and summarized in your dashboard. Nothing slips through.' },
-            { icon: '💬', title: 'SMS Confirmations', desc: 'Automatically sends SMS booking confirmations to callers after every appointment.' },
-            { icon: '⚡', title: '5-Minute Setup', desc: 'Connect your calendar, activate your number, forward your line. Done.' },
-          ].map(f => (
+          {featuresList.map(f => (
             <div key={f.title} style={{ background: '#fff', border: `1px solid ${C.border}`, borderRadius: '14px', padding: '24px' }}>
-              <div style={{ fontSize: '1.6rem', marginBottom: '14px' }}>{f.icon}</div>
+              <div style={{ width: '40px', height: '40px', background: '#ede9fe', border: '1px solid #c4b5fd', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '16px' }}>{f.icon}</div>
               <h3 style={{ fontSize: '0.95rem', fontWeight: 700, marginBottom: '8px', color: C.text }}>{f.title}</h3>
               <p style={{ fontSize: '0.85rem', color: C.textSecondary, lineHeight: 1.65, margin: 0 }}>{f.desc}</p>
             </div>
