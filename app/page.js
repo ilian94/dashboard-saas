@@ -153,7 +153,7 @@ export default function Home() {
           <Link href="/register" style={{ background: C.accent, color: '#fff', textDecoration: 'none', fontWeight: 700, fontSize: '1rem', padding: '14px 32px', borderRadius: '10px' }}>Start for free</Link>
           <Link href="/pricing" style={{ background: 'transparent', color: C.textSecondary, textDecoration: 'none', fontWeight: 500, fontSize: '1rem', padding: '14px 32px', borderRadius: '10px', border: `1px solid ${C.border}` }}>See pricing</Link>
         </div>
-        <p style={{ marginTop: '20px', fontSize: '0.8rem', color: C.textMuted }}>7-day money-back guarantee · No credit card required</p>
+        <p style={{ marginTop: '20px', fontSize: '0.8rem', color: C.textMuted }}>7-day money-back guarantee</p>
       </section>
 
       {/* STATS */}
