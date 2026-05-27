@@ -10,7 +10,6 @@ const C = {
   bgSecondary: '#f9fafb',
   bgCard: '#ffffff',
   border: '#e5e7eb',
-  borderStrong: '#d1d5db',
   text: '#0f0f0f',
   textSecondary: '#6b7280',
   textMuted: '#9ca3af',
@@ -52,13 +51,13 @@ const features = [
 
 const faqs = [
   { q: 'How does VoiceBot AI work?', a: 'VoiceBot AI uses Claude AI to answer your incoming calls in real time. When a client calls your number, the bot picks up instantly, understands what they need, and books appointments directly into your Google Calendar.' },
-  { q: 'Does it work with my existing phone number?', a: 'Yes. You keep your existing business number and simply forward calls to your VoiceBot number. Setup takes less than 5 minutes â€” no porting required.' },
+  { q: 'Does it work with my existing phone number?', a: 'Yes. You keep your existing business number and simply forward calls to your VoiceBot number. Setup takes less than 5 minutes — no porting required.' },
   { q: 'What languages does it support?', a: 'VoiceBot AI currently supports English. Additional languages are coming soon.' },
   { q: 'What happens when I exceed my monthly minutes?', a: 'When your monthly minutes are used up, the VoiceBot will stop answering calls until the next billing cycle. You can upgrade your plan at any time to get more minutes.' },
   { q: 'Can I cancel anytime?', a: 'Yes, you can cancel your subscription at any time from your dashboard. Your service will remain active until the end of the current billing period.' },
   { q: 'How long does setup take?', a: 'Most businesses are live within 5 minutes. You just need to connect your Google Calendar, receive your dedicated number, and forward your existing business line to it.' },
   { q: 'Is there a money-back guarantee?', a: 'Yes. We offer a 7-day money-back guarantee for all first-time subscribers. No questions asked.' },
-  { q: 'Can I customize what the bot says?', a: "Yes. Scale plan users can customize the business name used in the greeting. Business plan users can fully customize the script, services, questions asked, and the bot's tone and personality â€” all from the dashboard." },
+  { q: 'Can I customize what the bot says?', a: "Yes. Scale plan users can customize the business name used in the greeting. Business plan users can fully customize the script, services, questions asked, and the bot's tone and personality." },
 ];
 
 export default function Home() {
@@ -87,7 +86,7 @@ export default function Home() {
         <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
           {user ? (
             <>
-              <Link href="/dashboard" style={{ background: C.text, color: '#fff', textDecoration: 'none', fontSize: '0.85rem', fontWeight: 600, padding: '8px 16px', borderRadius: '8px', whiteSpace: 'nowrap' }}>Dashboard â†’</Link>
+              <Link href="/dashboard" style={{ background: C.text, color: '#fff', textDecoration: 'none', fontSize: '0.85rem', fontWeight: 600, padding: '8px 16px', borderRadius: '8px', whiteSpace: 'nowrap' }}>Dashboard</Link>
               <button onClick={async () => { await supabase.auth.signOut(); window.location.href = '/'; }} style={{ background: 'transparent', color: C.textSecondary, border: `1px solid ${C.border}`, fontSize: '0.85rem', fontWeight: 500, padding: '8px 14px', borderRadius: '8px', cursor: 'pointer', whiteSpace: 'nowrap' }}>Sign out</button>
             </>
           ) : (
@@ -101,7 +100,7 @@ export default function Home() {
 
       {/* HERO */}
       <section style={{ textAlign: 'center', padding: '100px 20px 80px', maxWidth: '860px', margin: '0 auto' }}>
-        <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', background: '#ede9fe', border: `1px solid #c4b5fd`, borderRadius: '100px', padding: '5px 16px', fontSize: '0.78rem', color: C.accent, fontWeight: 600, marginBottom: '28px', letterSpacing: '0.02em' }}>
+        <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', background: '#ede9fe', border: '1px solid #c4b5fd', borderRadius: '100px', padding: '5px 16px', fontSize: '0.78rem', color: C.accent, fontWeight: 600, marginBottom: '28px' }}>
           <span style={{ width: 6, height: 6, borderRadius: '50%', background: C.accent, display: 'inline-block' }} />
           Powered by Claude AI
         </div>
@@ -109,13 +108,13 @@ export default function Home() {
           Never miss a client<br />call again
         </h1>
         <p style={{ fontSize: '1.1rem', color: C.textSecondary, lineHeight: 1.7, maxWidth: '520px', margin: '0 auto 44px' }}>
-          VoiceBot AI answers your calls 24/7, books appointments on Google Calendar, and qualifies your leads â€” automatically.
+          VoiceBot AI answers your calls 24/7, books appointments on Google Calendar, and qualifies your leads automatically.
         </p>
         <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
-          <Link href="/register" style={{ background: C.text, color: '#fff', textDecoration: 'none', fontWeight: 700, fontSize: '0.95rem', padding: '13px 28px', borderRadius: '10px', letterSpacing: '-0.01em' }}>Start for free â†’</Link>
+          <Link href="/register" style={{ background: C.text, color: '#fff', textDecoration: 'none', fontWeight: 700, fontSize: '0.95rem', padding: '13px 28px', borderRadius: '10px' }}>Start for free</Link>
           <Link href="/pricing" style={{ background: 'transparent', color: C.textSecondary, textDecoration: 'none', fontWeight: 500, fontSize: '0.95rem', padding: '13px 28px', borderRadius: '10px', border: `1px solid ${C.border}` }}>See pricing</Link>
         </div>
-        <p style={{ marginTop: '20px', fontSize: '0.8rem', color: C.textMuted }}>7-day money-back guarantee Â· No credit card required</p>
+        <p style={{ marginTop: '20px', fontSize: '0.8rem', color: C.textMuted }}>7-day money-back guarantee · No credit card required</p>
       </section>
 
       {/* STATS */}
@@ -141,12 +140,12 @@ export default function Home() {
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '20px' }}>
           {[
             { step: '01', title: 'Create your account', desc: 'Sign up in 30 seconds. Choose a plan that fits your call volume.' },
-            { step: '02', title: 'Connect Google Calendar', desc: 'Link your calendar so the bot can book appointments in real time â€” automatically.' },
-            { step: '03', title: "Forward your number", desc: "Redirect your existing business number to your VoiceBot. Done. You're live." },
+            { step: '02', title: 'Connect Google Calendar', desc: 'Link your calendar so the bot can book appointments in real time automatically.' },
+            { step: '03', title: 'Forward your number', desc: "Redirect your existing business number to your VoiceBot. Done. You're live." },
           ].map(s => (
             <div key={s.step} style={{ background: C.bgCard, border: `1px solid ${C.border}`, borderRadius: '16px', padding: '28px' }}>
               <div style={{ fontSize: '0.7rem', fontWeight: 700, color: C.accent, letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '14px' }}>Step {s.step}</div>
-              <h3 style={{ fontSize: '1rem', fontWeight: 700, marginBottom: '10px', letterSpacing: '-0.01em', color: C.text }}>{s.title}</h3>
+              <h3 style={{ fontSize: '1rem', fontWeight: 700, marginBottom: '10px', color: C.text }}>{s.title}</h3>
               <p style={{ fontSize: '0.875rem', color: C.textSecondary, lineHeight: 1.65 }}>{s.desc}</p>
             </div>
           ))}
@@ -161,8 +160,8 @@ export default function Home() {
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '16px' }}>
           {features.map(f => (
             <div key={f.title} style={{ background: C.bgCard, border: `1px solid ${C.border}`, borderRadius: '14px', padding: '24px' }}>
-              <div style={{ width: '40px', height: '40px', background: '#ede9fe', border: `1px solid #c4b5fd`, borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '16px' }}>{f.icon}</div>
-              <h3 style={{ fontSize: '0.95rem', fontWeight: 700, marginBottom: '8px', letterSpacing: '-0.01em', color: C.text }}>{f.title}</h3>
+              <div style={{ width: '40px', height: '40px', background: '#ede9fe', border: '1px solid #c4b5fd', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '16px' }}>{f.icon}</div>
+              <h3 style={{ fontSize: '0.95rem', fontWeight: 700, marginBottom: '8px', color: C.text }}>{f.title}</h3>
               <p style={{ fontSize: '0.85rem', color: C.textSecondary, lineHeight: 1.65 }}>{f.desc}</p>
             </div>
           ))}
@@ -176,14 +175,14 @@ export default function Home() {
         <p style={{ textAlign: 'center', color: C.textSecondary, marginBottom: '48px', fontSize: '0.95rem' }}>Same job. A fraction of the cost.</p>
         <div style={{ background: C.bgCard, border: `1px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden' }}>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', borderBottom: `1px solid ${C.border}`, background: C.bgSecondary }}>
-            <div style={{ padding: '14px 20px', color: C.textMuted, fontSize: '0.78rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}></div>
+            <div style={{ padding: '14px 20px' }}></div>
             <div style={{ padding: '14px 20px', textAlign: 'center', fontWeight: 700, fontSize: '0.85rem', color: C.accent, borderLeft: `1px solid ${C.border}`, borderRight: `1px solid ${C.border}` }}>VoiceBot AI</div>
             <div style={{ padding: '14px 20px', textAlign: 'center', color: C.textMuted, fontWeight: 600, fontSize: '0.85rem' }}>Human receptionist</div>
           </div>
           {[
-            { feature: 'Monthly cost', voicebot: 'From $229/mo', human: '$3,000â€“$5,000/mo' },
+            { feature: 'Monthly cost', voicebot: 'From $229/mo', human: '$3,000-$5,000/mo' },
             { feature: 'Availability', voicebot: '24/7/365', human: 'Business hours only' },
-            { feature: 'Response time', voicebot: '< 2 seconds', human: '1â€“5 rings' },
+            { feature: 'Response time', voicebot: '< 2 seconds', human: '1-5 rings' },
             { feature: 'Simultaneous calls', voicebot: 'Unlimited', human: '1 at a time' },
             { feature: 'Calendar booking', voicebot: 'Automatic', human: 'Manual' },
             { feature: 'Call summaries', voicebot: 'AI-generated', human: 'Manual notes' },
@@ -198,11 +197,11 @@ export default function Home() {
         </div>
       </section>
 
-      {/* CTA INTERMÃ‰DIAIRE */}
+      {/* CTA INTERMEDIAIRE */}
       <section style={{ textAlign: 'center', padding: '60px 20px', borderTop: `1px solid ${C.border}`, borderBottom: `1px solid ${C.border}`, background: C.bgSecondary }}>
         <h2 style={{ fontSize: 'clamp(1.4rem, 3vw, 1.9rem)', fontWeight: 700, letterSpacing: '-0.03em', marginBottom: '12px', color: C.text }}>Start handling every call automatically</h2>
         <p style={{ color: C.textSecondary, marginBottom: '28px', fontSize: '0.95rem' }}>7-day money-back guarantee. No credit card required to sign up.</p>
-        <Link href="/register" style={{ background: C.text, color: '#fff', textDecoration: 'none', fontWeight: 700, fontSize: '0.95rem', padding: '13px 28px', borderRadius: '10px' }}>Start for free â†’</Link>
+        <Link href="/register" style={{ background: C.text, color: '#fff', textDecoration: 'none', fontWeight: 700, fontSize: '0.95rem', padding: '13px 28px', borderRadius: '10px' }}>Start for free</Link>
       </section>
 
       {/* FAQ */}
@@ -213,12 +212,9 @@ export default function Home() {
         <div style={{ display: 'flex', flexDirection: 'column' }}>
           {faqs.map((faq, i) => (
             <div key={i} style={{ borderBottom: `1px solid ${C.border}` }}>
-              <button
-                onClick={() => setOpenFaq(openFaq === i ? null : i)}
-                style={{ width: '100%', background: 'none', border: 'none', padding: '20px 0', display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer', textAlign: 'left', gap: '16px' }}
-              >
+              <button onClick={() => setOpenFaq(openFaq === i ? null : i)} style={{ width: '100%', background: 'none', border: 'none', padding: '20px 0', display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer', textAlign: 'left', gap: '16px' }}>
                 <span style={{ fontSize: '0.95rem', fontWeight: 600, color: C.text }}>{faq.q}</span>
-                <span style={{ fontSize: '1.2rem', color: C.textMuted, flexShrink: 0, transform: openFaq === i ? 'rotate(45deg)' : 'none', transition: 'transform 0.2s' }}>+</span>
+                <span style={{ fontSize: '1.2rem', color: C.textMuted, flexShrink: 0, transform: openFaq === i ? 'rotate(45deg)' : 'none', transition: 'transform 0.2s', display: 'inline-block' }}>+</span>
               </button>
               {openFaq === i && (
                 <p style={{ fontSize: '0.875rem', color: C.textSecondary, lineHeight: 1.7, paddingBottom: '20px', margin: 0 }}>{faq.a}</p>
@@ -233,7 +229,7 @@ export default function Home() {
         <h2 style={{ fontSize: 'clamp(1.8rem, 4vw, 2.8rem)', fontWeight: 700, letterSpacing: '-0.04em', marginBottom: '14px', color: '#fff' }}>Ready to automate<br />your calls?</h2>
         <p style={{ color: '#9ca3af', marginBottom: '36px', fontSize: '0.95rem' }}>Join professionals who never miss a client again.</p>
         <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
-          <Link href="/register" style={{ background: '#fff', color: C.text, textDecoration: 'none', fontWeight: 700, fontSize: '0.95rem', padding: '13px 28px', borderRadius: '10px' }}>Get started now â†’</Link>
+          <Link href="/register" style={{ background: '#fff', color: C.text, textDecoration: 'none', fontWeight: 700, fontSize: '0.95rem', padding: '13px 28px', borderRadius: '10px' }}>Get started now</Link>
           <Link href="/pricing" style={{ background: 'transparent', color: '#9ca3af', textDecoration: 'none', fontWeight: 500, fontSize: '0.95rem', padding: '13px 28px', borderRadius: '10px', border: '1px solid #333' }}>See pricing</Link>
         </div>
         <div style={{ display: 'flex', justifyContent: 'center', gap: '24px', marginTop: '20px', flexWrap: 'wrap' }}>
@@ -261,7 +257,7 @@ export default function Home() {
             <Link key={l.label} href={l.href} style={{ color: C.textMuted, textDecoration: 'none', fontSize: '0.85rem' }}>{l.label}</Link>
           ))}
         </div>
-        <span style={{ color: C.textMuted, fontSize: '0.8rem' }}>Â© 2026 VoiceBot AI</span>
+        <span style={{ color: C.textMuted, fontSize: '0.8rem' }}>2026 VoiceBot AI</span>
       </footer>
 
     </div>
