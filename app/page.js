@@ -48,13 +48,15 @@ export default function Home() {
   const roi = potentialRevenue - 229;
 
   const faqs = [
-    { q: "How fast does it answer calls?", a: "Under 2 seconds. Your VoiceBot picks up instantly, 24/7 — no hold music, no voicemail." },
-    { q: "Do I need to change my phone number?", a: "No. You keep your existing number and simply forward calls to your VoiceBot. Setup takes under 5 minutes." },
-    { q: "What if I exceed my monthly minutes?", a: "Your VoiceBot keeps running. You can purchase extra minute packs from your dashboard at any time." },
-    { q: "Can I customize what the bot says?", a: "Yes. On Scale and Business plans you can customize the script, business name, tone, services offered, and questions asked." },
-    { q: "Is there a free trial?", a: "Yes — 7 days free, Credit card required — cancel anytime. Cancel anytime from your dashboard." },
-    { q: "What languages does it support?", a: "English is fully supported. More languages coming soon." },
-  ];
+  { q: "Does it actually sound human?", a: "Yes. VoiceBot AI uses advanced neural voice technology that sounds natural and conversational. Most callers don't realize they're speaking to an AI — they just notice how fast and helpful it is." },
+  { q: "Can it really book appointments automatically?", a: "Yes. VoiceBot connects directly to Google Calendar or Calendly. When a caller wants to book, the AI finds availability and confirms the appointment in real time — no human needed." },
+  { q: "What if the caller has a complex question?", a: "VoiceBot handles scheduling, modifications, and cancellations. For complex questions outside its scope, it collects the caller's info and notifies you so you can follow up." },
+  { q: "Do I need to change my phone number?", a: "No. You keep your existing number and simply forward calls to your VoiceBot. Setup takes under 5 minutes — no porting required." },
+  { q: "What happens after the 7-day trial?", a: "After your trial, you're automatically billed for the plan you chose. You can cancel anytime from your dashboard before the trial ends." },
+  { q: "How fast does it answer?", a: "Under 2 seconds. No hold music, no voicemail, no missed calls — ever." },
+  { q: "Can I customize what it says?", a: "Yes. On Scale and Business plans you can fully customize the script, business name, tone, services, and questions asked — all from your dashboard." },
+  { q: "What if I exceed my monthly minutes?", a: "Your VoiceBot keeps running. You can purchase extra minute packs from your dashboard at any time. Business plan gets the best rates." },
+];
 
   return (
     <div style={{ minHeight: '100vh', background: '#ffffff', color: '#0f0f0f', fontFamily: "'DM Sans', system-ui, sans-serif", overflowX: 'hidden' }}>
@@ -84,74 +86,83 @@ export default function Home() {
       </nav>
 
       {/* HERO */}
-      <section style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: '120px 24px 80px', position: 'relative', overflow: 'hidden' }}>
-        {/* Background gradient */}
-        <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, background: 'radial-gradient(ellipse 80% 60% at 50% -10%, rgba(99,102,241,0.12) 0%, transparent 70%)', pointerEvents: 'none' }} />
+      {/* HERO */}
+<section style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: '120px 24px 80px', position: 'relative', overflow: 'hidden' }}>
+  <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, background: 'radial-gradient(ellipse 80% 60% at 50% -10%, rgba(99,102,241,0.12) 0%, transparent 70%)', pointerEvents: 'none' }} />
 
-        <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: '100px', padding: '6px 16px', fontSize: '0.78rem', color: '#16a34a', fontWeight: 600, marginBottom: '32px' }}>
-  <span style={{ width: 7, height: 7, borderRadius: '50%', background: '#22c55e', display: 'inline-block', boxShadow: '0 0 6px rgba(34,197,94,0.6)' }} />
-  7-day free trial · No credit card required · Cancel anytime
-</div>
+  <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: '100px', padding: '6px 16px', fontSize: '0.78rem', color: '#16a34a', fontWeight: 600, marginBottom: '32px' }}>
+    <span style={{ width: 7, height: 7, borderRadius: '50%', background: '#22c55e', display: 'inline-block', boxShadow: '0 0 6px rgba(34,197,94,0.6)' }} />
+    7-day free trial · No credit card required · Cancel anytime
+  </div>
 
-        <h1 style={{ fontSize: 'clamp(2.8rem, 7vw, 5.5rem)', fontWeight: 700, lineHeight: 1.06, letterSpacing: '-0.05em', marginBottom: '24px', maxWidth: '900px' }}>
-          Stop losing clients<br />
-          <span style={{ background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a78bfa 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>to missed calls.</span>
-        </h1>
+  <h1 style={{ fontSize: 'clamp(2.8rem, 7vw, 5.5rem)', fontWeight: 700, lineHeight: 1.06, letterSpacing: '-0.05em', marginBottom: '24px', maxWidth: '900px' }}>
+    Your AI employee that<br />
+    <span style={{ background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a78bfa 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>never misses a call.</span>
+  </h1>
 
-        <p style={{ fontSize: 'clamp(1rem, 2vw, 1.25rem)', color: '#6b7280', lineHeight: 1.7, maxWidth: '560px', margin: '0 auto 48px' }}>
-          VoiceBot AI answers every call in under 2 seconds, books appointments automatically, and never takes a day off — starting at $229/mo.
-        </p>
+  <p style={{ fontSize: 'clamp(1rem, 2vw, 1.25rem)', color: '#6b7280', lineHeight: 1.7, maxWidth: '560px', margin: '0 auto 24px' }}>
+    Book more appointments. Qualify more leads. Answer every call instantly — 24/7, even at 3am.
+  </p>
 
-        <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap', marginBottom: '20px' }}>
-          <Link href="/register" style={{ background: '#6366f1', color: '#fff', textDecoration: 'none', fontWeight: 700, fontSize: '1rem', padding: '15px 36px', borderRadius: '12px', boxShadow: '0 4px 24px rgba(99,102,241,0.35)' }}>
-            Start free trial
-          </Link>
-          <button onClick={startDemo} style={{ background: '#fff', color: '#0f0f0f', border: '1.5px solid #e5e7eb', fontWeight: 600, fontSize: '1rem', padding: '15px 36px', borderRadius: '12px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', fontFamily: 'inherit' }}>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="#6366f1" stroke="none"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-            Hear it live
-          </button>
-        </div>
+  <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', justifyContent: 'center', marginBottom: '40px' }}>
+    {['No voicemail', 'No hold music', 'No missed clients', 'Instant booking'].map(t => (
+      <span key={t} style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.82rem', color: '#6b7280', background: '#f9fafb', border: '1px solid #e5e7eb', padding: '5px 14px', borderRadius: '100px' }}>
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#16a34a" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        {t}
+      </span>
+    ))}
+  </div>
 
-        <p style={{ fontSize: '0.8rem', color: '#9ca3af' }}>Trusted by 500+ businesses · 99.9% uptime · Setup in 5 minutes</p>
+  <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap', marginBottom: '20px' }}>
+    <Link href="/register" style={{ background: '#6366f1', color: '#fff', textDecoration: 'none', fontWeight: 700, fontSize: '1rem', padding: '15px 36px', borderRadius: '12px', boxShadow: '0 4px 24px rgba(99,102,241,0.35)' }}>
+      Start free — 7 days
+    </Link>
+    <button onClick={startDemo} style={{ background: '#fff', color: '#0f0f0f', border: '1.5px solid #e5e7eb', fontWeight: 600, fontSize: '1rem', padding: '15px 36px', borderRadius: '12px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', fontFamily: 'inherit' }}>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="#6366f1" stroke="none"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+      Hear it live
+    </button>
+  </div>
 
-        {/* DEMO CARD */}
-        <div style={{ marginTop: '64px', background: '#fff', border: '1px solid #e5e7eb', borderRadius: '20px', padding: '28px', maxWidth: '580px', width: '100%', boxShadow: '0 24px 64px rgba(0,0,0,0.08)', position: 'relative' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '20px' }}>
-            <div style={{ width: '10px', height: '10px', borderRadius: '50%', background: '#22c55e', boxShadow: '0 0 8px rgba(34,197,94,0.6)' }} />
-            <span style={{ fontSize: '0.85rem', fontWeight: 600, color: '#0f0f0f' }}>Live call — Smith Dental Clinic</span>
-            <span style={{ marginLeft: 'auto', fontSize: '0.75rem', color: '#9ca3af', background: '#f3f4f6', padding: '3px 10px', borderRadius: '100px' }}>AI answering</span>
+  <p style={{ fontSize: '0.8rem', color: '#9ca3af' }}>Trusted by 500+ businesses · 99.9% uptime · Setup in 5 minutes</p>
+
+  {/* DEMO CARD */}
+  <div style={{ marginTop: '64px', background: '#fff', border: '1px solid #e5e7eb', borderRadius: '20px', padding: '28px', maxWidth: '580px', width: '100%', boxShadow: '0 24px 64px rgba(0,0,0,0.08)', position: 'relative' }}>
+    <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '20px' }}>
+      <div style={{ width: '10px', height: '10px', borderRadius: '50%', background: '#22c55e', boxShadow: '0 0 8px rgba(34,197,94,0.6)' }} />
+      <span style={{ fontSize: '0.85rem', fontWeight: 600, color: '#0f0f0f' }}>Live call — Smith Dental Clinic</span>
+      <span style={{ marginLeft: 'auto', fontSize: '0.75rem', color: '#9ca3af', background: '#f3f4f6', padding: '3px 10px', borderRadius: '100px' }}>AI answering</span>
+    </div>
+
+    {demoStep === 0 && !playingDemo && (
+      <div style={{ textAlign: 'center', padding: '32px 0' }}>
+        <button onClick={startDemo} style={{ background: '#6366f1', color: '#fff', border: 'none', borderRadius: '50%', width: '64px', height: '64px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px', boxShadow: '0 4px 20px rgba(99,102,241,0.4)' }}>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="white" stroke="none"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        </button>
+        <p style={{ fontSize: '0.875rem', color: '#6b7280' }}>Click to see a real VoiceBot conversation</p>
+      </div>
+    )}
+
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+      {demoConversation.slice(0, demoStep).map((line, i) => (
+        <div key={i} style={{ display: 'flex', gap: '10px', alignItems: 'flex-start', flexDirection: line.role === 'caller' ? 'row-reverse' : 'row', animation: 'fadeIn 0.3s ease' }}>
+          <div style={{ width: '28px', height: '28px', borderRadius: '50%', background: line.role === 'bot' ? '#ede9fe' : '#f3f4f6', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.65rem', fontWeight: 700, color: line.role === 'bot' ? '#6366f1' : '#6b7280', flexShrink: 0 }}>
+            {line.role === 'bot' ? 'AI' : 'C'}
           </div>
-
-          {demoStep === 0 && !playingDemo && (
-            <div style={{ textAlign: 'center', padding: '32px 0' }}>
-              <button onClick={startDemo} style={{ background: '#6366f1', color: '#fff', border: 'none', borderRadius: '50%', width: '64px', height: '64px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px', boxShadow: '0 4px 20px rgba(99,102,241,0.4)' }}>
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="white" stroke="none"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-              </button>
-              <p style={{ fontSize: '0.875rem', color: '#6b7280' }}>Click to hear a real VoiceBot call</p>
-            </div>
-          )}
-
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-            {demoConversation.slice(0, demoStep).map((line, i) => (
-              <div key={i} style={{ display: 'flex', gap: '10px', alignItems: 'flex-start', flexDirection: line.role === 'caller' ? 'row-reverse' : 'row', animation: 'fadeIn 0.3s ease' }}>
-                <div style={{ width: '28px', height: '28px', borderRadius: '50%', background: line.role === 'bot' ? '#ede9fe' : '#f3f4f6', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.65rem', fontWeight: 700, color: line.role === 'bot' ? '#6366f1' : '#6b7280', flexShrink: 0 }}>
-                  {line.role === 'bot' ? 'AI' : 'C'}
-                </div>
-                <div style={{ background: line.role === 'bot' ? '#ede9fe' : '#f9fafb', border: `1px solid ${line.role === 'bot' ? '#c4b5fd' : '#e5e7eb'}`, borderRadius: '12px', padding: '10px 14px', maxWidth: '75%' }}>
-                  <p style={{ fontSize: '0.875rem', margin: 0, lineHeight: 1.5, color: '#0f0f0f' }}>{line.text}</p>
-                </div>
-              </div>
-            ))}
+          <div style={{ background: line.role === 'bot' ? '#ede9fe' : '#f9fafb', border: `1px solid ${line.role === 'bot' ? '#c4b5fd' : '#e5e7eb'}`, borderRadius: '12px', padding: '10px 14px', maxWidth: '75%' }}>
+            <p style={{ fontSize: '0.875rem', margin: 0, lineHeight: 1.5, color: '#0f0f0f' }}>{line.text}</p>
           </div>
-
-          {demoStep >= demoConversation.length && (
-            <div style={{ marginTop: '16px', paddingTop: '16px', borderTop: '1px solid #e5e7eb', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <span style={{ fontSize: '0.78rem', color: '#6b7280' }}>Appointment added to Google Calendar</span>
-              <span style={{ fontSize: '0.75rem', fontWeight: 600, color: '#16a34a', background: '#f0fdf4', border: '1px solid #bbf7d0', padding: '3px 10px', borderRadius: '100px' }}>Booked</span>
-            </div>
-          )}
         </div>
-      </section>
+      ))}
+    </div>
+
+    {demoStep >= demoConversation.length && (
+      <div style={{ marginTop: '16px', paddingTop: '16px', borderTop: '1px solid #e5e7eb', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <span style={{ fontSize: '0.78rem', color: '#6b7280' }}>Appointment added to Google Calendar</span>
+        <span style={{ fontSize: '0.75rem', fontWeight: 600, color: '#16a34a', background: '#f0fdf4', border: '1px solid #bbf7d0', padding: '3px 10px', borderRadius: '100px' }}>Booked</span>
+      </div>
+    )}
+  </div>
+</section>
 
       <style>{`
         @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
