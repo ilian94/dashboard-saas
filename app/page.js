@@ -52,7 +52,7 @@ export default function Home() {
     { q: "Do I need to change my phone number?", a: "No. You keep your existing number and simply forward calls to your VoiceBot. Setup takes under 5 minutes." },
     { q: "What if I exceed my monthly minutes?", a: "Your VoiceBot keeps running. You can purchase extra minute packs from your dashboard at any time." },
     { q: "Can I customize what the bot says?", a: "Yes. On Scale and Business plans you can customize the script, business name, tone, services offered, and questions asked." },
-    { q: "Is there a free trial?", a: "Yes — 7 days free, no credit card required. Cancel anytime from your dashboard." },
+    { q: "Is there a free trial?", a: "Yes — 7 days free, Credit card required — cancel anytime. Cancel anytime from your dashboard." },
     { q: "What languages does it support?", a: "English is fully supported. More languages coming soon." },
   ];
 
@@ -90,7 +90,7 @@ export default function Home() {
 
         <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: '100px', padding: '6px 16px', fontSize: '0.78rem', color: '#16a34a', fontWeight: 600, marginBottom: '32px' }}>
           <span style={{ width: 7, height: 7, borderRadius: '50%', background: '#22c55e', display: 'inline-block', boxShadow: '0 0 6px rgba(34,197,94,0.6)' }} />
-          7-day free trial — No credit card required
+          7-day free trial — Cancel anytime — Credit card required — cancel anytime
         </div>
 
         <h1 style={{ fontSize: 'clamp(2.8rem, 7vw, 5.5rem)', fontWeight: 700, lineHeight: 1.06, letterSpacing: '-0.05em', marginBottom: '24px', maxWidth: '900px' }}>
@@ -209,7 +209,7 @@ export default function Home() {
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '24px' }}>
           {[
-            { n: '01', title: 'Create your account', desc: 'Sign up in 30 seconds. Choose a plan. Your 7-day free trial starts immediately.' },
+            { n: '01', title: 'Create your account', desc: 'Sign up in 30 seconds. Choose a plan. Your 7-day free trial — Cancel anytime starts immediately.' },
             { n: '02', title: 'Connect your calendar', desc: 'Link Google Calendar or Calendly. VoiceBot will book appointments directly into it.' },
             { n: '03', title: 'Forward your number', desc: "Redirect your existing business line to your VoiceBot number. You're live. Done." },
           ].map(s => (
@@ -386,7 +386,7 @@ export default function Home() {
   <div style={{ maxWidth: '960px', margin: '0 auto' }}>
     <p style={{ textAlign: 'center', fontSize: '0.78rem', fontWeight: 700, color: '#6366f1', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '12px' }}>Pricing</p>
     <h2 style={{ textAlign: 'center', fontSize: 'clamp(1.8rem, 4vw, 2.8rem)', fontWeight: 700, letterSpacing: '-0.04em', marginBottom: '12px' }}>Simple, transparent pricing.</h2>
-    <p style={{ textAlign: 'center', color: '#6b7280', marginBottom: '48px' }}>Start free for 7 days. No credit card required.</p>
+    <p style={{ textAlign: 'center', color: '#6b7280', marginBottom: '48px' }}>Start free for 7 days. Credit card required — cancel anytime.</p>
 
     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '16px' }}>
       
@@ -414,7 +414,7 @@ export default function Home() {
           <h3 style={{ fontSize: '1rem', fontWeight: 700, marginBottom: '4px' }}>{plan.name}</h3>
           <p style={{ fontSize: '0.82rem', color: '#9ca3af', marginBottom: '16px' }}>{plan.desc}</p>
           <div style={{ fontSize: '2.8rem', fontWeight: 700, letterSpacing: '-0.04em', marginBottom: '4px' }}>{plan.price}<span style={{ fontSize: '0.9rem', color: '#9ca3af', fontWeight: 400 }}>/mo</span></div>
-          <p style={{ fontSize: '0.75rem', color: '#16a34a', fontWeight: 600, marginBottom: '20px' }}>7-day free trial included</p>
+          <p style={{ fontSize: '0.75rem', color: '#16a34a', fontWeight: 600, marginBottom: '20px' }}>7-day free trial — Cancel anytime — Cancel anytime included</p>
           <div style={{ height: '1px', background: '#e5e7eb', marginBottom: '20px' }} />
           <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 24px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
             {plan.features.map(f => (
@@ -432,7 +432,7 @@ export default function Home() {
     </div>
 
     <p style={{ textAlign: 'center', color: '#9ca3af', fontSize: '0.85rem', marginTop: '24px' }}>
-      All plans include a 7-day free trial. Cancel anytime. <Link href="/pricing" style={{ color: '#6366f1', textDecoration: 'none', fontWeight: 600 }}>See full pricing details</Link>
+      All plans include a 7-day free trial — Cancel anytime — Cancel anytime. Cancel anytime. <Link href="/pricing" style={{ color: '#6366f1', textDecoration: 'none', fontWeight: 600 }}>See full pricing details</Link>
     </p>
   </div>
 </section>
@@ -470,7 +470,7 @@ export default function Home() {
   Your phone answers itself.<br />Your calendar fills itself.
 </h2>
           <p style={{ color: 'rgba(255,255,255,0.75)', marginBottom: '40px', fontSize: '1.05rem' }}>
-            Join 500+ businesses. 7-day free trial. Cancel anytime.
+            Join 500+ businesses. 7-day free trial — Cancel anytime — Cancel anytime. Cancel anytime.
           </p>
           <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
             <Link href="/register" style={{ background: '#fff', color: '#6366f1', textDecoration: 'none', fontWeight: 700, fontSize: '1rem', padding: '15px 36px', borderRadius: '12px', boxShadow: '0 4px 20px rgba(0,0,0,0.15)' }}>
@@ -481,7 +481,7 @@ export default function Home() {
             </Link>
           </div>
           <div style={{ display: 'flex', justifyContent: 'center', gap: '28px', marginTop: '24px', flexWrap: 'wrap' }}>
-            {['No credit card required', '7-day free trial', 'Cancel anytime', 'Live in 5 minutes'].map(t => (
+            {['Credit card required — cancel anytime', '7-day free trial — Cancel anytime', 'Cancel anytime', 'Live in 5 minutes'].map(t => (
               <span key={t} style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.65)', display: 'flex', alignItems: 'center', gap: '6px' }}>
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.65)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
                 {t}
