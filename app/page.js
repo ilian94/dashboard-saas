@@ -389,22 +389,23 @@ export default function Home() {
     <p style={{ textAlign: 'center', color: '#6b7280', marginBottom: '48px' }}>Start free for 7 days. No credit card required.</p>
 
     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '16px' }}>
-      {[
-        {
-          name: 'Starter', price: '$229', desc: 'Perfect for small businesses.',
-          features: ['500 call minutes/month', '1 phone number', 'Google Calendar sync', 'AI call summaries', '24/7 availability'],
-          popular: false,
-        },
-        {
-          name: 'Scale', price: '$459', desc: 'For growing teams.',
-          features: ['2,000 call minutes/month', 'Call recording', 'Analytics dashboard', 'Custom business name', 'Calendly integration'],
-          popular: true,
-        },
-        {
-          name: 'Business', price: '$879', desc: 'For high-volume operations.',
-          features: ['6,000 call minutes/month', 'Full script customization', 'SMS confirmations', 'Advanced analytics', 'Priority support'],
-          popular: false,
-        },
+      
+        {[
+  {
+    name: 'Starter', price: '$229', desc: 'Perfect for small businesses.',
+    features: ['500 call minutes/month', '1 phone number', 'Google Calendar sync', 'AI call summaries', '24/7 availability', 'Instant response (<1s)', 'Email support', 'Extra minutes from $25'],
+    popular: false,
+  },
+  {
+    name: 'Scale', price: '$459', desc: 'For growing teams.',
+    features: ['2,000 call minutes/month', '1 phone number', 'Google Calendar sync', 'AI call summaries', '24/7 availability', 'Custom business name', 'Call recording', 'Appointment modification & cancellation', 'Calendly integration', 'Analytics dashboard', 'Extra minutes from $25'],
+    popular: true,
+  },
+  {
+    name: 'Business', price: '$879', desc: 'For high-volume operations.',
+    features: ['6,000 call minutes/month', '1 phone number included', 'Google Calendar sync', 'AI call summaries', '24/7 availability + priority support', 'Custom business name', 'Full script customization', 'SMS confirmation after booking', 'Call recording', 'Advanced analytics dashboard', 'Appointment modification & cancellation', 'Calendly integration', 'Unlimited additional numbers ($15/mo each)', 'Extra minutes from $20'],
+    popular: false,
+  },
       ].map(plan => (
         <div key={plan.name} style={{ background: '#fff', border: `${plan.popular ? '2px solid #6366f1' : '1px solid #e5e7eb'}`, borderRadius: '20px', padding: '32px', position: 'relative' }}>
           {plan.popular && (
@@ -464,9 +465,11 @@ export default function Home() {
           <div style={{ position: 'absolute', top: '-50%', left: '-20%', width: '400px', height: '400px', background: 'rgba(255,255,255,0.05)', borderRadius: '50%', pointerEvents: 'none' }} />
           <div style={{ position: 'absolute', bottom: '-30%', right: '-10%', width: '300px', height: '300px', background: 'rgba(255,255,255,0.05)', borderRadius: '50%', pointerEvents: 'none' }} />
 
-          <h2 style={{ fontSize: 'clamp(2rem, 5vw, 3.5rem)', fontWeight: 700, letterSpacing: '-0.04em', marginBottom: '16px', color: '#fff' }}>
-  Your phone answers itself.<br />Your calendar fills itself.
-</h2>
+          <p style={{ fontSize: '0.78rem', fontWeight: 700, color: 'rgba(255,255,255,0.7)', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '16px' }}>Start today</p>
+          <h1 style={{ fontSize: 'clamp(2.8rem, 7vw, 5.5rem)', fontWeight: 700, lineHeight: 1.06, letterSpacing: '-0.05em', marginBottom: '24px', maxWidth: '900px' }}>
+  Your phone answers itself.<br />
+  <span style={{ background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a78bfa 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Your calendar fills itself.</span>
+</h1>
           <p style={{ color: 'rgba(255,255,255,0.75)', marginBottom: '40px', fontSize: '1.05rem' }}>
             Join 500+ businesses. 7-day free trial. Cancel anytime.
           </p>
