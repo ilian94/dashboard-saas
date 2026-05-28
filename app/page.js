@@ -466,10 +466,9 @@ export default function Home() {
           <div style={{ position: 'absolute', bottom: '-30%', right: '-10%', width: '300px', height: '300px', background: 'rgba(255,255,255,0.05)', borderRadius: '50%', pointerEvents: 'none' }} />
 
           <p style={{ fontSize: '0.78rem', fontWeight: 700, color: 'rgba(255,255,255,0.7)', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '16px' }}>Start today</p>
-          <h1 style={{ fontSize: 'clamp(2.8rem, 7vw, 5.5rem)', fontWeight: 700, lineHeight: 1.06, letterSpacing: '-0.05em', marginBottom: '24px', maxWidth: '900px' }}>
-  Your phone answers itself.<br />
-  <span style={{ background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a78bfa 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Your calendar fills itself.</span>
-</h1>
+          <h2 style={{ fontSize: 'clamp(2rem, 5vw, 3.5rem)', fontWeight: 700, letterSpacing: '-0.04em', marginBottom: '16px', color: '#fff' }}>
+  Your phone answers itself.<br />Your calendar fills itself.
+</h2>
           <p style={{ color: 'rgba(255,255,255,0.75)', marginBottom: '40px', fontSize: '1.05rem' }}>
             Join 500+ businesses. 7-day free trial. Cancel anytime.
           </p>
