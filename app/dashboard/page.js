@@ -990,14 +990,14 @@ export default function Dashboard() {
           )}
 
           {activePage === 'reports' && (
-            <>
-              <div>
-                <h1 style={{ fontSize: isMobile ? '1.3rem' : '1.5rem', fontWeight: 700, letterSpacing: '-0.03em', marginBottom: '4px', color: C.textPrimary }}>Weekly Reports</h1>
-                <p style={{ fontSize: '0.85rem', color: C.text }}>Your VoiceBot performance, week by week.</p>
-              </div>
-              <WeeklyReport userId={user?.id} />
-            </>
-          )}
+  <>
+    <div>
+      <h1 style={{ fontSize: isMobile ? '1.3rem' : '1.5rem', fontWeight: 700, letterSpacing: '-0.03em', marginBottom: '4px', color: C.textPrimary }}>Analytics</h1>
+      <p style={{ fontSize: '0.85rem', color: C.text }}>Track your VoiceBot performance and insights.</p>
+    </div>
+    <AnalyticsDashboard userId={user?.id} calls={calls} clientPlan={clientData?.plan} />
+  </>
+)}
 
           {activePage === 'setup' && (
             <>
