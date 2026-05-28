@@ -487,67 +487,200 @@ function ScriptSettings({ clientPlan, userId, allNumbers }) {
   );
 }
 
-function WeeklyReport({ userId }) {
-  const [weeks, setWeeks] = useState([]);
-  const [loading, setLoading] = useState(true);
+function AnalyticsDashboard({ userId, calls, clientPlan }) {
+  const [period, setPeriod] = useState('30d');
 
-  useEffect(() => {
-    const loadReport = async () => {
-      const { data } = await supabase.from('calls').select('*').eq('user_id', userId).order('created_at', { ascending: false });
-      if (!data) { setLoading(false); return; }
-      const weekMap = {};
-      data.forEach(call => {
-        const date = new Date(call.created_at);
-        const monday = new Date(date);
-        monday.setDate(date.getDate() - ((date.getDay() + 6) % 7));
-        monday.setHours(0, 0, 0, 0);
-        const key = monday.toISOString();
-        if (!weekMap[key]) weekMap[key] = { start: monday, calls: [] };
-        weekMap[key].calls.push(call);
+  const now = new Date();
+
+  const getFilteredCalls = () => {
+    const days = period === '7d' ? 7 : period === '30d' ? 30 : 90;
+    const cutoff = new Date(now);
+    cutoff.setDate(cutoff.getDate() - days);
+    return calls.filter(c => new Date(c.created_at) >= cutoff);
+  };
+
+  const filteredCalls = getFilteredCalls();
+  const totalCalls = filteredCalls.length;
+  const totalAppointments = filteredCalls.filter(c => c.rdv_pris).length;
+  const totalMinutes = Math.round(filteredCalls.reduce((acc, c) => acc + (c.duration || 0), 0) / 60);
+  const conversionRate = totalCalls > 0 ? Math.round((totalAppointments / totalCalls) * 100) : 0;
+  const avgDuration = totalCalls > 0 ? Math.round(filteredCalls.reduce((acc, c) => acc + (c.duration || 0), 0) / totalCalls) : 0;
+
+  const getDailyData = () => {
+    const days = period === '7d' ? 7 : period === '30d' ? 30 : 90;
+    const data = [];
+    for (let i = days - 1; i >= 0; i--) {
+      const date = new Date(now);
+      date.setDate(date.getDate() - i);
+      const dateStr = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+      const dayCalls = filteredCalls.filter(c => {
+        const d = new Date(c.created_at);
+        return d.toDateString() === date.toDateString();
       });
-      const result = Object.values(weekMap).sort((a, b) => b.start - a.start).slice(0, 8).map(w => ({
-        label: w.start.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
-        totalCalls: w.calls.length,
-        totalRdv: w.calls.filter(c => c.rdv_pris).length,
-        totalMinutes: Math.round(w.calls.reduce((acc, c) => acc + (c.duration || 0), 0) / 60),
-      }));
-      setWeeks(result);
-      setLoading(false);
-    };
-    loadReport();
-  }, [userId]);
+      data.push({
+        label: dateStr,
+        calls: dayCalls.length,
+        appointments: dayCalls.filter(c => c.rdv_pris).length,
+      });
+    }
+    return data;
+  };
 
-  if (loading) return <div style={{ background: '#fff', border: `1px solid ${C.border}`, borderRadius: '16px', padding: '40px', textAlign: 'center' }}><p style={{ color: C.text, fontSize: '0.9rem' }}>Loading...</p></div>;
+  const dailyData = getDailyData();
+  const maxCalls = Math.max(...dailyData.map(d => d.calls), 1);
+
+  const hourlyData = Array.from({ length: 24 }, (_, h) => ({
+    hour: h,
+    count: filteredCalls.filter(c => new Date(c.created_at).getHours() === h).length,
+  }));
+  const maxHourly = Math.max(...hourlyData.map(d => d.count), 1);
+  const peakHour = hourlyData.reduce((a, b) => a.count > b.count ? a : b);
+
+  const getPrevCalls = () => {
+    const days = period === '7d' ? 7 : period === '30d' ? 30 : 90;
+    const cutoff = new Date(now);
+    cutoff.setDate(cutoff.getDate() - days);
+    const prevCutoff = new Date(now);
+    prevCutoff.setDate(prevCutoff.getDate() - days * 2);
+    return calls.filter(c => {
+      const d = new Date(c.created_at);
+      return d >= prevCutoff && d < cutoff;
+    });
+  };
+  const prevCalls = getPrevCalls();
+  const prevTotal = prevCalls.length;
+  const prevAppts = prevCalls.filter(c => c.rdv_pris).length;
+  const callsDiff = prevTotal > 0 ? Math.round(((totalCalls - prevTotal) / prevTotal) * 100) : null;
+  const apptsDiff = prevAppts > 0 ? Math.round(((totalAppointments - prevAppts) / prevAppts) * 100) : null;
+
+  const isAdvanced = clientPlan === 'business';
+  const isBasic = clientPlan === 'scale';
+
+  if (!isAdvanced && !isBasic) {
+    return (
+      <div style={{ background: '#fff', border: `1px solid ${C.border}`, borderRadius: '16px', padding: '32px', textAlign: 'center' }}>
+        <div style={{ width: '48px', height: '48px', background: '#ede9fe', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px' }}>
+          <IconReport />
+        </div>
+        <p style={{ fontWeight: 700, fontSize: '1rem', color: C.textPrimary, marginBottom: '8px' }}>Analytics available on Scale & Business</p>
+        <p style={{ fontSize: '0.85rem', color: C.text, marginBottom: '20px' }}>Upgrade to access call analytics and performance reports.</p>
+        <a href="/pricing" style={{ padding: '10px 24px', background: C.accent, color: 'white', textDecoration: 'none', borderRadius: '10px', fontSize: '0.875rem', fontWeight: 600 }}>Upgrade</a>
+      </div>
+    );
+  }
+
+  if (isBasic) {
+    return <WeeklyReport userId={userId} />;
+  }
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-      {weeks.length === 0 ? (
-        <div style={{ background: '#fff', border: `1px solid ${C.border}`, borderRadius: '16px', padding: '40px', textAlign: 'center' }}>
-          <p style={{ fontSize: '0.875rem', color: C.text }}>No call data yet. Reports will appear once your VoiceBot starts handling calls.</p>
-        </div>
-      ) : weeks.map((week, i) => (
-        <div key={i} style={{ background: '#fff', border: `1px solid ${C.border}`, borderRadius: '16px', padding: '20px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
-            <div>
-              <p style={{ fontWeight: 700, fontSize: '0.95rem', color: C.textPrimary }}>Week of {week.label}</p>
-              {i === 0 && <span style={{ fontSize: '0.72rem', color: '#16a34a', fontWeight: 600, background: '#f0fdf4', padding: '2px 8px', borderRadius: '100px', border: '1px solid #bbf7d0' }}>Current week</span>}
-            </div>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+
+      <div style={{ display: 'flex', gap: '8px' }}>
+        {[{ key: '7d', label: 'Last 7 days' }, { key: '30d', label: 'Last 30 days' }, { key: '90d', label: 'Last 90 days' }].map(p => (
+          <button key={p.key} onClick={() => setPeriod(p.key)}
+            style={{ padding: '7px 16px', borderRadius: '8px', border: `1px solid ${period === p.key ? C.accent : C.border}`, background: period === p.key ? '#ede9fe' : '#fff', color: period === p.key ? C.accent : C.text, fontSize: '0.82rem', fontWeight: period === p.key ? 600 : 400, cursor: 'pointer', fontFamily: 'inherit' }}>
+            {p.label}
+          </button>
+        ))}
+      </div>
+
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: '12px' }}>
+        {[
+          { label: 'Total calls', value: totalCalls, diff: callsDiff, icon: <IconPhone />, color: C.accent },
+          { label: 'Appointments booked', value: totalAppointments, diff: apptsDiff, icon: <IconCalendar />, color: '#16a34a' },
+          { label: 'Conversion rate', value: `${conversionRate}%`, diff: null, icon: <IconCheck />, color: '#f59e0b' },
+          { label: 'Avg. call duration', value: `${avgDuration}s`, diff: null, icon: <IconClock />, color: '#8b5cf6' },
+          { label: 'Minutes used', value: totalMinutes, diff: null, icon: <IconReport />, color: '#6366f1' },
+          { label: 'Peak hour', value: `${peakHour.hour}:00`, diff: null, icon: <IconSetup />, color: '#ec4899' },
+        ].map(k => (
+          <div key={k.label} style={{ background: '#fff', border: `1px solid ${C.border}`, borderRadius: '14px', padding: '18px' }}>
+            <div style={{ color: k.color, marginBottom: '8px' }}>{k.icon}</div>
+            <div style={{ fontSize: '1.6rem', fontWeight: 700, letterSpacing: '-0.03em', color: C.textPrimary, lineHeight: 1, marginBottom: '4px' }}>{k.value}</div>
+            <div style={{ fontSize: '0.72rem', color: C.text, textTransform: 'uppercase', letterSpacing: '0.05em', fontWeight: 600 }}>{k.label}</div>
+            {k.diff !== null && (
+              <div style={{ marginTop: '6px', fontSize: '0.75rem', fontWeight: 600, color: k.diff >= 0 ? '#16a34a' : '#ef4444' }}>
+                {k.diff >= 0 ? '+' : ''}{k.diff}% vs prev. period
+              </div>
+            )}
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '12px' }}>
-            {[
-              { label: 'Calls', value: week.totalCalls, icon: <IconPhone /> },
-              { label: 'Appointments', value: week.totalRdv, icon: <IconCalendar /> },
-              { label: 'Minutes', value: week.totalMinutes, icon: <IconClock /> },
-            ].map(s => (
-              <div key={s.label} style={{ background: '#f9fafb', border: `1px solid ${C.border}`, borderRadius: '12px', padding: '14px' }}>
-                <div style={{ color: C.accent, marginBottom: '6px' }}>{s.icon}</div>
-                <div style={{ fontSize: '1.5rem', fontWeight: 800, letterSpacing: '-0.03em', lineHeight: 1, marginBottom: '3px', color: C.textPrimary }}>{s.value}</div>
-                <div style={{ fontSize: '0.72rem', color: C.text }}>{s.label}</div>
+        ))}
+      </div>
+
+      <div style={{ background: '#fff', border: `1px solid ${C.border}`, borderRadius: '16px', padding: '20px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px' }}>
+          <div>
+            <p style={{ fontWeight: 700, fontSize: '0.95rem', color: C.textPrimary, marginBottom: '2px' }}>Calls over time</p>
+            <p style={{ fontSize: '0.78rem', color: C.text }}>Daily call volume and appointments</p>
+          </div>
+          <div style={{ display: 'flex', gap: '16px', fontSize: '0.75rem' }}>
+            <span style={{ display: 'flex', alignItems: 'center', gap: '6px', color: C.text }}>
+              <span style={{ width: '10px', height: '10px', borderRadius: '2px', background: C.accent, display: 'inline-block' }} /> Calls
+            </span>
+            <span style={{ display: 'flex', alignItems: 'center', gap: '6px', color: C.text }}>
+              <span style={{ width: '10px', height: '10px', borderRadius: '2px', background: '#16a34a', display: 'inline-block' }} /> Appointments
+            </span>
+          </div>
+        </div>
+        <div style={{ display: 'flex', alignItems: 'flex-end', gap: '3px', height: '120px', overflowX: 'auto', paddingBottom: '8px' }}>
+          {dailyData.map((d, i) => (
+            <div key={i} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2px', flex: '1 0 auto', minWidth: period === '90d' ? '6px' : '12px' }}>
+              <div style={{ width: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', height: '100px', gap: '2px' }}>
+                <div style={{ width: '100%', height: `${(d.calls / maxCalls) * 100}%`, background: C.accent, borderRadius: '3px 3px 0 0', minHeight: d.calls > 0 ? '4px' : '0', opacity: 0.85 }} />
+              </div>
+              {period !== '90d' && i % (period === '30d' ? 5 : 1) === 0 && (
+                <span style={{ fontSize: '0.6rem', color: C.textMuted, whiteSpace: 'nowrap' }}>{d.label}</span>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div style={{ background: '#fff', border: `1px solid ${C.border}`, borderRadius: '16px', padding: '20px' }}>
+        <p style={{ fontWeight: 700, fontSize: '0.95rem', color: C.textPrimary, marginBottom: '4px' }}>Peak hours</p>
+        <p style={{ fontSize: '0.78rem', color: C.text, marginBottom: '16px' }}>When your callers are most active</p>
+        <div style={{ display: 'flex', alignItems: 'flex-end', gap: '3px', height: '60px' }}>
+          {hourlyData.map((h, i) => (
+            <div key={i} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px' }}>
+              <div style={{ width: '100%', height: `${(h.count / maxHourly) * 56}px`, background: h.hour === peakHour.hour ? C.accent : '#e0e7ff', borderRadius: '2px 2px 0 0', minHeight: h.count > 0 ? '3px' : '0', transition: 'height 0.3s' }} />
+            </div>
+          ))}
+        </div>
+        <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '6px' }}>
+          {[0, 6, 12, 18, 23].map(h => (
+            <span key={h} style={{ fontSize: '0.65rem', color: C.textMuted }}>{h}h</span>
+          ))}
+        </div>
+        <p style={{ fontSize: '0.78rem', color: C.text, marginTop: '10px' }}>
+          Peak: <span style={{ fontWeight: 700, color: C.textPrimary }}>{peakHour.hour}:00 - {peakHour.hour + 1}:00</span> ({peakHour.count} calls)
+        </p>
+      </div>
+
+      <div style={{ background: '#fff', border: `1px solid ${C.border}`, borderRadius: '16px', padding: '20px' }}>
+        <p style={{ fontWeight: 700, fontSize: '0.95rem', color: C.textPrimary, marginBottom: '4px' }}>Recent activity</p>
+        <p style={{ fontSize: '0.78rem', color: C.text, marginBottom: '16px' }}>Latest calls in the selected period</p>
+        {filteredCalls.length === 0 ? (
+          <p style={{ fontSize: '0.875rem', color: C.text, textAlign: 'center', padding: '20px 0' }}>No calls in this period.</p>
+        ) : (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            {filteredCalls.slice(0, 5).map(call => (
+              <div key={call.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 14px', background: '#f9fafb', border: `1px solid ${C.border}`, borderRadius: '10px', gap: '12px' }}>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <p style={{ fontSize: '0.85rem', fontWeight: 600, color: C.textPrimary, marginBottom: '2px' }}>{call.caller_number}</p>
+                  <p style={{ fontSize: '0.75rem', color: C.text, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{call.summary || 'No summary'}</p>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 }}>
+                  <span style={{ fontSize: '0.72rem', color: C.text }}>{call.duration}s</span>
+                  {call.rdv_pris
+                    ? <span style={{ fontSize: '0.7rem', color: '#16a34a', background: '#f0fdf4', padding: '2px 8px', borderRadius: '100px', border: '1px solid #bbf7d0', fontWeight: 600 }}>Booked</span>
+                    : <span style={{ fontSize: '0.7rem', color: C.text, background: '#f9fafb', padding: '2px 8px', borderRadius: '100px', border: `1px solid ${C.border}`, fontWeight: 500 }}>No booking</span>
+                  }
+                </div>
               </div>
             ))}
           </div>
-        </div>
-      ))}
+        )}
+      </div>
     </div>
   );
 }
