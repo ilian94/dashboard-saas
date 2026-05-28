@@ -369,26 +369,72 @@ export default function Home() {
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '20px' }}>
             {[
-              { name: 'Dr. Sarah Mitchell', role: 'Dentist · New York, NY', quote: 'We were missing 20+ calls a week after hours. VoiceBot fixed that overnight. Bookings are up 35% and my front desk handles 50% fewer calls.', stars: 5 },
-              { name: 'James Thornton', role: 'Real Estate Agent · Miami, FL', quote: "I close deals while I sleep now. VoiceBot qualifies every lead and books viewings automatically. Best $229 I spend every single month.", stars: 5 },
-              { name: 'Maria Delgado', role: 'Spa Owner · Los Angeles, CA', quote: "Setup took literally 4 minutes. My clients can book 24/7 and I stopped losing appointments to voicemail forever. It's a no-brainer.", stars: 5 },
-            ].map(t => (
-              <div key={t.name} style={{ background: '#161616', border: '1px solid #222', borderRadius: '20px', padding: '28px' }}>
-                <div style={{ display: 'flex', gap: '3px', marginBottom: '16px' }}>
-                  {Array.from({ length: t.stars }).map((_, i) => (
-                    <svg key={i} width="16" height="16" viewBox="0 0 24 24" fill="#f59e0b" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                  ))}
-                </div>
-                <p style={{ fontSize: '0.95rem', color: '#e5e7eb', lineHeight: 1.7, marginBottom: '24px', fontStyle: 'italic' }}>"{t.quote}"</p>
-                <div>
-                  <p style={{ fontSize: '0.875rem', fontWeight: 700, marginBottom: '2px' }}>{t.name}</p>
-                  <p style={{ fontSize: '0.8rem', color: '#6b7280', margin: 0 }}>{t.role}</p>
-                </div>
-              </div>
-            ))}
+  { stat: '62%', desc: 'of callers never leave a voicemail. They call your competitor instead.' },
+  { stat: '$300+', desc: 'average value of each client appointment you could be missing.' },
+  { stat: '5 min', desc: 'to set up VoiceBot AI and never miss another call again.' },
+].map(t => (
+  <div key={t.stat} style={{ background: '#161616', border: '1px solid #222', borderRadius: '20px', padding: '28px' }}>
+    <p style={{ fontSize: '3rem', fontWeight: 700, color: '#6366f1', letterSpacing: '-0.04em', marginBottom: '12px' }}>{t.stat}</p>
+    <p style={{ fontSize: '0.95rem', color: '#9ca3af', lineHeight: 1.7, margin: 0 }}>{t.desc}</p>
+  </div>
+))}
           </div>
         </div>
       </section>
+      {/* PRICING SUMMARY */}
+<section style={{ padding: '96px 24px', background: '#fafafa', borderTop: '1px solid #e5e7eb', borderBottom: '1px solid #e5e7eb' }}>
+  <div style={{ maxWidth: '960px', margin: '0 auto' }}>
+    <p style={{ textAlign: 'center', fontSize: '0.78rem', fontWeight: 700, color: '#6366f1', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '12px' }}>Pricing</p>
+    <h2 style={{ textAlign: 'center', fontSize: 'clamp(1.8rem, 4vw, 2.8rem)', fontWeight: 700, letterSpacing: '-0.04em', marginBottom: '12px' }}>Simple, transparent pricing.</h2>
+    <p style={{ textAlign: 'center', color: '#6b7280', marginBottom: '48px' }}>Start free for 7 days. No credit card required.</p>
+
+    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '16px' }}>
+      {[
+        {
+          name: 'Starter', price: '$229', desc: 'Perfect for small businesses.',
+          features: ['500 call minutes/month', '1 phone number', 'Google Calendar sync', 'AI call summaries', '24/7 availability'],
+          popular: false,
+        },
+        {
+          name: 'Scale', price: '$459', desc: 'For growing teams.',
+          features: ['2,000 call minutes/month', 'Call recording', 'Analytics dashboard', 'Custom business name', 'Calendly integration'],
+          popular: true,
+        },
+        {
+          name: 'Business', price: '$879', desc: 'For high-volume operations.',
+          features: ['6,000 call minutes/month', 'Full script customization', 'SMS confirmations', 'Advanced analytics', 'Priority support'],
+          popular: false,
+        },
+      ].map(plan => (
+        <div key={plan.name} style={{ background: '#fff', border: `${plan.popular ? '2px solid #6366f1' : '1px solid #e5e7eb'}`, borderRadius: '20px', padding: '32px', position: 'relative' }}>
+          {plan.popular && (
+            <div style={{ position: 'absolute', top: '-13px', left: '50%', transform: 'translateX(-50%)', background: '#6366f1', color: '#fff', fontSize: '0.72rem', fontWeight: 700, padding: '4px 16px', borderRadius: '100px', whiteSpace: 'nowrap' }}>MOST POPULAR</div>
+          )}
+          <h3 style={{ fontSize: '1rem', fontWeight: 700, marginBottom: '4px' }}>{plan.name}</h3>
+          <p style={{ fontSize: '0.82rem', color: '#9ca3af', marginBottom: '16px' }}>{plan.desc}</p>
+          <div style={{ fontSize: '2.8rem', fontWeight: 700, letterSpacing: '-0.04em', marginBottom: '4px' }}>{plan.price}<span style={{ fontSize: '0.9rem', color: '#9ca3af', fontWeight: 400 }}>/mo</span></div>
+          <p style={{ fontSize: '0.75rem', color: '#16a34a', fontWeight: 600, marginBottom: '20px' }}>7-day free trial included</p>
+          <div style={{ height: '1px', background: '#e5e7eb', marginBottom: '20px' }} />
+          <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 24px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+            {plan.features.map(f => (
+              <li key={f} style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '0.85rem', color: '#374151' }}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#16a34a" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                {f}
+              </li>
+            ))}
+          </ul>
+          <Link href="/register" style={{ display: 'block', background: plan.popular ? '#6366f1' : '#0f0f0f', color: '#fff', textDecoration: 'none', fontWeight: 700, fontSize: '0.9rem', padding: '12px', borderRadius: '10px', textAlign: 'center' }}>
+            Start free trial
+          </Link>
+        </div>
+      ))}
+    </div>
+
+    <p style={{ textAlign: 'center', color: '#9ca3af', fontSize: '0.85rem', marginTop: '24px' }}>
+      All plans include a 7-day free trial. Cancel anytime. <Link href="/pricing" style={{ color: '#6366f1', textDecoration: 'none', fontWeight: 600 }}>See full pricing details</Link>
+    </p>
+  </div>
+</section>
 
       {/* FAQ */}
       <section style={{ padding: '96px 24px' }}>
@@ -418,10 +464,9 @@ export default function Home() {
           <div style={{ position: 'absolute', top: '-50%', left: '-20%', width: '400px', height: '400px', background: 'rgba(255,255,255,0.05)', borderRadius: '50%', pointerEvents: 'none' }} />
           <div style={{ position: 'absolute', bottom: '-30%', right: '-10%', width: '300px', height: '300px', background: 'rgba(255,255,255,0.05)', borderRadius: '50%', pointerEvents: 'none' }} />
 
-          <p style={{ fontSize: '0.78rem', fontWeight: 700, color: 'rgba(255,255,255,0.7)', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '16px' }}>Start today</p>
           <h2 style={{ fontSize: 'clamp(2rem, 5vw, 3.5rem)', fontWeight: 700, letterSpacing: '-0.04em', marginBottom: '16px', color: '#fff' }}>
-            Your phone answers itself.<br />Your calendar fills itself.
-          </h2>
+  Your phone answers itself.<br />Your calendar fills itself.
+</h2>
           <p style={{ color: 'rgba(255,255,255,0.75)', marginBottom: '40px', fontSize: '1.05rem' }}>
             Join 500+ businesses. 7-day free trial. Cancel anytime.
           </p>
