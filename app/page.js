@@ -89,9 +89,9 @@ export default function Home() {
         <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, background: 'radial-gradient(ellipse 80% 60% at 50% -10%, rgba(99,102,241,0.12) 0%, transparent 70%)', pointerEvents: 'none' }} />
 
         <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: '100px', padding: '6px 16px', fontSize: '0.78rem', color: '#16a34a', fontWeight: 600, marginBottom: '32px' }}>
-          <span style={{ width: 7, height: 7, borderRadius: '50%', background: '#22c55e', display: 'inline-block', boxShadow: '0 0 6px rgba(34,197,94,0.6)' }} />
-          7-day free trial — Cancel anytime — Credit card required — cancel anytime
-        </div>
+  <span style={{ width: 7, height: 7, borderRadius: '50%', background: '#22c55e', display: 'inline-block', boxShadow: '0 0 6px rgba(34,197,94,0.6)' }} />
+  7-day free trial — Credit card required
+</div>
 
         <h1 style={{ fontSize: 'clamp(2.8rem, 7vw, 5.5rem)', fontWeight: 700, lineHeight: 1.06, letterSpacing: '-0.05em', marginBottom: '24px', maxWidth: '900px' }}>
           Stop losing clients<br />
