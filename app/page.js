@@ -61,47 +61,24 @@ function DashboardDemo() {
           const newNumber = callerNumbers[Math.floor(Math.random() * callerNumbers.length)];
           const newService = services[Math.floor(Math.random() * services.length)];
           const newDate = ['Today, 4:30 PM', 'Tomorrow, 9:00 AM', 'Jun 3, 11:00 AM', 'Jun 4, 2:30 PM'][Math.floor(Math.random() * 4)];
-
-          setCalls(prev => [{
-            id: Date.now(),
-            caller: newNumber,
-            status: 'booked',
-            name: newName,
-            time: 'Just now',
-            duration: `1m ${Math.floor(Math.random() * 40 + 10)}s`,
-            service: newService,
-          }, ...prev.slice(0, 4)]);
-
-          setAppointments(prev => [{
-            name: newName,
-            date: newDate,
-            service: newService,
-            status: 'confirmed',
-          }, ...prev.slice(0, 4)]);
-
-          setStats(prev => ({
-            calls: prev.calls + 1,
-            booked: prev.booked + 1,
-            rate: Math.min(99, prev.rate + 1),
-            revenue: prev.revenue + 300,
-          }));
+          setCalls(prev => [{ id: Date.now(), caller: newNumber, status: 'booked', name: newName, time: 'Just now', duration: `1m ${Math.floor(Math.random() * 40 + 10)}s`, service: newService }, ...prev.slice(0, 4)]);
+          setAppointments(prev => [{ name: newName, date: newDate, service: newService, status: 'confirmed' }, ...prev.slice(0, 4)]);
+          setStats(prev => ({ calls: prev.calls + 1, booked: prev.booked + 1, rate: Math.min(99, prev.rate + 1), revenue: prev.revenue + 300 }));
         }, 2000);
       }, 1500);
     }, 6000);
-
     return () => clearInterval(interval);
   }, []);
 
   return (
     <div style={{ background: '#111827', borderRadius: '20px', overflow: 'hidden', border: '1px solid #1f2937' }}>
-      
-      {/* DASHBOARD HEADER */}
+
+      {/* HEADER */}
       <div style={{ background: '#0f172a', padding: '16px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid #1f2937' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
           <span style={{ fontWeight: 700, fontSize: '0.9rem', color: '#fff' }}>VoiceBot AI — Dashboard</span>
           <span style={{ background: '#065f46', color: '#34d399', fontSize: '0.7rem', fontWeight: 600, padding: '2px 10px', borderRadius: '100px', display: 'flex', alignItems: 'center', gap: '4px' }}>
-            <span style={{ width: 5, height: 5, borderRadius: '50%', background: '#34d399', display: 'inline-block' }} />
-            Live
+            <span style={{ width: 5, height: 5, borderRadius: '50%', background: '#34d399', display: 'inline-block' }} />Live
           </span>
         </div>
         <div style={{ display: 'flex', gap: '8px' }}>
@@ -111,11 +88,11 @@ function DashboardDemo() {
         </div>
       </div>
 
-      {/* INCOMING CALL NOTIFICATION */}
+      {/* INCOMING CALL */}
       {incomingCall && (
         <div style={{ background: 'linear-gradient(135deg, #6366f1, #8b5cf6)', padding: '14px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', animation: 'fadeIn 0.3s ease' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <div style={{ width: 36, height: 36, background: 'rgba(255,255,255,0.2)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <div style={{ width: 36, height: 36, background: 'rgba(255,255,255,0.2)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="white" stroke="none"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.38 2 2 0 0 1 3.6 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.6a16 16 0 0 0 6.29 6.29l.97-.97a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
             </div>
             <div>
@@ -123,86 +100,85 @@ function DashboardDemo() {
               <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: '0.78rem', margin: 0 }}>VoiceBot AI is answering...</p>
             </div>
           </div>
-          <span style={{ background: 'rgba(255,255,255,0.2)', color: '#fff', fontSize: '0.75rem', padding: '4px 12px', borderRadius: '100px', fontWeight: 600 }}>Answering in &lt;2s</span>
+          <span className="incoming-call-badge" style={{ background: 'rgba(255,255,255,0.2)', color: '#fff', fontSize: '0.75rem', padding: '4px 12px', borderRadius: '100px', fontWeight: 600 }}>Answering in &lt;2s</span>
         </div>
       )}
 
       {processingCall && (
         <div style={{ background: '#064e3b', padding: '14px 24px', display: 'flex', alignItems: 'center', gap: '12px', animation: 'fadeIn 0.3s ease' }}>
-          <div style={{ width: 8, height: 8, borderRadius: '50%', background: '#34d399', animation: 'pulse 1s infinite' }} />
+          <div style={{ width: 8, height: 8, borderRadius: '50%', background: '#34d399' }} />
           <p style={{ color: '#34d399', fontWeight: 600, fontSize: '0.875rem', margin: 0 }}>AI is booking appointment...</p>
         </div>
       )}
 
-      {/* STATS ROW */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', borderBottom: '1px solid #1f2937' }}>
+      {/* STATS */}
+      <div className="dashboard-stats" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', borderBottom: '1px solid #1f2937' }}>
         {[
           { label: 'Calls today', value: stats.calls, color: '#6366f1', suffix: '' },
           { label: 'Appointments booked', value: stats.booked, color: '#22c55e', suffix: '' },
           { label: 'Success rate', value: stats.rate, color: '#f59e0b', suffix: '%' },
           { label: 'Revenue recovered', value: `$${stats.revenue.toLocaleString()}`, color: '#a78bfa', suffix: '' },
-        ].map(s => (
-          <div key={s.label} style={{ padding: '20px', borderRight: '1px solid #1f2937', textAlign: 'center' }}>
-            <div style={{ fontSize: '1.6rem', fontWeight: 700, color: s.color, letterSpacing: '-0.03em', marginBottom: '4px' }}>
-              {typeof s.value === 'number' ? s.value : s.value}{s.suffix}
+        ].map((s, i) => (
+          <div key={s.label} style={{ padding: '20px 12px', borderRight: i < 3 ? '1px solid #1f2937' : 'none', textAlign: 'center' }}>
+            <div style={{ fontSize: '1.4rem', fontWeight: 700, color: s.color, letterSpacing: '-0.03em', marginBottom: '4px' }}>
+              {s.value}{s.suffix}
             </div>
-            <div style={{ fontSize: '0.72rem', color: '#6b7280' }}>{s.label}</div>
+            <div style={{ fontSize: '0.65rem', color: '#6b7280', lineHeight: 1.3 }}>{s.label}</div>
           </div>
         ))}
       </div>
 
-      {/* MAIN CONTENT */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0' }}>
-        
-        {/* CALL LOG */}
+      {/* MAIN GRID */}
+      <div className="dashboard-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr' }}>
+
+        {/* CALLS */}
         <div style={{ borderRight: '1px solid #1f2937' }}>
-          <div style={{ padding: '16px 20px', borderBottom: '1px solid #1f2937', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <span style={{ fontSize: '0.82rem', fontWeight: 600, color: '#9ca3af', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Recent Calls</span>
-            <span style={{ fontSize: '0.72rem', color: '#6366f1', fontWeight: 600 }}>Live</span>
+          <div style={{ padding: '14px 20px', borderBottom: '1px solid #1f2937', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <span style={{ fontSize: '0.75rem', fontWeight: 600, color: '#9ca3af', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Recent Calls</span>
+            <span style={{ fontSize: '0.7rem', color: '#6366f1', fontWeight: 600 }}>Live</span>
           </div>
           {calls.map((call, i) => (
-            <div key={call.id} style={{ padding: '14px 20px', borderBottom: '1px solid #1f2937', display: 'flex', alignItems: 'center', gap: '12px', animation: i === 0 ? 'fadeIn 0.5s ease' : 'none' }}>
-              <div style={{ width: 32, height: 32, borderRadius: '50%', background: call.status === 'booked' ? '#065f46' : '#1f2937', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={call.status === 'booked' ? '#34d399' : '#6b7280'} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.38 2 2 0 0 1 3.6 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.6a16 16 0 0 0 6.29 6.29l.97-.97a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+            <div key={call.id} style={{ padding: '12px 16px', borderBottom: '1px solid #1f2937', display: 'flex', alignItems: 'center', gap: '10px', animation: i === 0 ? 'fadeIn 0.5s ease' : 'none' }}>
+              <div style={{ width: 30, height: 30, borderRadius: '50%', background: call.status === 'booked' ? '#065f46' : '#1f2937', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke={call.status === 'booked' ? '#34d399' : '#6b7280'} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.38 2 2 0 0 1 3.6 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.6a16 16 0 0 0 6.29 6.29l.97-.97a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
               </div>
               <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '2px' }}>
-                  <span style={{ fontSize: '0.82rem', fontWeight: 600, color: '#e5e7eb', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{call.name}</span>
-                  <span style={{ fontSize: '0.68rem', background: call.status === 'booked' ? '#065f46' : '#374151', color: call.status === 'booked' ? '#34d399' : '#9ca3af', padding: '1px 8px', borderRadius: '100px', flexShrink: 0 }}>{call.status === 'booked' ? 'Booked' : 'Missed'}</span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '2px', flexWrap: 'wrap' }}>
+                  <span style={{ fontSize: '0.78rem', fontWeight: 600, color: '#e5e7eb' }}>{call.name}</span>
+                  <span style={{ fontSize: '0.62rem', background: call.status === 'booked' ? '#065f46' : '#374151', color: call.status === 'booked' ? '#34d399' : '#9ca3af', padding: '1px 6px', borderRadius: '100px' }}>{call.status === 'booked' ? 'Booked' : 'Missed'}</span>
                 </div>
-                <div style={{ fontSize: '0.72rem', color: '#6b7280' }}>{call.service} · {call.duration}</div>
+                <div style={{ fontSize: '0.68rem', color: '#6b7280' }}>{call.duration}</div>
               </div>
-              <span style={{ fontSize: '0.68rem', color: '#4b5563', whiteSpace: 'nowrap' }}>{call.time}</span>
             </div>
           ))}
         </div>
 
         {/* APPOINTMENTS */}
         <div>
-          <div style={{ padding: '16px 20px', borderBottom: '1px solid #1f2937', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <span style={{ fontSize: '0.82rem', fontWeight: 600, color: '#9ca3af', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Upcoming Appointments</span>
-            <span style={{ fontSize: '0.72rem', color: '#22c55e', fontWeight: 600 }}>Auto-booked</span>
+          <div style={{ padding: '14px 20px', borderBottom: '1px solid #1f2937', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <span style={{ fontSize: '0.75rem', fontWeight: 600, color: '#9ca3af', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Appointments</span>
+            <span style={{ fontSize: '0.7rem', color: '#22c55e', fontWeight: 600 }}>Auto-booked</span>
           </div>
           {appointments.map((apt, i) => (
-            <div key={i} style={{ padding: '14px 20px', borderBottom: '1px solid #1f2937', display: 'flex', alignItems: 'center', gap: '12px', animation: i === 0 ? 'fadeIn 0.5s ease' : 'none' }}>
-              <div style={{ width: 32, height: 32, borderRadius: '8px', background: '#1e1b4b', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6366f1" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            <div key={i} style={{ padding: '12px 16px', borderBottom: '1px solid #1f2937', display: 'flex', alignItems: 'center', gap: '10px', animation: i === 0 ? 'fadeIn 0.5s ease' : 'none' }}>
+              <div style={{ width: 30, height: 30, borderRadius: '8px', background: '#1e1b4b', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#6366f1" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
               </div>
               <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ fontSize: '0.82rem', fontWeight: 600, color: '#e5e7eb', marginBottom: '2px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{apt.name}</div>
-                <div style={{ fontSize: '0.72rem', color: '#6b7280' }}>{apt.service} · {apt.date}</div>
+                <div style={{ fontSize: '0.78rem', fontWeight: 600, color: '#e5e7eb', marginBottom: '2px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{apt.name}</div>
+                <div style={{ fontSize: '0.68rem', color: '#6b7280', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{apt.date}</div>
               </div>
-              <span style={{ fontSize: '0.68rem', background: '#065f46', color: '#34d399', padding: '2px 8px', borderRadius: '100px', flexShrink: 0 }}>Confirmed</span>
+              <span style={{ fontSize: '0.62rem', background: '#065f46', color: '#34d399', padding: '2px 6px', borderRadius: '100px', flexShrink: 0 }}>✓</span>
             </div>
           ))}
         </div>
       </div>
 
       {/* FOOTER */}
-      <div style={{ padding: '14px 24px', background: '#0f172a', borderTop: '1px solid #1f2937', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <span style={{ fontSize: '0.72rem', color: '#4b5563' }}>This is a live simulation of your VoiceBot AI dashboard</span>
-        <Link href="/register" style={{ background: '#6366f1', color: '#fff', textDecoration: 'none', fontWeight: 600, fontSize: '0.78rem', padding: '7px 16px', borderRadius: '8px' }}>
-          Get your own dashboard →
+      <div className="dashboard-footer" style={{ padding: '14px 24px', background: '#0f172a', borderTop: '1px solid #1f2937', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <span style={{ fontSize: '0.72rem', color: '#4b5563' }}>Live simulation of your VoiceBot AI dashboard</span>
+        <Link href="/register" style={{ background: '#6366f1', color: '#fff', textDecoration: 'none', fontWeight: 600, fontSize: '0.78rem', padding: '7px 16px', borderRadius: '8px', whiteSpace: 'nowrap' }}>
+          Get your own →
         </Link>
       </div>
     </div>
@@ -317,21 +293,17 @@ export default function Home() {
       {/* HERO */}
       <section className="hero-section" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: '120px 24px 80px', position: 'relative', overflow: 'hidden' }}>
         <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, background: 'radial-gradient(ellipse 80% 60% at 50% -10%, rgba(99,102,241,0.12) 0%, transparent 70%)', pointerEvents: 'none' }} />
-
         <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: '100px', padding: '6px 16px', fontSize: '0.78rem', color: '#16a34a', fontWeight: 600, marginBottom: '32px' }}>
           <span style={{ width: 7, height: 7, borderRadius: '50%', background: '#22c55e', display: 'inline-block', boxShadow: '0 0 6px rgba(34,197,94,0.6)' }} />
           Try free for 7 days — No charge until day 8
         </div>
-
         <h1 className="hero-h1" style={{ fontSize: 'clamp(2.8rem, 7vw, 5.5rem)', fontWeight: 700, lineHeight: 1.06, letterSpacing: '-0.05em', marginBottom: '24px', maxWidth: '900px' }}>
           Turn missed calls into<br />
           <span style={{ background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a78bfa 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>booked appointments.</span>
         </h1>
-
         <p className="hero-sub" style={{ fontSize: 'clamp(1rem, 2vw, 1.25rem)', color: '#6b7280', lineHeight: 1.7, maxWidth: '600px', margin: '0 auto 24px' }}>
           VoiceBot AI answers every call in under 2 seconds, qualifies leads, books appointments, and sends confirmations — 24/7, even at 3am.
         </p>
-
         <div className="hero-badges" style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', justifyContent: 'center', marginBottom: '40px' }}>
           {['No voicemail', 'No hold music', 'No missed clients', 'Instant booking'].map(t => (
             <span key={t} style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.82rem', color: '#6b7280', background: '#f9fafb', border: '1px solid #e5e7eb', padding: '5px 14px', borderRadius: '100px' }}>
@@ -339,20 +311,15 @@ export default function Home() {
             </span>
           ))}
         </div>
-
         <div className="hero-buttons" style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap', marginBottom: '16px' }}>
           <Link href="/register" style={{ background: '#6366f1', color: '#fff', textDecoration: 'none', fontWeight: 700, fontSize: '1rem', padding: '15px 36px', borderRadius: '12px', boxShadow: '0 4px 24px rgba(99,102,241,0.35)' }}>
             Start free — no charge today
           </Link>
           <a href="tel:+19066677909" style={{ background: '#0f0f0f', color: '#fff', textDecoration: 'none', fontWeight: 600, fontSize: '1rem', padding: '15px 36px', borderRadius: '12px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <IconPhoneCall />
-            Call the AI now
+            <IconPhoneCall />Call the AI now
           </a>
         </div>
-
-        <p style={{ fontSize: '0.8rem', color: '#9ca3af', marginBottom: '40px' }}>
-          No credit card until day 8 · Live in 5 minutes · Cancel anytime
-        </p>
+        <p style={{ fontSize: '0.8rem', color: '#9ca3af', marginBottom: '40px' }}>No credit card until day 8 · Live in 5 minutes · Cancel anytime</p>
 
         {/* DEMO CARD */}
         <div className="demo-card" style={{ marginTop: '24px', background: '#fff', border: '1px solid #e5e7eb', borderRadius: '20px', padding: '28px', maxWidth: '580px', width: '100%', boxShadow: '0 24px 64px rgba(0,0,0,0.08)' }}>
@@ -470,16 +437,16 @@ export default function Home() {
           </div>
         </div>
       </section>
-      {/* LIVE DASHBOARD DEMO */}
-<section className="section-pad" style={{ padding: '96px 24px', background: '#0f0f0f' }}>
-  <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
-    <p style={{ textAlign: 'center', fontSize: '0.78rem', fontWeight: 700, color: '#6366f1', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '12px' }}>Live Demo</p>
-    <h2 style={{ textAlign: 'center', fontSize: 'clamp(1.8rem, 4vw, 2.8rem)', fontWeight: 700, letterSpacing: '-0.04em', marginBottom: '12px', color: '#fff' }}>See it work in real time.</h2>
-    <p style={{ textAlign: 'center', color: '#9ca3af', marginBottom: '48px' }}>This is what your dashboard looks like — live calls, instant bookings, zero effort.</p>
 
-    <DashboardDemo />
-  </div>
-</section>
+      {/* LIVE DASHBOARD DEMO */}
+      <section className="section-pad" style={{ padding: '96px 24px', background: '#0f0f0f' }}>
+        <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
+          <p style={{ textAlign: 'center', fontSize: '0.78rem', fontWeight: 700, color: '#6366f1', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '12px' }}>Live Demo</p>
+          <h2 style={{ textAlign: 'center', fontSize: 'clamp(1.8rem, 4vw, 2.8rem)', fontWeight: 700, letterSpacing: '-0.04em', marginBottom: '12px', color: '#fff' }}>See it work in real time.</h2>
+          <p style={{ textAlign: 'center', color: '#9ca3af', marginBottom: '48px' }}>This is what your dashboard looks like — live calls, instant bookings, zero effort.</p>
+          <DashboardDemo />
+        </div>
+      </section>
 
       {/* ROI CALCULATOR */}
       <section className="section-pad" style={{ padding: '96px 24px' }}>
@@ -522,7 +489,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* COMPARISON — desktop only */}
+      {/* COMPARISON */}
       <section className="section-pad mobile-hide" style={{ background: '#fafafa', borderTop: '1px solid #e5e7eb', borderBottom: '1px solid #e5e7eb', padding: '96px 24px' }}>
         <div style={{ maxWidth: '860px', margin: '0 auto' }}>
           <p style={{ textAlign: 'center', fontSize: '0.78rem', fontWeight: 700, color: '#6366f1', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '12px' }}>Comparison</p>
@@ -553,7 +520,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* INDUSTRIES — desktop only */}
+      {/* INDUSTRIES */}
       <section className="section-pad mobile-hide" style={{ padding: '96px 24px' }}>
         <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
           <p style={{ textAlign: 'center', fontSize: '0.78rem', fontWeight: 700, color: '#6366f1', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '12px' }}>Industries</p>
@@ -650,8 +617,7 @@ export default function Home() {
               Start free — no charge today
             </Link>
             <a href="tel:+19066677909" style={{ background: 'rgba(255,255,255,0.15)', color: '#fff', textDecoration: 'none', fontWeight: 600, fontSize: '1rem', padding: '15px 36px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.25)', display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <IconPhoneCall />
-              Call the AI now
+              <IconPhoneCall />Call the AI now
             </a>
           </div>
           <div className="mobile-hide" style={{ display: 'flex', justifyContent: 'center', gap: '28px', marginTop: '24px', flexWrap: 'wrap' }}>
@@ -710,6 +676,11 @@ export default function Home() {
           .final-cta { padding: 40px 20px !important; border-radius: 16px !important; margin: 0 16px !important; }
           .final-cta-h2 { font-size: 1.7rem !important; }
           footer { padding: 24px 20px !important; flex-direction: column !important; text-align: center !important; gap: 16px !important; }
+          .dashboard-stats { grid-template-columns: 1fr 1fr !important; }
+          .dashboard-grid { grid-template-columns: 1fr !important; border-right: none !important; }
+          .dashboard-grid > div:first-child { border-right: none !important; border-bottom: 1px solid #1f2937 !important; }
+          .dashboard-footer { flex-direction: column !important; gap: 10px !important; text-align: center !important; }
+          .incoming-call-badge { display: none !important; }
         }
       `}</style>
     </div>
