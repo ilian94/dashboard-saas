@@ -89,7 +89,7 @@ const faqs = [
   { q: 'What happens if I exceed my monthly minutes?', a: 'Your AI agent keeps running. You can purchase extra minute packs directly from your Billing page. Business plan members get the best per-minute rates.' },
   { q: 'Can I upgrade or downgrade my plan?', a: 'Absolutely. You can upgrade or downgrade at any time. Upgrades take effect immediately; downgrades apply at the start of your next billing cycle.' },
   { q: 'Does the AI really answer 24/7?', a: 'Yes. Your VoiceBot AI agent is always on. It handles calls during nights, weekends, and holidays with the same quality as business hours, with an average response time under 1 second.' },
-  { q: 'Do you offer a free trial?', a: "We don't currently offer a free trial, but you can reach out to our team for a live demo tailored to your business before committing to a plan." },
+  { q: 'Do you offer a free trial?', a: "Yes! Every plan includes a 7-day free trial. No charge until day 8. Cancel anytime before and you won't be billed." },
 ];
 
 const PLAN_RANK = { starter: 1, scale: 2, business: 3 };
@@ -173,7 +173,6 @@ export default function PricingPage() {
       {/* STATS */}
       <div style={{ display: 'flex', justifyContent: 'center', gap: '48px', padding: '24px 20px 56px', flexWrap: 'wrap', borderBottom: `1px solid ${C.border}`, background: C.bgSecondary, marginBottom: '56px' }}>
         {[
-          { value: '500+', label: 'Businesses served' },
           { value: '99.9%', label: 'Uptime SLA' },
           { value: '<1s', label: 'Response time' },
           { value: '24/7', label: 'Always available' },
@@ -205,6 +204,9 @@ export default function PricingPage() {
               <div style={{ fontSize: '2.8rem', fontWeight: 700, letterSpacing: '-0.04em', lineHeight: 1, color: C.text, marginBottom: '20px' }}>
                 {plan.price}<span style={{ fontSize: '0.9rem', color: C.textMuted, fontWeight: 400 }}>/mo</span>
               </div>
+              <p style={{ fontSize: '0.75rem', color: '#16a34a', fontWeight: 600, marginBottom: '16px' }}>
+  7-day free trial · No charge until day 8
+</p>
 
               <div style={{ height: '1px', background: C.border, margin: '0 0 20px' }} />
 
@@ -284,7 +286,7 @@ export default function PricingPage() {
       {/* CTA FINAL */}
       <div style={{ margin: '0 auto 80px', background: C.text, borderRadius: '20px', textAlign: 'center', padding: '64px 40px', maxWidth: '1060px' }}>
         <h2 style={{ fontSize: 'clamp(1.6rem, 3vw, 2.2rem)', fontWeight: 700, letterSpacing: '-0.04em', marginBottom: '12px', color: '#fff' }}>Ready to never miss a call again?</h2>
-        <p style={{ color: '#9ca3af', marginBottom: '28px', fontSize: '0.9rem' }}>Join 500+ businesses that handle every call automatically with VoiceBot AI.</p>
+        <p style={{ color: '#9ca3af', marginBottom: '28px', fontSize: '0.9rem' }}>Start free for 7 days. No charge until day 8. Cancel anytime.</p>
         <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
           <button onClick={() => router.push('/register')} style={{ background: '#fff', color: C.text, border: 'none', fontWeight: 700, fontSize: '0.95rem', padding: '13px 28px', borderRadius: '10px', cursor: 'pointer', fontFamily: "'DM Sans', system-ui, sans-serif" }}>Start now</button>
           <button onClick={() => router.push('/login')} style={{ background: 'transparent', color: '#9ca3af', border: '1px solid #333', fontWeight: 500, fontSize: '0.95rem', padding: '13px 28px', borderRadius: '10px', cursor: 'pointer', fontFamily: "'DM Sans', system-ui, sans-serif" }}>Sign in</button>
