@@ -131,7 +131,6 @@ const startDemo = () => {
     </button>
   </div>
 
-  <p style={{ fontSize: '0.8rem', color: '#9ca3af' }}>No charge until day 8 · Cancel in 1 click</p>
 
   {/* DEMO CARD */}
   <div style={{ marginTop: '64px', background: '#fff', border: '1px solid #e5e7eb', borderRadius: '20px', padding: '28px', maxWidth: '580px', width: '100%', boxShadow: '0 24px 64px rgba(0,0,0,0.08)', position: 'relative' }}>
