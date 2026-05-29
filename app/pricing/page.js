@@ -94,6 +94,63 @@ const faqs = [
 
 const PLAN_RANK = { starter: 1, scale: 2, business: 3 };
 
+function RoiCalculator({ router, C }) {
+  const [calls, setCalls] = useState(30);
+  const [clientValue, setClientValue] = useState(200);
+  const missed = Math.round(calls * 4 * 0.35);
+  const lostRevenue = missed * clientValue;
+  const recommended = lostRevenue < 5000 ? 'Starter' : lostRevenue < 15000 ? 'Scale' : 'Business';
+  const recommendedPrice = lostRevenue < 5000 ? '$229' : lostRevenue < 15000 ? '$459' : '$879';
+
+  return (
+    <div style={{ maxWidth: '680px', margin: '0 auto 64px', padding: '0 20px' }}>
+      <div style={{ background: '#f9f8ff', border: '1px solid #e0e7ff', borderRadius: '20px', padding: '40px' }}>
+        <p style={{ fontSize: '0.78rem', fontWeight: 700, color: C.accent, letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '8px', textAlign: 'center' }}>Find your plan</p>
+        <h2 style={{ fontSize: '1.5rem', fontWeight: 700, letterSpacing: '-0.03em', marginBottom: '8px', color: C.text, textAlign: 'center' }}>How much are you losing?</h2>
+        <p style={{ color: C.textMuted, fontSize: '0.875rem', marginBottom: '32px', textAlign: 'center' }}>Answer 2 questions. We'll recommend the right plan.</p>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', marginBottom: '32px' }}>
+          <div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}>
+              <label style={{ fontSize: '0.875rem', fontWeight: 600, color: C.text }}>Calls per week</label>
+              <span style={{ fontSize: '0.875rem', fontWeight: 700, color: C.accent }}>{calls}</span>
+            </div>
+            <input type="range" min="5" max="200" value={calls} onChange={e => setCalls(Number(e.target.value))} style={{ width: '100%', accentColor: C.accent, height: '6px', cursor: 'pointer' }} />
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '4px', fontSize: '0.72rem', color: C.textMuted }}><span>5</span><span>200</span></div>
+          </div>
+          <div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}>
+              <label style={{ fontSize: '0.875rem', fontWeight: 600, color: C.text }}>Average client value</label>
+              <span style={{ fontSize: '0.875rem', fontWeight: 700, color: C.accent }}>${clientValue}</span>
+            </div>
+            <input type="range" min="50" max="1000" step="50" value={clientValue} onChange={e => setClientValue(Number(e.target.value))} style={{ width: '100%', accentColor: C.accent, height: '6px', cursor: 'pointer' }} />
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '4px', fontSize: '0.72rem', color: C.textMuted }}><span>$50</span><span>$1,000</span></div>
+          </div>
+        </div>
+        <div style={{ background: '#fff', border: '1px solid #e0e7ff', borderRadius: '14px', padding: '24px', marginBottom: '20px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '20px' }}>
+            <div style={{ textAlign: 'center', padding: '16px', background: '#fff5f5', borderRadius: '10px' }}>
+              <div style={{ fontSize: '1.8rem', fontWeight: 700, color: '#ef4444' }}>{missed}</div>
+              <div style={{ fontSize: '0.72rem', color: C.textMuted, marginTop: '4px' }}>Missed calls/month</div>
+            </div>
+            <div style={{ textAlign: 'center', padding: '16px', background: '#fff5f5', borderRadius: '10px' }}>
+              <div style={{ fontSize: '1.8rem', fontWeight: 700, color: '#ef4444' }}>${lostRevenue.toLocaleString()}</div>
+              <div style={{ fontSize: '0.72rem', color: C.textMuted, marginTop: '4px' }}>Lost revenue/month</div>
+            </div>
+          </div>
+          <div style={{ background: 'linear-gradient(135deg, #6366f1, #8b5cf6)', borderRadius: '10px', padding: '16px', textAlign: 'center' }}>
+            <p style={{ color: 'rgba(255,255,255,0.8)', fontSize: '0.78rem', marginBottom: '4px' }}>Recommended plan for you</p>
+            <p style={{ color: '#fff', fontSize: '1.3rem', fontWeight: 700, margin: '0 0 2px' }}>{recommended} — {recommendedPrice}/mo</p>
+            <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: '0.75rem', margin: 0 }}>vs ${lostRevenue.toLocaleString()} in lost revenue</p>
+          </div>
+        </div>
+        <button onClick={() => router.push('/register')} style={{ width: '100%', padding: '13px', background: C.accent, color: '#fff', border: 'none', borderRadius: '10px', fontWeight: 700, fontSize: '0.95rem', cursor: 'pointer', fontFamily: "'DM Sans', system-ui, sans-serif" }}>
+          Get started with {recommended} →
+        </button>
+      </div>
+    </div>
+  );
+}
+
 export default function PricingPage() {
   const [loading, setLoading] = useState(null);
   const [user, setUser] = useState(null);
