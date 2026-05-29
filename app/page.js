@@ -39,6 +39,10 @@ const startDemo = () => {
   if (audioRef.current) {
     audioRef.current.play();
     setPlayingDemo(true);
+    setDemoStep(0);
+    demoConversation.forEach((_, i) => {
+      setTimeout(() => setDemoStep(i + 1), demoConversation[i].time + 500);
+    });
   }
 };
 
