@@ -33,14 +33,14 @@ export default function Home() {
     { role: 'bot', text: "Perfect! Booked for Thursday at 2pm. You'll receive a confirmation SMS shortly!", time: 6000 },
   ];
 
-  const startDemo = () => {
+  const audioRef = useRef(null);
+
+const startDemo = () => {
+  if (audioRef.current) {
+    audioRef.current.play();
     setPlayingDemo(true);
-    setDemoStep(0);
-    demoConversation.forEach((_, i) => {
-      setTimeout(() => setDemoStep(i + 1), demoConversation[i].time + 500);
-    });
-    setTimeout(() => setPlayingDemo(false), 8000);
-  };
+  }
+};
 
   const missedCallsPerMonth = roiCalls * 4;
   const revenuePerClient = 300;
@@ -87,12 +87,13 @@ export default function Home() {
 
       {/* HERO */}
       {/* HERO */}
+      <audio ref={audioRef} src="/Demo.MP3" onEnded={() => setPlayingDemo(false)} />
 <section style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: '120px 24px 80px', position: 'relative', overflow: 'hidden' }}>
   <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, background: 'radial-gradient(ellipse 80% 60% at 50% -10%, rgba(99,102,241,0.12) 0%, transparent 70%)', pointerEvents: 'none' }} />
 
   <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: '100px', padding: '6px 16px', fontSize: '0.78rem', color: '#16a34a', fontWeight: 600, marginBottom: '32px' }}>
     <span style={{ width: 7, height: 7, borderRadius: '50%', background: '#22c55e', display: 'inline-block', boxShadow: '0 0 6px rgba(34,197,94,0.6)' }} />
-    7-day free trial · Credit card required · Cancel anytime
+    Try free for 7 days — No charge until day 8
   </div>
 
   <h1 style={{ fontSize: 'clamp(2.8rem, 7vw, 5.5rem)', fontWeight: 700, lineHeight: 1.06, letterSpacing: '-0.05em', marginBottom: '24px', maxWidth: '900px' }}>
@@ -115,15 +116,18 @@ export default function Home() {
 
   <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap', marginBottom: '20px' }}>
     <Link href="/register" style={{ background: '#6366f1', color: '#fff', textDecoration: 'none', fontWeight: 700, fontSize: '1rem', padding: '15px 36px', borderRadius: '12px', boxShadow: '0 4px 24px rgba(99,102,241,0.35)' }}>
-      Start free — 7 days
-    </Link>
+  Start free — 7 days
+</Link>
+<p style={{ fontSize: '0.75rem', color: '#9ca3af', marginTop: '8px' }}>
+  🔒 We'll remind you 2 days before your trial ends
+</p>
     <button onClick={startDemo} style={{ background: '#fff', color: '#0f0f0f', border: '1.5px solid #e5e7eb', fontWeight: 600, fontSize: '1rem', padding: '15px 36px', borderRadius: '12px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', fontFamily: 'inherit' }}>
       <svg width="16" height="16" viewBox="0 0 24 24" fill="#6366f1" stroke="none"><polygon points="5 3 19 12 5 21 5 3"/></svg>
       Hear it live
     </button>
   </div>
 
-  <p style={{ fontSize: '0.8rem', color: '#9ca3af' }}>Trusted by 500+ businesses · 99.9% uptime · Setup in 5 minutes</p>
+  <p style={{ fontSize: '0.8rem', color: '#9ca3af' }}>No charge until day 8 · Cancel in 1 click</p>
 
   {/* DEMO CARD */}
   <div style={{ marginTop: '64px', background: '#fff', border: '1px solid #e5e7eb', borderRadius: '20px', padding: '28px', maxWidth: '580px', width: '100%', boxShadow: '0 24px 64px rgba(0,0,0,0.08)', position: 'relative' }}>
@@ -397,7 +401,7 @@ export default function Home() {
   <div style={{ maxWidth: '960px', margin: '0 auto' }}>
     <p style={{ textAlign: 'center', fontSize: '0.78rem', fontWeight: 700, color: '#6366f1', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '12px' }}>Pricing</p>
     <h2 style={{ textAlign: 'center', fontSize: 'clamp(1.8rem, 4vw, 2.8rem)', fontWeight: 700, letterSpacing: '-0.04em', marginBottom: '12px' }}>Simple, transparent pricing.</h2>
-    <p style={{ textAlign: 'center', color: '#6b7280', marginBottom: '48px' }}>Start free for 7 days. Credit card required — cancel anytime.</p>
+    <p style={{ textAlign: 'center', color: '#6b7280', marginBottom: '48px' }}>Start free for 7 days. No charge until day 8. Cancel anytime.</p>
 
     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '16px' }}>
       
@@ -425,7 +429,7 @@ export default function Home() {
           <h3 style={{ fontSize: '1rem', fontWeight: 700, marginBottom: '4px' }}>{plan.name}</h3>
           <p style={{ fontSize: '0.82rem', color: '#9ca3af', marginBottom: '16px' }}>{plan.desc}</p>
           <div style={{ fontSize: '2.8rem', fontWeight: 700, letterSpacing: '-0.04em', marginBottom: '4px' }}>{plan.price}<span style={{ fontSize: '0.9rem', color: '#9ca3af', fontWeight: 400 }}>/mo</span></div>
-          <p style={{ fontSize: '0.75rem', color: '#16a34a', fontWeight: 600, marginBottom: '20px' }}>7-day free trial — Cancel anytime — Cancel anytime included</p>
+          <p style={{ fontSize: '0.75rem', color: '#16a34a', fontWeight: 600, marginBottom: '20px' }}>No charge until day 8 · Cancel anytime</p>
           <div style={{ height: '1px', background: '#e5e7eb', marginBottom: '20px' }} />
           <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 24px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
             {plan.features.map(f => (
@@ -443,7 +447,7 @@ export default function Home() {
     </div>
 
     <p style={{ textAlign: 'center', color: '#9ca3af', fontSize: '0.85rem', marginTop: '24px' }}>
-      All plans include a 7-day free trial — Cancel anytime — Cancel anytime. Cancel anytime. <Link href="/pricing" style={{ color: '#6366f1', textDecoration: 'none', fontWeight: 600 }}>See full pricing details</Link>
+      All plans include a 7-day free trial. No charge until day 8. Cancel anytime. <Link href="/pricing" style={{ color: '#6366f1', textDecoration: 'none', fontWeight: 600 }}>See full pricing details</Link>
     </p>
   </div>
 </section>
@@ -481,7 +485,7 @@ export default function Home() {
   Your phone answers itself.<br />Your calendar fills itself.
 </h2>
           <p style={{ color: 'rgba(255,255,255,0.75)', marginBottom: '40px', fontSize: '1.05rem' }}>
-            Join 500+ businesses. 7-day free trial — Cancel anytime — Cancel anytime. Cancel anytime.
+            Join 500+ businesses. Try free for 7 days — no charge until day 8.
           </p>
           <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
             <Link href="/register" style={{ background: '#fff', color: '#6366f1', textDecoration: 'none', fontWeight: 700, fontSize: '1rem', padding: '15px 36px', borderRadius: '12px', boxShadow: '0 4px 20px rgba(0,0,0,0.15)' }}>
@@ -492,7 +496,7 @@ export default function Home() {
             </Link>
           </div>
           <div style={{ display: 'flex', justifyContent: 'center', gap: '28px', marginTop: '24px', flexWrap: 'wrap' }}>
-            {['Credit card required — cancel anytime', '7-day free trial — Cancel anytime', 'Cancel anytime', 'Live in 5 minutes'].map(t => (
+            {['No charge until day 8', '7-day free trial', 'Cancel in 1 click', 'Live in 5 minutes'].map(t => (
               <span key={t} style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.65)', display: 'flex', alignItems: 'center', gap: '6px' }}>
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.65)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
                 {t}
