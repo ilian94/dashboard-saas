@@ -5,17 +5,6 @@ import Link from "next/link";
 
 const supabase = createClient();
 
-const C = {
-  bg: '#f9fafb',
-  card: '#ffffff',
-  border: '#e5e7eb',
-  input: '#f9fafb',
-  text: '#6b7280',
-  label: '#9ca3af',
-  textPrimary: '#0f0f0f',
-  accent: '#6366f1',
-};
-
 const GoogleIcon = () => (
   <svg width="18" height="18" viewBox="0 0 48 48">
     <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
@@ -25,6 +14,33 @@ const GoogleIcon = () => (
     <path fill="none" d="M0 0h48v48H0z"/>
   </svg>
 );
+
+const IconBolt = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+    <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+  </svg>
+);
+
+const IconCalendar = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+    <rect x="3" y="4" width="18" height="18" rx="2"/>
+    <line x1="16" y1="2" x2="16" y2="6"/>
+    <line x1="8" y1="2" x2="8" y2="6"/>
+    <line x1="3" y1="10" x2="21" y2="10"/>
+  </svg>
+);
+
+const IconMessage = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+  </svg>
+);
+
+const features = [
+  { icon: <IconBolt />, title: 'Answers in under 2 seconds', desc: '24/7, even at 3am' },
+  { icon: <IconCalendar />, title: 'Books appointments automatically', desc: 'Syncs with Google Calendar & Calendly' },
+  { icon: <IconMessage />, title: 'Sends SMS confirmations', desc: 'Instant confirmation after every booking' },
+];
 
 export default function Register() {
   const [form, setForm] = useState({ email: "", password: "", company: "" });
@@ -58,71 +74,122 @@ export default function Register() {
   };
 
   return (
-    <div style={{ minHeight: '100vh', background: C.bg, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '20px', fontFamily: "'DM Sans', system-ui, sans-serif" }}>
-      <div style={{ width: '100%', maxWidth: '420px' }}>
+    <div style={{ minHeight: '100vh', background: '#ffffff', fontFamily: "'DM Sans', system-ui, sans-serif", display: 'flex', position: 'relative', overflow: 'hidden' }}>
 
-        <div style={{ marginBottom: '32px', textAlign: 'center' }}>
-          <Link href="/" style={{ fontWeight: 700, fontSize: '1rem', color: C.textPrimary, textDecoration: 'none', letterSpacing: '-0.02em' }}>VoiceBot AI</Link>
+      {/* GRADIENT BG */}
+      <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, background: 'radial-gradient(ellipse 80% 60% at 50% -10%, rgba(99,102,241,0.08) 0%, transparent 70%)', pointerEvents: 'none' }} />
+
+      {/* LEFT PANEL */}
+      <div className="left-panel" style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '60px', background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)', position: 'relative', overflow: 'hidden' }}>
+        <div style={{ position: 'absolute', top: '-100px', right: '-100px', width: '400px', height: '400px', background: 'rgba(255,255,255,0.05)', borderRadius: '50%' }} />
+        <div style={{ position: 'absolute', bottom: '-80px', left: '-80px', width: '300px', height: '300px', background: 'rgba(255,255,255,0.05)', borderRadius: '50%' }} />
+
+        <Link href="/" style={{ fontWeight: 700, fontSize: '1.1rem', color: '#fff', textDecoration: 'none', letterSpacing: '-0.02em', marginBottom: '60px', display: 'block' }}>VoiceBot AI</Link>
+
+        <h2 style={{ fontSize: 'clamp(1.8rem, 3vw, 2.8rem)', fontWeight: 700, color: '#fff', letterSpacing: '-0.04em', lineHeight: 1.1, marginBottom: '20px' }}>
+          Your phone answers itself.<br />Your calendar fills itself.
+        </h2>
+        <p style={{ color: 'rgba(255,255,255,0.75)', fontSize: '1rem', lineHeight: 1.7, marginBottom: '48px', maxWidth: '380px' }}>
+          Set up in 5 minutes. No code required.
+        </p>
+
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+          {features.map(f => (
+            <div key={f.title} style={{ display: 'flex', gap: '14px', alignItems: 'flex-start' }}>
+              <div style={{ width: '36px', height: '36px', background: 'rgba(255,255,255,0.15)', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>{f.icon}</div>
+              <div>
+                <p style={{ color: '#fff', fontWeight: 600, fontSize: '0.9rem', margin: '0 0 2px' }}>{f.title}</p>
+                <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.82rem', margin: 0 }}>{f.desc}</p>
+              </div>
+            </div>
+          ))}
         </div>
 
-        <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '20px', padding: '40px', display: 'flex', flexDirection: 'column', gap: '24px', boxShadow: '0 1px 4px rgba(0,0,0,0.04)' }}>
-<div style={{ display: 'flex', justifyContent: 'center', gap: '16px', flexWrap: 'wrap' }}>
-  {['7-day free trial', 'No charge until day 8', 'Cancel anytime'].map(t => (
-    <span key={t} style={{ display: 'flex', alignItems: 'center', gap: '5px', fontSize: '0.75rem', color: '#16a34a', fontWeight: 600 }}>
-      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#16a34a" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-      {t}
-    </span>
-  ))}
-</div>
-          <div>
-            <h1 style={{ fontSize: '1.5rem', fontWeight: 700, color: C.textPrimary, letterSpacing: '-0.03em', marginBottom: '6px' }}>Create your account</h1>
-            <p style={{ fontSize: '0.875rem', color: C.text }}>Start free for 7 days. No charge until day 8.</p>
+        <div style={{ marginTop: '48px', paddingTop: '32px', borderTop: '1px solid rgba(255,255,255,0.15)' }}>
+          <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.78rem', marginBottom: '12px' }}>TRUSTED BY BUSINESSES IN</p>
+          <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+            {['Dental', 'Medical', 'Legal', 'Real Estate'].map(t => (
+              <span key={t} style={{ background: 'rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.8)', padding: '4px 12px', borderRadius: '100px', fontSize: '0.78rem', fontWeight: 500 }}>{t}</span>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* RIGHT PANEL */}
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '40px 24px', minHeight: '100vh' }}>
+        <div style={{ width: '100%', maxWidth: '400px' }}>
+
+          <div className="mobile-logo" style={{ marginBottom: '24px', textAlign: 'center' }}>
+            <Link href="/" style={{ fontWeight: 700, fontSize: '1rem', color: '#0f0f0f', textDecoration: 'none' }}>VoiceBot AI</Link>
           </div>
 
-          <button onClick={handleGoogle} disabled={googleLoading} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', padding: '12px', background: '#fff', color: C.textPrimary, border: `1px solid ${C.border}`, borderRadius: '10px', fontWeight: 600, fontSize: '0.9rem', cursor: 'pointer', width: '100%', fontFamily: "'DM Sans', system-ui, sans-serif" }}>
+          <div style={{ display: 'flex', gap: '12px', marginBottom: '28px', flexWrap: 'wrap' }}>
+            {['7-day free trial', 'No charge until day 8', 'Cancel anytime'].map(t => (
+              <span key={t} style={{ display: 'flex', alignItems: 'center', gap: '5px', fontSize: '0.72rem', color: '#16a34a', fontWeight: 600 }}>
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#16a34a" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                {t}
+              </span>
+            ))}
+          </div>
+
+          <h1 style={{ fontSize: '1.6rem', fontWeight: 700, color: '#0f0f0f', letterSpacing: '-0.03em', marginBottom: '6px' }}>Create your account</h1>
+          <p style={{ fontSize: '0.875rem', color: '#6b7280', marginBottom: '28px' }}>Start free for 7 days. No charge until day 8.</p>
+
+          <button onClick={handleGoogle} disabled={googleLoading} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', padding: '13px', background: '#fff', color: '#0f0f0f', border: '1px solid #e5e7eb', borderRadius: '12px', fontWeight: 600, fontSize: '0.9rem', cursor: 'pointer', width: '100%', fontFamily: "'DM Sans', system-ui, sans-serif", boxShadow: '0 1px 3px rgba(0,0,0,0.06)', marginBottom: '20px' }}>
             <GoogleIcon />
             {googleLoading ? 'Redirecting...' : 'Continue with Google'}
           </button>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <div style={{ flex: 1, height: 1, background: C.border }} />
-            <span style={{ color: C.label, fontSize: '0.8rem' }}>or</span>
-            <div style={{ flex: 1, height: 1, background: C.border }} />
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '20px' }}>
+            <div style={{ flex: 1, height: 1, background: '#e5e7eb' }} />
+            <span style={{ color: '#9ca3af', fontSize: '0.8rem' }}>or</span>
+            <div style={{ flex: 1, height: 1, background: '#e5e7eb' }} />
           </div>
 
-          <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', marginBottom: '20px' }}>
             {[
-              { name: 'company', label: 'Company name', type: 'text', placeholder: 'Acme Inc.' },
+              { name: 'company', label: 'Business name', type: 'text', placeholder: 'Smith Dental Clinic' },
               { name: 'email', label: 'Email', type: 'email', placeholder: 'you@company.com' },
               { name: 'password', label: 'Password', type: 'password', placeholder: 'Min. 6 characters', minLength: 6 },
             ].map(field => (
               <div key={field.name} style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                <label style={{ fontSize: '0.78rem', fontWeight: 600, color: C.label, letterSpacing: '0.05em', textTransform: 'uppercase' }}>{field.label}</label>
+                <label style={{ fontSize: '0.78rem', fontWeight: 600, color: '#6b7280', letterSpacing: '0.04em', textTransform: 'uppercase' }}>{field.label}</label>
                 <input type={field.type} name={field.name} value={form[field.name]} onChange={handleChange} placeholder={field.placeholder} required minLength={field.minLength}
-                  style={{ padding: '12px 16px', borderRadius: '10px', border: `1px solid ${C.border}`, background: C.input, color: C.textPrimary, fontSize: '0.9rem', outline: 'none', width: '100%', boxSizing: 'border-box' }} />
+                  style={{ padding: '12px 16px', borderRadius: '10px', border: '1px solid #e5e7eb', background: '#f9fafb', color: '#0f0f0f', fontSize: '0.9rem', outline: 'none', width: '100%', boxSizing: 'border-box' }}
+                  onFocus={e => e.target.style.borderColor = '#6366f1'}
+                  onBlur={e => e.target.style.borderColor = '#e5e7eb'} />
               </div>
             ))}
-            {error && <p style={{ fontSize: '0.85rem', color: '#ef4444', background: '#fef2f2', padding: '10px 14px', borderRadius: '8px', border: '1px solid #fecaca' }}>{error}</p>}
-            <button type="submit" disabled={loading} style={{ padding: '13px', background: C.accent, color: 'white', border: 'none', borderRadius: '10px', fontWeight: 700, fontSize: '0.95rem', cursor: 'pointer', marginTop: '4px', fontFamily: "'DM Sans', system-ui, sans-serif" }}>
-              {loading ? 'Creating account...' : 'Create account'}
-            </button>
-          </form>
+          </div>
 
-          <p style={{ fontSize: '0.85rem', textAlign: 'center', color: C.text }}>
-            Already have an account?{' '}<Link href="/login" style={{ color: C.accent, textDecoration: 'none', fontWeight: 600 }}>Sign in</Link>
+          {error && <p style={{ fontSize: '0.85rem', color: '#ef4444', background: '#fef2f2', padding: '10px 14px', borderRadius: '8px', border: '1px solid #fecaca', marginBottom: '16px' }}>{error}</p>}
+
+          <button onClick={handleSubmit} disabled={loading} style={{ padding: '14px', background: '#6366f1', color: 'white', border: 'none', borderRadius: '12px', fontWeight: 700, fontSize: '0.95rem', cursor: 'pointer', width: '100%', fontFamily: "'DM Sans', system-ui, sans-serif", boxShadow: '0 4px 14px rgba(99,102,241,0.35)', marginBottom: '20px' }}>
+            {loading ? 'Creating account...' : 'Start free trial →'}
+          </button>
+
+          <p style={{ fontSize: '0.85rem', textAlign: 'center', color: '#6b7280', marginBottom: '16px' }}>
+            Already have an account?{' '}<Link href="/login" style={{ color: '#6366f1', textDecoration: 'none', fontWeight: 600 }}>Sign in</Link>
           </p>
 
-          <p style={{ fontSize: '0.78rem', textAlign: 'center', color: C.label, lineHeight: 1.5 }}>
+          <p style={{ fontSize: '0.72rem', textAlign: 'center', color: '#9ca3af', lineHeight: 1.5 }}>
             By creating an account, you agree to our{' '}
-            <Link href="/terms" style={{ color: C.text, textDecoration: 'underline' }}>Terms</Link>
+            <Link href="/terms" style={{ color: '#6b7280', textDecoration: 'underline' }}>Terms</Link>
             {' '}and{' '}
-            <Link href="/privacy" style={{ color: C.text, textDecoration: 'underline' }}>Privacy Policy</Link>.
-            <p style={{ fontSize: '0.78rem', textAlign: 'center', color: '#9ca3af' }}>
-  🔒 Your data is secure and never shared.
-</p>
+            <Link href="/privacy" style={{ color: '#6b7280', textDecoration: 'underline' }}>Privacy Policy</Link>.
           </p>
         </div>
       </div>
+
+      <style>{`
+        @media (max-width: 768px) {
+          .left-panel { display: none !important; }
+          .mobile-logo { display: block !important; }
+        }
+        @media (min-width: 769px) {
+          .mobile-logo { display: none !important; }
+        }
+      `}</style>
     </div>
   );
 }
