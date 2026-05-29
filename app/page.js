@@ -30,6 +30,185 @@ const IconCheckGreen = () => <svg width="14" height="14" viewBox="0 0 24 24" fil
 const IconPlay = ({ size = 22, color = "white" }) => <svg width={size} height={size} viewBox="0 0 24 24" fill={color} stroke="none"><polygon points="5 3 19 12 5 21 5 3"/></svg>;
 const IconPhoneCall = () => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.38 2 2 0 0 1 3.6 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.6a16 16 0 0 0 6.29 6.29l.97-.97a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>;
 
+function DashboardDemo() {
+  const [calls, setCalls] = useState([
+    { id: 1, caller: '+1 (305) 842-7291', status: 'booked', name: 'Sarah M.', time: '2 min ago', duration: '1m 24s', service: 'Cleaning appointment' },
+    { id: 2, caller: '+1 (718) 553-4401', status: 'booked', name: 'James R.', time: '8 min ago', duration: '0m 58s', service: 'Consultation' },
+    { id: 3, caller: '+1 (512) 774-9920', status: 'missed', name: 'Unknown', time: '15 min ago', duration: '0m 00s', service: '—' },
+  ]);
+  const [appointments, setAppointments] = useState([
+    { name: 'Sarah M.', date: 'Today, 3:00 PM', service: 'Cleaning', status: 'confirmed' },
+    { name: 'James R.', date: 'Tomorrow, 10:30 AM', service: 'Consultation', status: 'confirmed' },
+    { name: 'Maria L.', date: 'Jun 2, 2:00 PM', service: 'Follow-up', status: 'confirmed' },
+  ]);
+  const [stats, setStats] = useState({ calls: 47, booked: 41, rate: 87, revenue: 12300 });
+  const [incomingCall, setIncomingCall] = useState(false);
+  const [processingCall, setProcessingCall] = useState(false);
+
+  const callerNames = ['Dr. Thompson', 'Lisa Chen', 'Mark Davis', 'Emma Wilson', 'Robert Kim', 'Jennifer Lee'];
+  const callerNumbers = ['+1 (212) 555-0182', '+1 (415) 555-0147', '+1 (305) 555-0193', '+1 (617) 555-0126'];
+  const services = ['Cleaning appointment', 'Consultation', 'Follow-up visit', 'New patient exam', 'Emergency slot'];
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setIncomingCall(true);
+      setTimeout(() => {
+        setIncomingCall(false);
+        setProcessingCall(true);
+        setTimeout(() => {
+          setProcessingCall(false);
+          const newName = callerNames[Math.floor(Math.random() * callerNames.length)];
+          const newNumber = callerNumbers[Math.floor(Math.random() * callerNumbers.length)];
+          const newService = services[Math.floor(Math.random() * services.length)];
+          const newDate = ['Today, 4:30 PM', 'Tomorrow, 9:00 AM', 'Jun 3, 11:00 AM', 'Jun 4, 2:30 PM'][Math.floor(Math.random() * 4)];
+
+          setCalls(prev => [{
+            id: Date.now(),
+            caller: newNumber,
+            status: 'booked',
+            name: newName,
+            time: 'Just now',
+            duration: `1m ${Math.floor(Math.random() * 40 + 10)}s`,
+            service: newService,
+          }, ...prev.slice(0, 4)]);
+
+          setAppointments(prev => [{
+            name: newName,
+            date: newDate,
+            service: newService,
+            status: 'confirmed',
+          }, ...prev.slice(0, 4)]);
+
+          setStats(prev => ({
+            calls: prev.calls + 1,
+            booked: prev.booked + 1,
+            rate: Math.min(99, prev.rate + 1),
+            revenue: prev.revenue + 300,
+          }));
+        }, 2000);
+      }, 1500);
+    }, 6000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  return (
+    <div style={{ background: '#111827', borderRadius: '20px', overflow: 'hidden', border: '1px solid #1f2937' }}>
+      
+      {/* DASHBOARD HEADER */}
+      <div style={{ background: '#0f172a', padding: '16px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid #1f2937' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <span style={{ fontWeight: 700, fontSize: '0.9rem', color: '#fff' }}>VoiceBot AI — Dashboard</span>
+          <span style={{ background: '#065f46', color: '#34d399', fontSize: '0.7rem', fontWeight: 600, padding: '2px 10px', borderRadius: '100px', display: 'flex', alignItems: 'center', gap: '4px' }}>
+            <span style={{ width: 5, height: 5, borderRadius: '50%', background: '#34d399', display: 'inline-block' }} />
+            Live
+          </span>
+        </div>
+        <div style={{ display: 'flex', gap: '8px' }}>
+          <div style={{ width: 10, height: 10, borderRadius: '50%', background: '#ef4444' }} />
+          <div style={{ width: 10, height: 10, borderRadius: '50%', background: '#f59e0b' }} />
+          <div style={{ width: 10, height: 10, borderRadius: '50%', background: '#22c55e' }} />
+        </div>
+      </div>
+
+      {/* INCOMING CALL NOTIFICATION */}
+      {incomingCall && (
+        <div style={{ background: 'linear-gradient(135deg, #6366f1, #8b5cf6)', padding: '14px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', animation: 'fadeIn 0.3s ease' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <div style={{ width: 36, height: 36, background: 'rgba(255,255,255,0.2)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="white" stroke="none"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.38 2 2 0 0 1 3.6 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.6a16 16 0 0 0 6.29 6.29l.97-.97a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+            </div>
+            <div>
+              <p style={{ color: '#fff', fontWeight: 700, fontSize: '0.875rem', margin: 0 }}>Incoming call</p>
+              <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: '0.78rem', margin: 0 }}>VoiceBot AI is answering...</p>
+            </div>
+          </div>
+          <span style={{ background: 'rgba(255,255,255,0.2)', color: '#fff', fontSize: '0.75rem', padding: '4px 12px', borderRadius: '100px', fontWeight: 600 }}>Answering in &lt;2s</span>
+        </div>
+      )}
+
+      {processingCall && (
+        <div style={{ background: '#064e3b', padding: '14px 24px', display: 'flex', alignItems: 'center', gap: '12px', animation: 'fadeIn 0.3s ease' }}>
+          <div style={{ width: 8, height: 8, borderRadius: '50%', background: '#34d399', animation: 'pulse 1s infinite' }} />
+          <p style={{ color: '#34d399', fontWeight: 600, fontSize: '0.875rem', margin: 0 }}>AI is booking appointment...</p>
+        </div>
+      )}
+
+      {/* STATS ROW */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', borderBottom: '1px solid #1f2937' }}>
+        {[
+          { label: 'Calls today', value: stats.calls, color: '#6366f1', suffix: '' },
+          { label: 'Appointments booked', value: stats.booked, color: '#22c55e', suffix: '' },
+          { label: 'Success rate', value: stats.rate, color: '#f59e0b', suffix: '%' },
+          { label: 'Revenue recovered', value: `$${stats.revenue.toLocaleString()}`, color: '#a78bfa', suffix: '' },
+        ].map(s => (
+          <div key={s.label} style={{ padding: '20px', borderRight: '1px solid #1f2937', textAlign: 'center' }}>
+            <div style={{ fontSize: '1.6rem', fontWeight: 700, color: s.color, letterSpacing: '-0.03em', marginBottom: '4px' }}>
+              {typeof s.value === 'number' ? s.value : s.value}{s.suffix}
+            </div>
+            <div style={{ fontSize: '0.72rem', color: '#6b7280' }}>{s.label}</div>
+          </div>
+        ))}
+      </div>
+
+      {/* MAIN CONTENT */}
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0' }}>
+        
+        {/* CALL LOG */}
+        <div style={{ borderRight: '1px solid #1f2937' }}>
+          <div style={{ padding: '16px 20px', borderBottom: '1px solid #1f2937', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <span style={{ fontSize: '0.82rem', fontWeight: 600, color: '#9ca3af', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Recent Calls</span>
+            <span style={{ fontSize: '0.72rem', color: '#6366f1', fontWeight: 600 }}>Live</span>
+          </div>
+          {calls.map((call, i) => (
+            <div key={call.id} style={{ padding: '14px 20px', borderBottom: '1px solid #1f2937', display: 'flex', alignItems: 'center', gap: '12px', animation: i === 0 ? 'fadeIn 0.5s ease' : 'none' }}>
+              <div style={{ width: 32, height: 32, borderRadius: '50%', background: call.status === 'booked' ? '#065f46' : '#1f2937', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={call.status === 'booked' ? '#34d399' : '#6b7280'} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.38 2 2 0 0 1 3.6 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.6a16 16 0 0 0 6.29 6.29l.97-.97a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+              </div>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '2px' }}>
+                  <span style={{ fontSize: '0.82rem', fontWeight: 600, color: '#e5e7eb', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{call.name}</span>
+                  <span style={{ fontSize: '0.68rem', background: call.status === 'booked' ? '#065f46' : '#374151', color: call.status === 'booked' ? '#34d399' : '#9ca3af', padding: '1px 8px', borderRadius: '100px', flexShrink: 0 }}>{call.status === 'booked' ? 'Booked' : 'Missed'}</span>
+                </div>
+                <div style={{ fontSize: '0.72rem', color: '#6b7280' }}>{call.service} · {call.duration}</div>
+              </div>
+              <span style={{ fontSize: '0.68rem', color: '#4b5563', whiteSpace: 'nowrap' }}>{call.time}</span>
+            </div>
+          ))}
+        </div>
+
+        {/* APPOINTMENTS */}
+        <div>
+          <div style={{ padding: '16px 20px', borderBottom: '1px solid #1f2937', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <span style={{ fontSize: '0.82rem', fontWeight: 600, color: '#9ca3af', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Upcoming Appointments</span>
+            <span style={{ fontSize: '0.72rem', color: '#22c55e', fontWeight: 600 }}>Auto-booked</span>
+          </div>
+          {appointments.map((apt, i) => (
+            <div key={i} style={{ padding: '14px 20px', borderBottom: '1px solid #1f2937', display: 'flex', alignItems: 'center', gap: '12px', animation: i === 0 ? 'fadeIn 0.5s ease' : 'none' }}>
+              <div style={{ width: 32, height: 32, borderRadius: '8px', background: '#1e1b4b', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6366f1" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+              </div>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ fontSize: '0.82rem', fontWeight: 600, color: '#e5e7eb', marginBottom: '2px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{apt.name}</div>
+                <div style={{ fontSize: '0.72rem', color: '#6b7280' }}>{apt.service} · {apt.date}</div>
+              </div>
+              <span style={{ fontSize: '0.68rem', background: '#065f46', color: '#34d399', padding: '2px 8px', borderRadius: '100px', flexShrink: 0 }}>Confirmed</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* FOOTER */}
+      <div style={{ padding: '14px 24px', background: '#0f172a', borderTop: '1px solid #1f2937', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <span style={{ fontSize: '0.72rem', color: '#4b5563' }}>This is a live simulation of your VoiceBot AI dashboard</span>
+        <Link href="/register" style={{ background: '#6366f1', color: '#fff', textDecoration: 'none', fontWeight: 600, fontSize: '0.78rem', padding: '7px 16px', borderRadius: '8px' }}>
+          Get your own dashboard →
+        </Link>
+      </div>
+    </div>
+  );
+}
+
 export default function Home() {
   const [user, setUser] = useState(null);
   const [openFaq, setOpenFaq] = useState(null);
@@ -291,6 +470,16 @@ export default function Home() {
           </div>
         </div>
       </section>
+      {/* LIVE DASHBOARD DEMO */}
+<section className="section-pad" style={{ padding: '96px 24px', background: '#0f0f0f' }}>
+  <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
+    <p style={{ textAlign: 'center', fontSize: '0.78rem', fontWeight: 700, color: '#6366f1', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '12px' }}>Live Demo</p>
+    <h2 style={{ textAlign: 'center', fontSize: 'clamp(1.8rem, 4vw, 2.8rem)', fontWeight: 700, letterSpacing: '-0.04em', marginBottom: '12px', color: '#fff' }}>See it work in real time.</h2>
+    <p style={{ textAlign: 'center', color: '#9ca3af', marginBottom: '48px' }}>This is what your dashboard looks like — live calls, instant bookings, zero effort.</p>
+
+    <DashboardDemo />
+  </div>
+</section>
 
       {/* ROI CALCULATOR */}
       <section className="section-pad" style={{ padding: '96px 24px' }}>
