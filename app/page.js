@@ -5,7 +5,6 @@ import { createClient } from '@/lib/supabase/client';
 
 const supabase = createClient();
 
-// SVG ICONS
 const IconPhone = () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.38 2 2 0 0 1 3.6 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.6a16 16 0 0 0 6.29 6.29l.97-.97a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>;
 const IconDollar = () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>;
 const IconFrown = () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M16 16s-1.5-2-4-2-4 2-4 2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>;
@@ -29,6 +28,7 @@ const IconCheck = () => <svg width="11" height="11" viewBox="0 0 24 24" fill="no
 const IconCheckWhite = () => <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.65)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>;
 const IconCheckGreen = () => <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#16a34a" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>;
 const IconPlay = ({ size = 22, color = "white" }) => <svg width={size} height={size} viewBox="0 0 24 24" fill={color} stroke="none"><polygon points="5 3 19 12 5 21 5 3"/></svg>;
+const IconPhoneCall = () => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.38 2 2 0 0 1 3.6 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.6a16 16 0 0 0 6.29 6.29l.97-.97a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>;
 
 export default function Home() {
   const [user, setUser] = useState(null);
@@ -76,11 +76,14 @@ export default function Home() {
   const roi = potentialRevenue - 229;
 
   const faqs = [
-    { q: "Does it actually sound human?", a: "Yes. VoiceBot AI uses advanced neural voice technology that sounds natural and conversational. Most callers don't realize they're speaking to an AI." },
-    { q: "Can it really book appointments automatically?", a: "Yes. VoiceBot connects directly to Google Calendar or Calendly. When a caller wants to book, the AI finds availability and confirms the appointment in real time." },
-    { q: "Do I need to change my phone number?", a: "No. You keep your existing number and simply forward calls to your VoiceBot. Setup takes under 5 minutes — no porting required." },
-    { q: "What happens after the 7-day trial?", a: "After your trial, you're automatically billed for the plan you chose. You can cancel anytime from your dashboard before the trial ends." },
-    { q: "How fast does it answer?", a: "Under 2 seconds. No hold music, no voicemail, no missed calls — ever." },
+    { q: "Does it actually sound human?", a: "Yes. VoiceBot AI uses advanced neural voice technology that sounds natural and conversational. Most callers don't realize they're speaking to an AI — they just notice how fast and helpful it is." },
+    { q: "Can it really book appointments automatically?", a: "Yes. VoiceBot connects directly to Google Calendar or Calendly. When a caller wants to book, the AI finds availability and confirms the appointment in real time — no human needed." },
+    { q: "What if the AI can't understand the caller?", a: "VoiceBot asks the caller to repeat if it doesn't catch something. For complex requests outside its scope, it collects the caller's info and notifies you so you can follow up directly." },
+    { q: "Can it transfer to a human?", a: "Yes. You can configure VoiceBot to transfer calls to a human agent for specific situations — emergencies, complex questions, or VIP clients." },
+    { q: "Is it compliant for medical offices?", a: "VoiceBot AI handles scheduling and basic inquiries. Calls are not stored as audio — only AI-generated summaries are retained. We recommend reviewing your local compliance requirements for healthcare." },
+    { q: "Do I need to change my phone number?", a: "No. You keep your existing number and simply forward calls to your VoiceBot number. Setup takes under 5 minutes — no porting required." },
+    { q: "What happens if my calendar is full?", a: "VoiceBot will let the caller know there's no availability and offer to take their contact details so you can follow up and propose an alternative time." },
+    { q: "What happens after the 7-day trial?", a: "After your trial, you're automatically billed for the plan you chose. You can cancel anytime from your dashboard before the trial ends — no charge until day 8." },
   ];
 
   const painPoints = [
@@ -142,12 +145,12 @@ export default function Home() {
         </div>
 
         <h1 className="hero-h1" style={{ fontSize: 'clamp(2.8rem, 7vw, 5.5rem)', fontWeight: 700, lineHeight: 1.06, letterSpacing: '-0.05em', marginBottom: '24px', maxWidth: '900px' }}>
-          Your AI employee that<br />
-          <span style={{ background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a78bfa 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>never misses a call.</span>
+          Turn missed calls into<br />
+          <span style={{ background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a78bfa 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>booked appointments.</span>
         </h1>
 
-        <p className="hero-sub" style={{ fontSize: 'clamp(1rem, 2vw, 1.25rem)', color: '#6b7280', lineHeight: 1.7, maxWidth: '560px', margin: '0 auto 24px' }}>
-          Book more appointments. Qualify more leads. Answer every call instantly — 24/7, even at 3am.
+        <p className="hero-sub" style={{ fontSize: 'clamp(1rem, 2vw, 1.25rem)', color: '#6b7280', lineHeight: 1.7, maxWidth: '600px', margin: '0 auto 24px' }}>
+          VoiceBot AI answers every call in under 2 seconds, qualifies leads, books appointments, and sends confirmations — 24/7, even at 3am.
         </p>
 
         <div className="hero-badges" style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', justifyContent: 'center', marginBottom: '40px' }}>
@@ -158,18 +161,22 @@ export default function Home() {
           ))}
         </div>
 
-        <div className="hero-buttons" style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap', marginBottom: '20px' }}>
+        <div className="hero-buttons" style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap', marginBottom: '16px' }}>
           <Link href="/register" style={{ background: '#6366f1', color: '#fff', textDecoration: 'none', fontWeight: 700, fontSize: '1rem', padding: '15px 36px', borderRadius: '12px', boxShadow: '0 4px 24px rgba(99,102,241,0.35)' }}>
-            Start free — 7 days
+            Start free — no charge today
           </Link>
-          <button onClick={startDemo} style={{ background: '#fff', color: '#0f0f0f', border: '1.5px solid #e5e7eb', fontWeight: 600, fontSize: '1rem', padding: '15px 36px', borderRadius: '12px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', fontFamily: 'inherit' }}>
-            <IconPlay size={16} color="#6366f1" />
-            Hear it live
-          </button>
+          <a href="tel:+19066677909" style={{ background: '#0f0f0f', color: '#fff', textDecoration: 'none', fontWeight: 600, fontSize: '1rem', padding: '15px 36px', borderRadius: '12px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <IconPhoneCall />
+            Call the AI now
+          </a>
         </div>
 
+        <p style={{ fontSize: '0.8rem', color: '#9ca3af', marginBottom: '40px' }}>
+          No credit card until day 8 · Live in 5 minutes · Cancel anytime
+        </p>
+
         {/* DEMO CARD */}
-        <div className="demo-card" style={{ marginTop: '64px', background: '#fff', border: '1px solid #e5e7eb', borderRadius: '20px', padding: '28px', maxWidth: '580px', width: '100%', boxShadow: '0 24px 64px rgba(0,0,0,0.08)' }}>
+        <div className="demo-card" style={{ marginTop: '24px', background: '#fff', border: '1px solid #e5e7eb', borderRadius: '20px', padding: '28px', maxWidth: '580px', width: '100%', boxShadow: '0 24px 64px rgba(0,0,0,0.08)' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '20px' }}>
             <div style={{ width: '10px', height: '10px', borderRadius: '50%', background: '#22c55e', boxShadow: '0 0 8px rgba(34,197,94,0.6)' }} />
             <span style={{ fontSize: '0.85rem', fontWeight: 600, color: '#0f0f0f' }}>Live call — Smith Dental Clinic</span>
@@ -228,14 +235,15 @@ export default function Home() {
       <section className="section-pad" style={{ padding: '80px 24px', borderBottom: '1px solid #e5e7eb', background: '#fafafa' }}>
         <div className="stats-grid" style={{ maxWidth: '900px', margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '40px', textAlign: 'center' }}>
           {[
-            { value: '<2s', label: 'Average answer time' },
-            { value: '24/7', label: 'Always available' },
-            { value: '99.9%', label: 'Uptime guaranteed' },
-            { value: '$300+', label: 'Avg. value per client saved' },
+            { value: '<2s', label: 'Average answer time', source: 'VoiceBot AI internal data' },
+            { value: '24/7', label: 'Always available', source: 'Zero downtime guarantee' },
+            { value: '99.9%', label: 'Uptime guaranteed', source: 'Based on infrastructure SLA' },
+            { value: '$300+', label: 'Avg. value per client saved', source: 'Based on avg. service business appointment value' },
           ].map(s => (
             <div key={s.label}>
               <div style={{ fontSize: '2.2rem', fontWeight: 700, letterSpacing: '-0.04em', color: '#0f0f0f', marginBottom: '6px' }}>{s.value}</div>
-              <div style={{ fontSize: '0.82rem', color: '#9ca3af', lineHeight: 1.4 }}>{s.label}</div>
+              <div style={{ fontSize: '0.82rem', color: '#9ca3af', lineHeight: 1.4, marginBottom: '4px' }}>{s.label}</div>
+              <div style={{ fontSize: '0.68rem', color: '#d1d5db', fontStyle: 'italic' }}>{s.source}</div>
             </div>
           ))}
         </div>
@@ -248,7 +256,7 @@ export default function Home() {
         <p style={{ textAlign: 'center', color: '#6b7280', marginBottom: '48px', fontSize: '1rem' }}>No developers. No hardware. No training sessions.</p>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '24px' }}>
           {[
-            { n: '01', title: 'Create your account', desc: 'Sign up in 30 seconds. Your 7-day free trial starts immediately.' },
+            { n: '01', title: 'Create your account', desc: 'Sign up in 30 seconds. Your 7-day free trial starts immediately. No charge until day 8.' },
             { n: '02', title: 'Connect your calendar', desc: 'Link Google Calendar or Calendly. VoiceBot books directly into it.' },
             { n: '03', title: 'Forward your number', desc: "Redirect your existing line to VoiceBot. You're live. Done." },
           ].map(s => (
@@ -316,10 +324,10 @@ export default function Home() {
             <div style={{ background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)', borderRadius: '16px', padding: '20px', marginBottom: '24px' }}>
               <p style={{ color: 'rgba(255,255,255,0.8)', fontSize: '0.85rem', marginBottom: '4px' }}>VoiceBot AI costs you</p>
               <p style={{ color: '#fff', fontSize: '1.4rem', fontWeight: 700, margin: '0 0 4px' }}>$229/month</p>
-              <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: '0.78rem', margin: 0 }}>vs ${potentialRevenue.toLocaleString()} in potential lost revenue</p>
+              <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: '0.78rem', margin: 0 }}>Pays for itself if it saves just 1 appointment per month</p>
             </div>
             <Link href="/register" style={{ display: 'block', background: '#0f0f0f', color: '#fff', textDecoration: 'none', fontWeight: 700, fontSize: '1rem', padding: '15px', borderRadius: '12px', textAlign: 'center' }}>
-              Start recovering that revenue today
+              Start free — no charge today
             </Link>
           </div>
         </div>
@@ -379,26 +387,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* TESTIMONIALS — desktop only */}
-      <section className="section-pad mobile-hide" style={{ background: '#0f0f0f', color: '#fff', padding: '96px 24px' }}>
-        <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
-          <p style={{ textAlign: 'center', fontSize: '0.78rem', fontWeight: 700, color: '#6366f1', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '12px' }}>By the numbers</p>
-          <h2 style={{ textAlign: 'center', fontSize: 'clamp(1.8rem, 4vw, 2.8rem)', fontWeight: 700, letterSpacing: '-0.04em', marginBottom: '48px' }}>The cost of doing nothing.</h2>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '20px' }}>
-            {[
-              { stat: '62%', desc: 'of callers never leave a voicemail. They call your competitor instead.' },
-              { stat: '$300+', desc: 'average value of each client appointment you could be missing.' },
-              { stat: '5 min', desc: 'to set up VoiceBot AI and never miss another call again.' },
-            ].map(t => (
-              <div key={t.stat} style={{ background: '#161616', border: '1px solid #222', borderRadius: '20px', padding: '28px' }}>
-                <p style={{ fontSize: '3rem', fontWeight: 700, color: '#6366f1', letterSpacing: '-0.04em', marginBottom: '12px' }}>{t.stat}</p>
-                <p style={{ fontSize: '0.95rem', color: '#9ca3af', lineHeight: 1.7, margin: 0 }}>{t.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* PRICING */}
       <section className="section-pad" style={{ padding: '96px 24px', background: '#fafafa', borderTop: '1px solid #e5e7eb', borderBottom: '1px solid #e5e7eb' }}>
         <div style={{ maxWidth: '960px', margin: '0 auto' }}>
@@ -416,7 +404,8 @@ export default function Home() {
                 <h3 style={{ fontSize: '1rem', fontWeight: 700, marginBottom: '4px' }}>{plan.name}</h3>
                 <p style={{ fontSize: '0.82rem', color: '#9ca3af', marginBottom: '16px' }}>{plan.desc}</p>
                 <div style={{ fontSize: '2.8rem', fontWeight: 700, letterSpacing: '-0.04em', marginBottom: '4px' }}>{plan.price}<span style={{ fontSize: '0.9rem', color: '#9ca3af', fontWeight: 400 }}>/mo</span></div>
-                <p style={{ fontSize: '0.75rem', color: '#16a34a', fontWeight: 600, marginBottom: '20px' }}>No charge until day 8 · Cancel anytime</p>
+                <p style={{ fontSize: '0.75rem', color: '#16a34a', fontWeight: 600, marginBottom: '8px' }}>No charge until day 8 · Cancel anytime</p>
+                <p style={{ fontSize: '0.72rem', color: '#9ca3af', marginBottom: '20px' }}>Pays for itself if it saves just 1 appointment/month</p>
                 <div style={{ height: '1px', background: '#e5e7eb', marginBottom: '20px' }} />
                 <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 24px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
                   {plan.features.map(f => (
@@ -426,7 +415,7 @@ export default function Home() {
                   ))}
                 </ul>
                 <Link href="/register" style={{ display: 'block', background: plan.popular ? '#6366f1' : '#0f0f0f', color: '#fff', textDecoration: 'none', fontWeight: 700, fontSize: '0.9rem', padding: '12px', borderRadius: '10px', textAlign: 'center' }}>
-                  Start free trial
+                  Start free — no charge today
                 </Link>
               </div>
             ))}
@@ -468,8 +457,13 @@ export default function Home() {
           </h2>
           <p style={{ color: 'rgba(255,255,255,0.75)', marginBottom: '40px', fontSize: '1.05rem' }}>Try free for 7 days — no charge until day 8.</p>
           <div className="hero-buttons" style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
-            <Link href="/register" style={{ background: '#fff', color: '#6366f1', textDecoration: 'none', fontWeight: 700, fontSize: '1rem', padding: '15px 36px', borderRadius: '12px', boxShadow: '0 4px 20px rgba(0,0,0,0.15)' }}>Start free trial</Link>
-            <Link href="/pricing" style={{ background: 'rgba(255,255,255,0.15)', color: '#fff', textDecoration: 'none', fontWeight: 600, fontSize: '1rem', padding: '15px 36px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.25)' }}>See pricing</Link>
+            <Link href="/register" style={{ background: '#fff', color: '#6366f1', textDecoration: 'none', fontWeight: 700, fontSize: '1rem', padding: '15px 36px', borderRadius: '12px', boxShadow: '0 4px 20px rgba(0,0,0,0.15)' }}>
+              Start free — no charge today
+            </Link>
+            <a href="tel:+19066677909" style={{ background: 'rgba(255,255,255,0.15)', color: '#fff', textDecoration: 'none', fontWeight: 600, fontSize: '1rem', padding: '15px 36px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.25)', display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <IconPhoneCall />
+              Call the AI now
+            </a>
           </div>
           <div className="mobile-hide" style={{ display: 'flex', justifyContent: 'center', gap: '28px', marginTop: '24px', flexWrap: 'wrap' }}>
             {['No charge until day 8', '7-day free trial', 'Cancel in 1 click', 'Live in 5 minutes'].map(t => (
@@ -496,7 +490,7 @@ export default function Home() {
       {!user && (
         <div style={{ position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 200, padding: '12px 16px', background: 'rgba(255,255,255,0.95)', backdropFilter: 'blur(12px)', borderTop: '1px solid #e5e7eb', display: 'none' }} className="mobile-cta">
           <Link href="/register" style={{ display: 'block', background: '#6366f1', color: '#fff', textDecoration: 'none', fontWeight: 700, fontSize: '1rem', padding: '14px', borderRadius: '12px', textAlign: 'center' }}>
-            Start free — 7 days →
+            Start free — no charge today →
           </Link>
         </div>
       )}
