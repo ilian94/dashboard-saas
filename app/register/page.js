@@ -66,10 +66,17 @@ export default function Register() {
         </div>
 
         <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '20px', padding: '40px', display: 'flex', flexDirection: 'column', gap: '24px', boxShadow: '0 1px 4px rgba(0,0,0,0.04)' }}>
-
+<div style={{ display: 'flex', justifyContent: 'center', gap: '16px', flexWrap: 'wrap' }}>
+  {['7-day free trial', 'No charge until day 8', 'Cancel anytime'].map(t => (
+    <span key={t} style={{ display: 'flex', alignItems: 'center', gap: '5px', fontSize: '0.75rem', color: '#16a34a', fontWeight: 600 }}>
+      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#16a34a" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+      {t}
+    </span>
+  ))}
+</div>
           <div>
             <h1 style={{ fontSize: '1.5rem', fontWeight: 700, color: C.textPrimary, letterSpacing: '-0.03em', marginBottom: '6px' }}>Create your account</h1>
-            <p style={{ fontSize: '0.875rem', color: C.text }}>Get started in minutes. No credit card required.</p>
+            <p style={{ fontSize: '0.875rem', color: C.text }}>Start free for 7 days. No charge until day 8.</p>
           </div>
 
           <button onClick={handleGoogle} disabled={googleLoading} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', padding: '12px', background: '#fff', color: C.textPrimary, border: `1px solid ${C.border}`, borderRadius: '10px', fontWeight: 600, fontSize: '0.9rem', cursor: 'pointer', width: '100%', fontFamily: "'DM Sans', system-ui, sans-serif" }}>
@@ -110,6 +117,9 @@ export default function Register() {
             <Link href="/terms" style={{ color: C.text, textDecoration: 'underline' }}>Terms</Link>
             {' '}and{' '}
             <Link href="/privacy" style={{ color: C.text, textDecoration: 'underline' }}>Privacy Policy</Link>.
+            <p style={{ fontSize: '0.78rem', textAlign: 'center', color: '#9ca3af' }}>
+  🔒 Your data is secure and never shared.
+</p>
           </p>
         </div>
       </div>
