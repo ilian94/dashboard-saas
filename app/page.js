@@ -123,7 +123,7 @@ const startDemo = () => {
   Start free — 7 days
 </Link>
 <p style={{ fontSize: '0.75rem', color: '#9ca3af', marginTop: '8px' }}>
-  🔒 We'll remind you 2 days before your trial ends
+
 </p>
     <button onClick={startDemo} style={{ background: '#fff', color: '#0f0f0f', border: '1.5px solid #e5e7eb', fontWeight: 600, fontSize: '1rem', padding: '15px 36px', borderRadius: '12px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', fontFamily: 'inherit' }}>
       <svg width="16" height="16" viewBox="0 0 24 24" fill="#6366f1" stroke="none"><polygon points="5 3 19 12 5 21 5 3"/></svg>
