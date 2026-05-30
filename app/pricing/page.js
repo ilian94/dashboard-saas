@@ -230,8 +230,8 @@ function PlanCarousel({ plans, getButtonState, handleSubscribe, loading, C }) {
           ))}
         </div>
 
-        <div style={{ overflow: 'hidden' }}>
-          <div className={`carousel-inner ${slide}`}>
+        <div style={{ overflow: 'hidden', position: 'relative' }}>
+  <div className={`carousel-inner ${slide}`} style={{ willChange: 'transform' }}>
             <div className="plan-card" style={{ width: '100%', border: isCurrent ? '2px solid #22c55e' : isPopular ? `2px solid ${C.accent}` : `1px solid ${C.border}`, opacity: btn.style === 'downgrade' ? 0.55 : 1 }}>
               {isCurrent && <div className="plan-tag" style={{ background: '#22c55e' }}>CURRENT PLAN</div>}
               {isPopular && <div className="plan-tag" style={{ background: C.accent }}>MOST POPULAR</div>}
@@ -270,13 +270,15 @@ function PlanCarousel({ plans, getButtonState, handleSubscribe, loading, C }) {
 
       <style>{`
         .plans-carousel { display: none; padding: 0 16px 48px; }
-        .carousel-inner { transition: transform 0.3s ease, opacity 0.3s ease; }
-        .slide-left { transform: translateX(-30px); opacity: 0; }
-        .slide-right { transform: translateX(30px); opacity: 0; }
-        @media (max-width: 640px) {
-          .plans { display: none; }
-          .plans-carousel { display: block; }
-        }
+@keyframes slideInLeft { from { transform: translateX(100%); } to { transform: translateX(0); } }
+@keyframes slideInRight { from { transform: translateX(-100%); } to { transform: translateX(0); } }
+.carousel-inner { }
+.slide-left { animation: slideInLeft 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards; }
+.slide-right { animation: slideInRight 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards; }
+@media (max-width: 640px) {
+  .plans { display: none; }
+  .plans-carousel { display: block; }
+}
       `}</style>
     </>
   );
