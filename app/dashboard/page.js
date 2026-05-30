@@ -723,18 +723,27 @@ export default function Dashboard() {
   }, []);
 
   useEffect(() => {
-    const checkUser = async () => {
-      const { data: { user: authUser } } = await supabase.auth.getUser();
-      if (!authUser) { window.location.href = "/login"; return; }
-      setUser(authUser);
-      await Promise.all([fetchCalls(authUser.id), fetchClientData(authUser.id)]);
-      setLoading(false);
-    };
-    checkUser();
-    const params = new URLSearchParams(window.location.search);
-    if (params.get("google") === "connected") { setGoogleConnected(true); window.history.replaceState({}, "", "/dashboard"); }
-    if (params.get("success") === "true") { window.history.replaceState({}, "", "/dashboard"); }
-  }, [fetchCalls, fetchClientData]);
+  const checkUser = async () => {
+    const { data: { user: authUser } } = await supabase.auth.getUser();
+    if (!authUser) { window.location.href = "/login"; return; }
+
+    const { data: clientData } = await supabase
+      .from('clients')
+      .select('plan')
+      .eq('user_id', authUser.id)
+      .maybeSingle();
+
+    if (!clientData?.plan) { window.location.href = "/pricing"; return; }
+
+    setUser(authUser);
+    await Promise.all([fetchCalls(authUser.id), fetchClientData(authUser.id)]);
+    setLoading(false);
+  };
+  checkUser();
+  const params = new URLSearchParams(window.location.search);
+  if (params.get("google") === "connected") { setGoogleConnected(true); window.history.replaceState({}, "", "/dashboard"); }
+  if (params.get("success") === "true") { window.history.replaceState({}, "", "/dashboard"); }
+}, [fetchCalls, fetchClientData]);
 
   const handleLogout = async () => { await supabase.auth.signOut(); window.location.href = "/login"; };
   const handleDismissOnboarding = () => { localStorage.setItem('onboarding_dismissed', 'true'); setShowOnboarding(false); };

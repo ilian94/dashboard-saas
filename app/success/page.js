@@ -21,11 +21,21 @@ function SuccessContent() {
   const [session, setSession] = useState(null);
 
   useEffect(() => {
-    if (!sessionId) { setLoading(false); return; }
-    fetch(`/api/stripe/session?session_id=${sessionId}`)
-      .then(r => r.json())
-      .then(data => { setSession(data); setLoading(false); });
-  }, [sessionId]);
+  if (!sessionId) {
+    router.push('/pricing');
+    return;
+  }
+  fetch(`/api/stripe/session?session_id=${sessionId}`)
+    .then(r => r.json())
+    .then(data => {
+      if (!data || data.error) {
+        router.push('/pricing');
+        return;
+      }
+      setSession(data);
+      setLoading(false);
+    });
+}, [sessionId]);
 
   if (loading) return (
     <div style={{ minHeight: '100vh', background: C.bg, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
