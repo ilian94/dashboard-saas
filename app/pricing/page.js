@@ -158,6 +158,130 @@ function RoiCalculator({ router }) {
   );
 }
 
+function PlanCarousel({ plans, getButtonState, handleSubscribe, loading, C }) {
+  const [current, setCurrent] = useState(1);
+  const [animating, setAnimating] = useState(false);
+  const [slide, setSlide] = useState('');
+
+  const go = (dir) => {
+    if (animating) return;
+    const next = current + dir;
+    if (next < 0 || next >= plans.length) return;
+    setSlide(dir > 0 ? 'slide-left' : 'slide-right');
+    setAnimating(true);
+    setTimeout(() => {
+      setCurrent(next);
+      setSlide('');
+      setAnimating(false);
+    }, 300);
+  };
+
+  const plan = plans[current];
+  const btn = getButtonState(plan.key);
+  const isCurrent = btn.style === 'current';
+  const isPopular = plan.popular && !isCurrent;
+  const btnBg = isCurrent ? C.bgSecondary : btn.style === 'upgrade' ? C.accent : btn.style === 'downgrade' ? C.bg : isPopular ? C.accent : C.text;
+  const btnColor = (isCurrent || btn.style === 'downgrade') ? C.textMuted : '#fff';
+  const btnBorder = (isCurrent || btn.style === 'downgrade') ? `1px solid ${C.border}` : 'none';
+
+  return (
+    <>
+      {/* DESKTOP */}
+      <div className="plans">
+        {plans.map((p) => {
+          const b = getButtonState(p.key);
+          const isc = b.style === 'current';
+          const isp = p.popular && !isc;
+          const bg = isc ? C.bgSecondary : b.style === 'upgrade' ? C.accent : b.style === 'downgrade' ? C.bg : isp ? C.accent : C.text;
+          const col = (isc || b.style === 'downgrade') ? C.textMuted : '#fff';
+          const bor = (isc || b.style === 'downgrade') ? `1px solid ${C.border}` : 'none';
+          return (
+            <div key={p.name} className="plan-card" style={{ border: isc ? '2px solid #22c55e' : isp ? `2px solid ${C.accent}` : `1px solid ${C.border}`, opacity: b.style === 'downgrade' ? 0.55 : 1 }}>
+              {isc && <div className="plan-tag" style={{ background: '#22c55e' }}>CURRENT PLAN</div>}
+              {isp && <div className="plan-tag" style={{ background: C.accent }}>MOST POPULAR</div>}
+              <h2 style={{ fontSize: '1rem', fontWeight: 700, marginBottom: '4px', color: C.text }}>{p.name}</h2>
+              <p style={{ fontSize: '0.82rem', color: C.textMuted, marginBottom: '14px' }}>{p.desc}</p>
+              <div style={{ fontSize: '2.8rem', fontWeight: 700, letterSpacing: '-0.04em', lineHeight: 1, color: C.text, marginBottom: '20px' }}>{p.price}<span style={{ fontSize: '0.9rem', color: C.textMuted, fontWeight: 400 }}>/mo</span></div>
+              <p style={{ fontSize: '0.75rem', color: '#16a34a', fontWeight: 600, marginBottom: '16px' }}>7-day free trial · No charge until day 8</p>
+              <div style={{ height: '1px', background: C.border, margin: '0 0 20px' }} />
+              <ul style={{ listStyle: 'none', padding: 0, marginBottom: '28px', display: 'flex', flexDirection: 'column', gap: '10px', flex: 1 }}>
+                {p.features.map((f) => (
+                  <li key={f} style={{ fontSize: '0.85rem', color: C.textSecondary, display: 'flex', alignItems: 'flex-start', gap: '10px', lineHeight: 1.4 }}>
+                    <span style={{ width: 16, height: 16, borderRadius: '50%', background: isp ? '#ede9fe' : '#f0fdf4', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: 1 }}>
+                      <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke={isp ? C.accent : '#16a34a'} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                    </span>
+                    {f}
+                  </li>
+                ))}
+              </ul>
+              <button onClick={() => !b.disabled && handleSubscribe(p.priceId, p.name)} disabled={b.disabled || loading === p.name} style={{ width: '100%', padding: '12px', background: bg, color: col, border: bor, borderRadius: '10px', fontWeight: 700, fontSize: '0.9rem', cursor: b.disabled ? 'default' : 'pointer', fontFamily: "'DM Sans', system-ui, sans-serif" }}>
+                {loading === p.name ? 'Loading...' : b.label}
+              </button>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* MOBILE CAROUSEL */}
+      <div className="plans-carousel">
+        <div style={{ display: 'flex', justifyContent: 'center', gap: '8px', marginBottom: '20px' }}>
+          {plans.map((_, i) => (
+            <button key={i} onClick={() => { if (i !== current) go(i > current ? 1 : -1); }} style={{ width: i === current ? '24px' : '8px', height: '8px', borderRadius: '100px', background: i === current ? C.accent : '#e5e7eb', border: 'none', cursor: 'pointer', transition: 'all 0.3s ease', padding: 0 }} />
+          ))}
+        </div>
+
+        <div style={{ overflow: 'hidden' }}>
+          <div className={`carousel-inner ${slide}`}>
+            <div className="plan-card" style={{ width: '100%', border: isCurrent ? '2px solid #22c55e' : isPopular ? `2px solid ${C.accent}` : `1px solid ${C.border}`, opacity: btn.style === 'downgrade' ? 0.55 : 1 }}>
+              {isCurrent && <div className="plan-tag" style={{ background: '#22c55e' }}>CURRENT PLAN</div>}
+              {isPopular && <div className="plan-tag" style={{ background: C.accent }}>MOST POPULAR</div>}
+              <h2 style={{ fontSize: '1rem', fontWeight: 700, marginBottom: '4px', color: C.text }}>{plan.name}</h2>
+              <p style={{ fontSize: '0.82rem', color: C.textMuted, marginBottom: '14px' }}>{plan.desc}</p>
+              <div style={{ fontSize: '2.8rem', fontWeight: 700, letterSpacing: '-0.04em', lineHeight: 1, color: C.text, marginBottom: '20px' }}>{plan.price}<span style={{ fontSize: '0.9rem', color: C.textMuted, fontWeight: 400 }}>/mo</span></div>
+              <p style={{ fontSize: '0.75rem', color: '#16a34a', fontWeight: 600, marginBottom: '16px' }}>7-day free trial · No charge until day 8</p>
+              <div style={{ height: '1px', background: C.border, margin: '0 0 20px' }} />
+              <ul style={{ listStyle: 'none', padding: 0, marginBottom: '28px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                {plan.features.map((f) => (
+                  <li key={f} style={{ fontSize: '0.85rem', color: C.textSecondary, display: 'flex', alignItems: 'flex-start', gap: '10px', lineHeight: 1.4 }}>
+                    <span style={{ width: 16, height: 16, borderRadius: '50%', background: isPopular ? '#ede9fe' : '#f0fdf4', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: 1 }}>
+                      <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke={isPopular ? C.accent : '#16a34a'} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                    </span>
+                    {f}
+                  </li>
+                ))}
+              </ul>
+              <button onClick={() => !btn.disabled && handleSubscribe(plan.priceId, plan.name)} disabled={btn.disabled || loading === plan.name} style={{ width: '100%', padding: '12px', background: btnBg, color: btnColor, border: btnBorder, borderRadius: '10px', fontWeight: 700, fontSize: '0.9rem', cursor: btn.disabled ? 'default' : 'pointer', fontFamily: "'DM Sans', system-ui, sans-serif" }}>
+                {loading === plan.name ? 'Loading...' : btn.label}
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '20px', marginTop: '24px' }}>
+          <button onClick={() => go(-1)} disabled={current === 0} style={{ width: '44px', height: '44px', borderRadius: '50%', background: current === 0 ? '#f3f4f6' : C.accent, border: 'none', cursor: current === 0 ? 'default' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s' }}>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={current === 0 ? '#9ca3af' : '#fff'} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+          </button>
+          <span style={{ fontSize: '0.9rem', fontWeight: 700, color: C.text, minWidth: '80px', textAlign: 'center' }}>{plan.name}</span>
+          <button onClick={() => go(1)} disabled={current === plans.length - 1} style={{ width: '44px', height: '44px', borderRadius: '50%', background: current === plans.length - 1 ? '#f3f4f6' : C.accent, border: 'none', cursor: current === plans.length - 1 ? 'default' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s' }}>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={current === plans.length - 1 ? '#9ca3af' : '#fff'} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <style>{`
+        .plans-carousel { display: none; padding: 0 16px 48px; }
+        .carousel-inner { transition: transform 0.3s ease, opacity 0.3s ease; }
+        .slide-left { transform: translateX(-30px); opacity: 0; }
+        .slide-right { transform: translateX(30px); opacity: 0; }
+        @media (max-width: 640px) {
+          .plans { display: none; }
+          .plans-carousel { display: block; }
+        }
+      `}</style>
+    </>
+  );
+}
+
 export default function PricingPage() {
   const [loading, setLoading] = useState(null);
   const [user, setUser] = useState(null);
@@ -763,94 +887,9 @@ export default function PricingPage() {
 
       <RoiCalculator router={router} />
 
-      <div className="plans">
-        {plans.map((plan) => {
-          const btn = getButtonState(plan.key);
-          const isCurrent = btn.style === 'current';
-          const isPopular = plan.popular && !isCurrent;
-
-          const btnBg = isCurrent
-            ? C.bgSecondary
-            : btn.style === 'upgrade'
-              ? C.accent
-              : btn.style === 'downgrade'
-                ? C.bg
-                : isPopular
-                  ? C.accent
-                  : C.text;
-
-          const btnColor = isCurrent || btn.style === 'downgrade' ? C.textMuted : '#fff';
-          const btnBorder = isCurrent || btn.style === 'downgrade' ? `1px solid ${C.border}` : 'none';
-
-          return (
-            <div
-              key={plan.name}
-              className="plan-card"
-              style={{
-                border: isCurrent ? '2px solid #22c55e' : isPopular ? `2px solid ${C.accent}` : `1px solid ${C.border}`,
-                opacity: btn.style === 'downgrade' ? 0.55 : 1,
-              }}
-            >
-              {isCurrent && (
-                <div className="plan-tag" style={{ background: '#22c55e' }}>
-                  CURRENT PLAN
-                </div>
-              )}
-
-              {isPopular && (
-                <div className="plan-tag" style={{ background: C.accent }}>
-                  MOST POPULAR
-                </div>
-              )}
-
-              <h2 style={{ fontSize: '1rem', fontWeight: 700, marginBottom: '4px', color: C.text }}>{plan.name}</h2>
-              <p style={{ fontSize: '0.82rem', color: C.textMuted, marginBottom: '14px' }}>{plan.desc}</p>
-
-              <div style={{ fontSize: '2.8rem', fontWeight: 700, letterSpacing: '-0.04em', lineHeight: 1, color: C.text, marginBottom: '20px' }}>
-                {plan.price}<span style={{ fontSize: '0.9rem', color: C.textMuted, fontWeight: 400 }}>/mo</span>
-              </div>
-
-              <p style={{ fontSize: '0.75rem', color: '#16a34a', fontWeight: 600, marginBottom: '16px' }}>
-                7-day free trial · No charge until day 8
-              </p>
-
-              <div style={{ height: '1px', background: C.border, margin: '0 0 20px' }} />
-
-              <ul style={{ listStyle: 'none', padding: 0, marginBottom: '28px', display: 'flex', flexDirection: 'column', gap: '10px', flex: 1 }}>
-                {plan.features.map((f) => (
-                  <li key={f} style={{ fontSize: '0.85rem', color: C.textSecondary, display: 'flex', alignItems: 'flex-start', gap: '10px', lineHeight: 1.4 }}>
-                    <span style={{ width: 16, height: 16, borderRadius: '50%', background: isPopular ? '#ede9fe' : '#f0fdf4', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: 1 }}>
-                      <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke={isPopular ? C.accent : '#16a34a'} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                        <polyline points="20 6 9 17 4 12" />
-                      </svg>
-                    </span>
-                    {f}
-                  </li>
-                ))}
-              </ul>
-
-              <button
-                onClick={() => !btn.disabled && handleSubscribe(plan.priceId, plan.name)}
-                disabled={btn.disabled || loading === plan.name}
-                style={{
-                  width: '100%',
-                  padding: '12px',
-                  background: btnBg,
-                  color: btnColor,
-                  border: btnBorder,
-                  borderRadius: '10px',
-                  fontWeight: 700,
-                  fontSize: '0.9rem',
-                  cursor: btn.disabled ? 'default' : 'pointer',
-                  fontFamily: "'DM Sans', system-ui, sans-serif",
-                }}
-              >
-                {loading === plan.name ? 'Loading...' : btn.label}
-              </button>
-            </div>
-          );
-        })}
-      </div>
+      <div className="plans-wrapper">
+<PlanCarousel plans={plans} getButtonState={getButtonState} handleSubscribe={handleSubscribe} loading={loading} C={C} />
+</div>
 
       <div className="addons">
         <p className="eyebrow">Add-ons</p>
@@ -901,27 +940,13 @@ export default function PricingPage() {
             <div key={i} style={{ borderBottom: `1px solid ${C.border}` }}>
               <button
                 onClick={() => setOpenFaq(openFaq === i ? null : i)}
-                style={{
-                  width: '100%',
-                  background: 'none',
-                  border: 'none',
-                  padding: '20px 0',
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  cursor: 'pointer',
-                  textAlign: 'left',
-                  gap: '16px',
-                }}
+                style={{ width: '100%', background: 'none', border: 'none', padding: '20px 0', display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer', textAlign: 'left', gap: '16px' }}
               >
                 <span style={{ fontSize: '0.95rem', fontWeight: 600, color: C.text }}>{faq.q}</span>
                 <span style={{ fontSize: '1.2rem', color: C.textMuted, flexShrink: 0, transform: openFaq === i ? 'rotate(45deg)' : 'none', transition: 'transform 0.2s', display: 'inline-block' }}>+</span>
               </button>
-
               {openFaq === i && (
-                <p style={{ fontSize: '0.875rem', color: C.textSecondary, lineHeight: 1.7, paddingBottom: '20px', margin: 0 }}>
-                  {faq.a}
-                </p>
+                <p style={{ fontSize: '0.875rem', color: C.textSecondary, lineHeight: 1.7, paddingBottom: '20px', margin: 0 }}>{faq.a}</p>
               )}
             </div>
           ))}
@@ -932,16 +957,13 @@ export default function PricingPage() {
         <h2 style={{ fontSize: 'clamp(1.6rem, 3vw, 2.2rem)', fontWeight: 700, letterSpacing: '-0.04em', marginBottom: '12px', color: '#fff' }}>
           Ready to never miss a call again?
         </h2>
-
         <p style={{ color: '#9ca3af', marginBottom: '28px', fontSize: '0.9rem' }}>
           Start free for 7 days. No charge until day 8. Cancel anytime.
         </p>
-
         <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
           <button onClick={() => router.push('/register')} style={{ background: '#fff', color: C.text, border: 'none', fontWeight: 700, fontSize: '0.95rem', padding: '13px 28px', borderRadius: '10px', cursor: 'pointer', fontFamily: "'DM Sans', system-ui, sans-serif" }}>
             Start now
           </button>
-
           <button onClick={() => router.push('/login')} style={{ background: 'transparent', color: '#9ca3af', border: '1px solid #333', fontWeight: 500, fontSize: '0.95rem', padding: '13px 28px', borderRadius: '10px', cursor: 'pointer', fontFamily: "'DM Sans', system-ui, sans-serif" }}>
             Sign in
           </button>
@@ -950,7 +972,6 @@ export default function PricingPage() {
 
       <footer className="footer">
         <span style={{ fontWeight: 700, fontSize: '0.9rem', color: C.text }}>VoiceBot AI</span>
-
         <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap', justifyContent: 'center' }}>
           {[
             { label: 'Home', href: '/' },
@@ -959,12 +980,9 @@ export default function PricingPage() {
             { label: 'Privacy', href: '/privacy' },
             { label: 'Terms', href: '/terms' },
           ].map((l) => (
-            <Link key={l.label} href={l.href} style={{ color: C.textMuted, textDecoration: 'none', fontSize: '0.85rem' }}>
-              {l.label}
-            </Link>
+            <Link key={l.label} href={l.href} style={{ color: C.textMuted, textDecoration: 'none', fontSize: '0.85rem' }}>{l.label}</Link>
           ))}
         </div>
-
         <span style={{ color: C.textMuted, fontSize: '0.8rem' }}>2026 VoiceBot AI</span>
       </footer>
     </div>
