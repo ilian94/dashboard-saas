@@ -681,6 +681,10 @@ export default function Home() {
           .dashboard-grid > div:first-child { border-right: none !important; border-bottom: 1px solid #1f2937 !important; }
           .dashboard-footer { flex-direction: column !important; gap: 10px !important; text-align: center !important; }
           .incoming-call-badge { display: none !important; }
+          .dashboard-stats > div { padding: 10px 6px !important; }
+.dashboard-stats > div > div:first-child { font-size: 1.1rem !important; }
+.dashboard-stats > div > div:last-child { font-size: 0.58rem !important; }
+.dashboard-grid > div { max-height: 180px; overflow-y: auto; }
         }
       `}</style>
     </div>
