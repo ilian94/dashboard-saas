@@ -3,7 +3,7 @@ import Link from 'next/link';
 export default function NotFound() {
   return (
     <div style={{ minHeight: '100vh', background: '#fff', fontFamily: "'DM Sans', system-ui, sans-serif", display: 'flex', flexDirection: 'column' }}>
-      
+
       {/* NAV */}
       <nav style={{ padding: '0 48px', height: '64px', display: 'flex', alignItems: 'center', borderBottom: '1px solid #e5e7eb' }}>
         <Link href="/" style={{ fontWeight: 700, fontSize: '1.1rem', letterSpacing: '-0.03em', color: '#0f0f0f', textDecoration: 'none' }}>VoiceBot AI</Link>
@@ -12,8 +12,7 @@ export default function NotFound() {
       {/* CONTENT */}
       <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '80px 24px' }}>
         <div style={{ maxWidth: '480px', width: '100%' }}>
-          
-          {/* BADGE */}
+
           <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', background: '#ede9fe', border: '1px solid #c4b5fd', borderRadius: '100px', padding: '5px 14px', fontSize: '0.78rem', color: '#6366f1', fontWeight: 600, marginBottom: '32px' }}>
             <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#6366f1', display: 'inline-block' }} />
             Error 404
@@ -28,7 +27,7 @@ export default function NotFound() {
             The page you're looking for has been moved or never existed. Let's get you back on track.
           </p>
 
-          <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', marginBottom: '48px' }}>
             <Link href="/" style={{ background: '#6366f1', color: '#fff', textDecoration: 'none', fontWeight: 700, fontSize: '0.95rem', padding: '13px 28px', borderRadius: '10px', boxShadow: '0 4px 16px rgba(99,102,241,0.3)' }}>
               Back to home
             </Link>
@@ -37,8 +36,7 @@ export default function NotFound() {
             </Link>
           </div>
 
-          {/* DIVIDER */}
-          <div style={{ height: '1px', background: '#e5e7eb', margin: '48px 0' }} />
+          <div style={{ height: '1px', background: '#e5e7eb', marginBottom: '32px' }} />
 
           <div style={{ display: 'flex', gap: '24px', flexWrap: 'wrap' }}>
             {[
@@ -47,9 +45,7 @@ export default function NotFound() {
               { label: 'Sign in', href: '/login' },
               { label: 'Contact', href: 'mailto:support@voicebotai.us' },
             ].map(l => (
-              <Link key={l.label} href={l.href} style={{ color: '#6b7280', textDecoration: 'none', fontSize: '0.875rem', fontWeight: 500 }}
-                onMouseEnter={e => e.target.style.color = '#6366f1'}
-                onMouseLeave={e => e.target.style.color = '#6b7280'}>
+              <Link key={l.label} href={l.href} style={{ color: '#9ca3af', textDecoration: 'none', fontSize: '0.875rem', fontWeight: 500 }}>
                 {l.label}
               </Link>
             ))}
