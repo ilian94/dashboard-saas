@@ -226,9 +226,10 @@ export default function Home() {
   };
 
   const missedCallsPerMonth = roiCalls * 4;
-  const revenuePerClient = 300;
-  const potentialRevenue = Math.round(missedCallsPerMonth * 0.3 * revenuePerClient);
-  const roi = potentialRevenue - 229;
+const revenuePerClient = 300;
+const potentialRevenue = Math.round(missedCallsPerMonth * 0.22 * revenuePerClient);
+const recommendedPrice = potentialRevenue < 5000 ? 229 : potentialRevenue < 15000 ? 459 : 879;
+const roi = potentialRevenue - recommendedPrice;
 
   const faqs = [
     { q: "Does it actually sound human?", a: "Yes. VoiceBot AI uses advanced neural voice technology that sounds natural and conversational. Most callers don't realize they're speaking to an AI — they just notice how fast and helpful it is." },
