@@ -478,13 +478,17 @@ export default function Home() {
               ))}
             </div>
             <div style={{ background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)', borderRadius: '16px', padding: '20px', marginBottom: '24px' }}>
-              <p style={{ color: 'rgba(255,255,255,0.8)', fontSize: '0.85rem', marginBottom: '4px' }}>VoiceBot AI costs you</p>
-              <p style={{ color: '#fff', fontSize: '1.4rem', fontWeight: 700, margin: '0 0 4px' }}>$229/month</p>
-              <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: '0.78rem', margin: 0 }}>Pays for itself if it saves just 1 appointment per month</p>
-            </div>
-            <Link href="/register" style={{ display: 'block', background: '#0f0f0f', color: '#fff', textDecoration: 'none', fontWeight: 700, fontSize: '1rem', padding: '15px', borderRadius: '12px', textAlign: 'center' }}>
-              Start free — no charge today
-            </Link>
+  <p style={{ color: 'rgba(255,255,255,0.8)', fontSize: '0.85rem', marginBottom: '4px' }}>Recommended plan for you</p>
+  <p style={{ color: '#fff', fontSize: '1.4rem', fontWeight: 700, margin: '0 0 4px' }}>
+    {potentialRevenue < 5000 ? 'Starter — $229/month' : potentialRevenue < 15000 ? 'Scale — $459/month' : 'Business — $879/month'}
+  </p>
+  <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: '0.78rem', margin: 0 }}>
+    vs ${potentialRevenue.toLocaleString()} in potential lost revenue
+  </p>
+</div>
+<Link href="/register" style={{ display: 'block', background: '#0f0f0f', color: '#fff', textDecoration: 'none', fontWeight: 700, fontSize: '1rem', padding: '15px', borderRadius: '12px', textAlign: 'center' }}>
+  Start free with {potentialRevenue < 5000 ? 'Starter' : potentialRevenue < 15000 ? 'Scale' : 'Business'} →
+</Link>
           </div>
         </div>
       </section>
