@@ -230,7 +230,7 @@ function PlanCarousel({ plans, getButtonState, handleSubscribe, loading, C }) {
           ))}
         </div>
 
-        <div style={{ overflow: 'hidden', position: 'relative' }}>
+        <div style={{ overflow: 'hidden', position: 'relative', paddingTop: '16px' }}>
   <div className={`carousel-inner ${slide}`} style={{ willChange: 'transform' }}>
             <div className="plan-card" style={{ width: '100%', border: isCurrent ? '2px solid #22c55e' : isPopular ? `2px solid ${C.accent}` : `1px solid ${C.border}`, opacity: btn.style === 'downgrade' ? 0.55 : 1 }}>
               {isCurrent && <div className="plan-tag" style={{ background: '#22c55e' }}>CURRENT PLAN</div>}
