@@ -696,8 +696,10 @@ export default function PricingPage() {
           }
 
           .addons-grid {
-            min-width: 520px;
-          }
+  min-width: unset;
+  grid-template-columns: 1fr 1fr 1fr;
+  font-size: 0.8rem;
+}
 
           .faq {
             padding: 0 18px 64px;
