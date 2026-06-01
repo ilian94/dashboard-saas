@@ -393,11 +393,12 @@ export async function POST(req) {
   .from('clients')
   .update({
     plan,
+    user_id: userId,
     stripe_customer_id: session.customer,
     stripe_subscription_id: session.subscription,
     ...(twilioNumber && { twilio_number: twilioNumber }),
   })
-  .eq('user_id', userId);
+  .eq('email', session.customer_details?.email);
 
 console.log('Update result:', JSON.stringify({ updateData, updateError, userId, plan }));
 
