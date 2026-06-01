@@ -329,7 +329,11 @@ export default function PricingPage() {
       });
 
       const data = await res.json();
-      if (data.url) window.location.href = data.url;
+if (data.url) {
+  window.location.href = data.url;
+} else if (data.error === 'Already subscribed') {
+  alert('You already have an active subscription. Go to your dashboard to manage your plan.');
+}
     } catch (err) {
       console.error('Error:', err);
     }
