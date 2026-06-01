@@ -25,24 +25,22 @@ function SuccessContent() {
     router.push('/pricing');
     return;
   }
-  fetch(`/api/stripe/session?session_id=${sessionId}`)
-    .then(r => r.json())
-    .then(data => {
-      if (!data || data.error) {
-        router.push('/pricing');
-        return;
-      }
-      setSession(data);
-      setLoading(false);
-    });
+  
+  const timer = setTimeout(() => {
+    fetch(`/api/stripe/session?session_id=${sessionId}`)
+      .then(r => r.json())
+      .then(data => {
+        if (!data || data.error) {
+          router.push('/pricing');
+          return;
+        }
+        setSession(data);
+        setLoading(false);
+      });
+  }, 3000);
+  
+  return () => clearTimeout(timer);
 }, [sessionId]);
-
-  if (loading) return (
-    <div style={{ minHeight: '100vh', background: C.bg, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-      <div style={{ width: 32, height: 32, border: `3px solid ${C.accent}`, borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
-      <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
-    </div>
-  );
 
   const plan = session?.plan || 'starter';
   const planLabel = plan.charAt(0).toUpperCase() + plan.slice(1);
