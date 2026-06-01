@@ -727,21 +727,22 @@ export default function Dashboard() {
     const { data: { user: authUser } } = await supabase.auth.getUser();
     if (!authUser) { window.location.href = "/login"; return; }
 
-    let clientRecord = null;
-for (let i = 0; i < 5; i++) {
-  const { data } = await supabase
-    .from('clients')
-    .select('plan')
-    .eq('user_id', authUser.id)
-    .maybeSingle();
-  
-  if (data?.plan) { clientRecord = data; break; }
-  if (i < 4) await new Promise(r => setTimeout(r, 3000));
-}
-
-if (!clientRecord?.plan) { window.location.href = "/pricing"; return; }
-
     setUser(authUser);
+
+    let clientRecord = null;
+    for (let i = 0; i < 20; i++) {
+      const { data } = await supabase
+        .from('clients')
+        .select('plan')
+        .eq('user_id', authUser.id)
+        .maybeSingle();
+
+      if (data?.plan) { clientRecord = data; break; }
+      await new Promise(r => setTimeout(r, 3000));
+    }
+
+    if (!clientRecord?.plan) { window.location.href = "/pricing"; return; }
+
     await Promise.all([fetchCalls(authUser.id), fetchClientData(authUser.id)]);
     setLoading(false);
   };
