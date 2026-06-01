@@ -1,7 +1,12 @@
 import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
+import { createClient } from '@supabase/supabase-js';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL,
+  process.env.SUPABASE_SERVICE_KEY
+);
 
 export async function POST(req) {
   try {
@@ -11,6 +16,16 @@ export async function POST(req) {
 
     if (!priceId || !userId) {
       return NextResponse.json({ error: 'Missing priceId or userId' }, { status: 400 });
+    }
+
+    const { data: existingClient } = await supabase
+      .from('clients')
+      .select('plan, stripe_subscription_id')
+      .eq('user_id', userId)
+      .maybeSingle();
+
+    if (existingClient?.plan && existingClient?.stripe_subscription_id) {
+      return NextResponse.json({ error: 'Already subscribed' }, { status: 400 });
     }
 
     const session = await stripe.checkout.sessions.create({
