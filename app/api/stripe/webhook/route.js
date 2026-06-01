@@ -389,17 +389,19 @@ export async function POST(req) {
         twilioNumber = await buyTwilioNumber();
       }
 
-      await supabase
-        .from('clients')
-        .update({
-          plan,
-          stripe_customer_id: session.customer,
-          stripe_subscription_id: session.subscription,
-          ...(twilioNumber && { twilio_number: twilioNumber }),
-        })
-        .eq('user_id', userId);
+      const { data: updateData, error: updateError } = await supabase
+  .from('clients')
+  .update({
+    plan,
+    stripe_customer_id: session.customer,
+    stripe_subscription_id: session.subscription,
+    ...(twilioNumber && { twilio_number: twilioNumber }),
+  })
+  .eq('user_id', userId);
 
-      if (client?.email) {
+console.log('Update result:', JSON.stringify({ updateData, updateError, userId, plan }));
+
+if (client?.email) {
         await resend.emails.send({
           from: 'VoiceBot AI <hello@voicebotai.us>',
           to: client.email,
