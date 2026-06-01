@@ -736,7 +736,7 @@ for (let i = 0; i < 5; i++) {
     .maybeSingle();
   
   if (data?.plan) { clientRecord = data; break; }
-  if (i < 4) await new Promise(r => setTimeout(r, 2000));
+  if (i < 4) await new Promise(r => setTimeout(r, 3000));
 }
 
 if (!clientRecord?.plan) { window.location.href = "/pricing"; return; }
