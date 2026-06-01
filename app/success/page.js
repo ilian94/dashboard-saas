@@ -19,28 +19,48 @@ function SuccessContent() {
   const sessionId = searchParams.get('session_id');
   const [loading, setLoading] = useState(true);
   const [session, setSession] = useState(null);
+  const [btnReady, setBtnReady] = useState(false);
+  const [countdown, setCountdown] = useState(30);
 
   useEffect(() => {
-  if (!sessionId) {
-    router.push('/pricing');
-    return;
-  }
-  
-  const timer = setTimeout(() => {
-    fetch(`/api/stripe/session?session_id=${sessionId}`)
-      .then(r => r.json())
-      .then(data => {
-        if (!data || data.error) {
-          router.push('/pricing');
-          return;
-        }
-        setSession(data);
-        setLoading(false);
+    if (!sessionId) {
+      router.push('/pricing');
+      return;
+    }
+
+    const timer = setTimeout(() => {
+      fetch(`/api/stripe/session?session_id=${sessionId}`)
+        .then(r => r.json())
+        .then(data => {
+          if (!data || data.error) {
+            router.push('/pricing');
+            return;
+          }
+          setSession(data);
+          setLoading(false);
+        });
+    }, 3000);
+
+    return () => clearTimeout(timer);
+  }, [sessionId]);
+
+  useEffect(() => {
+    const btnTimer = setTimeout(() => setBtnReady(true), 30000);
+    const interval = setInterval(() => {
+      setCountdown(prev => {
+        if (prev <= 1) { clearInterval(interval); return 0; }
+        return prev - 1;
       });
-  }, 3000);
-  
-  return () => clearTimeout(timer);
-}, [sessionId]);
+    }, 1000);
+    return () => { clearTimeout(btnTimer); clearInterval(interval); };
+  }, []);
+
+  if (loading) return (
+    <div style={{ minHeight: '100vh', background: C.bg, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <div style={{ width: 32, height: 32, border: `3px solid ${C.accent}`, borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
+      <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+    </div>
+  );
 
   const plan = session?.plan || 'starter';
   const planLabel = plan.charAt(0).toUpperCase() + plan.slice(1);
@@ -99,10 +119,23 @@ function SuccessContent() {
         </div>
 
         <button
-          onClick={() => router.push('/dashboard')}
-          style={{ width: '100%', background: C.textPrimary, color: '#fff', border: 'none', padding: '15px 36px', borderRadius: 12, fontWeight: 700, fontSize: 16, cursor: 'pointer', fontFamily: "'DM Sans', system-ui, sans-serif" }}
+          onClick={() => btnReady && router.push('/dashboard')}
+          disabled={!btnReady}
+          style={{
+            width: '100%',
+            background: btnReady ? C.textPrimary : '#d1d5db',
+            color: '#fff',
+            border: 'none',
+            padding: '15px 36px',
+            borderRadius: 12,
+            fontWeight: 700,
+            fontSize: 16,
+            cursor: btnReady ? 'pointer' : 'not-allowed',
+            fontFamily: "'DM Sans', system-ui, sans-serif",
+            transition: 'background 0.3s'
+          }}
         >
-          Go to Dashboard
+          {btnReady ? 'Go to Dashboard →' : `Activating your account... (${countdown}s)`}
         </button>
 
         <p style={{ textAlign: 'center', color: C.text, fontSize: 12, marginTop: 20 }}>Questions? Email us at support@voicebot.ai</p>
