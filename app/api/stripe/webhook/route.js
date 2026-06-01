@@ -378,18 +378,21 @@ export async function POST(req) {
       }
 
       const plan = PLAN_MAP[activePriceId] || 'starter';
-      const { data: client } = await supabase
-        .from('clients')
-        .select('twilio_number, email, business_name')
-        .eq('user_id', userId)
-        .maybeSingle();
+const customerEmail = session.customer_details?.email || session.customer_email;
 
-      let twilioNumber = client?.twilio_number;
-      if (!twilioNumber) {
-        twilioNumber = await buyTwilioNumber();
-      }
+// Fetch client by email (more reliable than user_id)
+const { data: client } = await supabase
+  .from('clients')
+  .select('twilio_number, email, business_name')
+  .eq('email', customerEmail)
+  .maybeSingle();
 
-      const { data: updateData, error: updateError } = await supabase
+let twilioNumber = client?.twilio_number;
+if (!twilioNumber) {
+  twilioNumber = await buyTwilioNumber();
+}
+
+const { data: updateData, error: updateError } = await supabase
   .from('clients')
   .update({
     plan,
@@ -398,9 +401,9 @@ export async function POST(req) {
     stripe_subscription_id: session.subscription,
     ...(twilioNumber && { twilio_number: twilioNumber }),
   })
-  .eq('email', session.customer_details?.email);
+  .eq('email', customerEmail);
 
-console.log('Update result:', JSON.stringify({ updateData, updateError, userId, plan }));
+console.log('Update result:', JSON.stringify({ updateData, updateError, customerEmail, plan }));
 
 if (client?.email) {
         await resend.emails.send({
