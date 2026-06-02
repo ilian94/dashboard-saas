@@ -5,15 +5,6 @@ import twilio from 'twilio';
 import { Resend } from 'resend';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_KEY
-);
-const twilioClient = twilio(
-  process.env.TWILIO_ACCOUNT_SID,
-  process.env.TWILIO_AUTH_TOKEN
-);
-const resend = new Resend(process.env.RESEND_API_KEY);
 
 const PLAN_MAP = {
   'price_1TZI4xFbv1QHIqBxM1ogpacl': 'starter',
@@ -92,38 +83,47 @@ function emailCancellation() {
 </body></html>`;
 }
 
-async function buyTwilioNumber() {
-  try {
-    const available = await twilioClient.availablePhoneNumbers('US')
-      .local
-      .list({ voiceEnabled: true, limit: 1 });
-    if (!available.length) return null;
-    const purchased = await twilioClient.incomingPhoneNumbers.create({
-      phoneNumber: available[0].phoneNumber,
-      voiceUrl: 'https://voice-bot-saas.onrender.com/voice',
-      voiceMethod: 'POST',
-      statusCallback: 'https://voice-bot-saas.onrender.com/voice-status',
-      statusCallbackMethod: 'POST',
-    });
-    return purchased.phoneNumber;
-  } catch (err) {
-    console.error('Twilio buy number error:', err.message);
-    return null;
-  }
-}
-
-async function releaseTwilioNumber(phoneNumber) {
-  try {
-    const numbers = await twilioClient.incomingPhoneNumbers.list({ phoneNumber });
-    if (numbers.length > 0) {
-      await twilioClient.incomingPhoneNumbers(numbers[0].sid).remove();
-    }
-  } catch (err) {
-    console.error('Twilio release number error:', err.message);
-  }
-}
-
 export async function POST(req) {
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL,
+    process.env.SUPABASE_SERVICE_KEY
+  );
+  const twilioClient = twilio(
+    process.env.TWILIO_ACCOUNT_SID,
+    process.env.TWILIO_AUTH_TOKEN
+  );
+  const resend = new Resend(process.env.RESEND_API_KEY);
+
+  async function buyTwilioNumber() {
+    try {
+      const available = await twilioClient.availablePhoneNumbers('US')
+        .local.list({ voiceEnabled: true, limit: 1 });
+      if (!available.length) return null;
+      const purchased = await twilioClient.incomingPhoneNumbers.create({
+        phoneNumber: available[0].phoneNumber,
+        voiceUrl: 'https://voice-bot-saas.onrender.com/voice',
+        voiceMethod: 'POST',
+        statusCallback: 'https://voice-bot-saas.onrender.com/voice-status',
+        statusCallbackMethod: 'POST',
+      });
+      return purchased.phoneNumber;
+    } catch (err) {
+      console.error('Twilio buy number error:', err.message);
+      return null;
+    }
+  }
+
+  async function releaseTwilioNumber(phoneNumber) {
+    try {
+      const numbers = await twilioClient.incomingPhoneNumbers.list({ phoneNumber });
+      if (numbers.length > 0) {
+        await twilioClient.incomingPhoneNumbers(numbers[0].sid).remove();
+      }
+    } catch (err) {
+      console.error('Twilio release number error:', err.message);
+    }
+  }
+
   const body = await req.text();
   const sig = req.headers.get('stripe-signature');
 
@@ -147,10 +147,8 @@ export async function POST(req) {
 
       if (extraMinutes) {
         const { data: client } = await supabase
-          .from('clients')
-          .select('extra_minutes, email, business_name')
-          .eq('user_id', userId)
-          .maybeSingle();
+          .from('clients').select('extra_minutes, email, business_name')
+          .eq('user_id', userId).maybeSingle();
 
         const currentExtra = client?.extra_minutes || 0;
         await supabase.from('clients').update({ extra_minutes: currentExtra + extraMinutes }).eq('user_id', userId);
@@ -176,10 +174,8 @@ export async function POST(req) {
 
       if (activePriceId === ADDITIONAL_NUMBER_PRICE_ID) {
         const { data: client } = await supabase
-          .from('clients')
-          .select('twilio_numbers, email, business_name')
-          .eq('user_id', userId)
-          .maybeSingle();
+          .from('clients').select('twilio_numbers, email, business_name')
+          .eq('user_id', userId).maybeSingle();
 
         const newNumber = await buyTwilioNumber();
         if (newNumber) {
@@ -200,23 +196,17 @@ export async function POST(req) {
 
       const plan = PLAN_MAP[activePriceId] || 'starter';
 
-      // Fetch client par user_id d'abord, sinon par email
       let { data: client } = await supabase
-        .from('clients')
-        .select('twilio_number, email, business_name')
-        .eq('user_id', userId)
-        .maybeSingle();
+        .from('clients').select('twilio_number, email, business_name')
+        .eq('user_id', userId).maybeSingle();
 
       if (!client && customerEmail) {
         const { data: clientByEmail } = await supabase
-          .from('clients')
-          .select('twilio_number, email, business_name')
-          .eq('email', customerEmail)
-          .maybeSingle();
+          .from('clients').select('twilio_number, email, business_name')
+          .eq('email', customerEmail).maybeSingle();
         client = clientByEmail;
       }
 
-      // Update le plan IMMÉDIATEMENT sans attendre Twilio
       const updatePayload = {
         plan,
         user_id: userId,
@@ -225,10 +215,7 @@ export async function POST(req) {
       };
 
       const { data: updateByUserId } = await supabase
-        .from('clients')
-        .update(updatePayload)
-        .eq('user_id', userId)
-        .select();
+        .from('clients').update(updatePayload).eq('user_id', userId).select();
 
       if (!updateByUserId || updateByUserId.length === 0) {
         await supabase.from('clients').update(updatePayload).eq('email', customerEmail);
@@ -237,7 +224,6 @@ export async function POST(req) {
         console.log(`✅ Updated by user_id: ${userId} — plan: ${plan}`);
       }
 
-      // Acheter le numéro Twilio EN ARRIÈRE-PLAN (non-bloquant)
       if (!client?.twilio_number) {
         (async () => {
           const twilioNumber = await buyTwilioNumber();
@@ -277,10 +263,8 @@ export async function POST(req) {
     const priceId = subscription.items.data[0]?.price?.id;
 
     const { data: client } = await supabase
-      .from('clients')
-      .select('twilio_number, twilio_numbers, email')
-      .eq('stripe_customer_id', customerId)
-      .maybeSingle();
+      .from('clients').select('twilio_number, twilio_numbers, email')
+      .eq('stripe_customer_id', customerId).maybeSingle();
 
     if (priceId === ADDITIONAL_NUMBER_PRICE_ID) {
       const numbers = client?.twilio_numbers || [];
@@ -306,8 +290,7 @@ export async function POST(req) {
       });
     }
 
-    await supabase
-      .from('clients')
+    await supabase.from('clients')
       .update({ plan: null, twilio_number: null, twilio_numbers: [], extra_minutes: 0 })
       .eq('stripe_customer_id', customerId);
   }
