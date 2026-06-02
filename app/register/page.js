@@ -62,27 +62,22 @@ export default function Register() {
   const handleSubmit = async (e) => {
     e.preventDefault(); setLoading(true); setError("");
     const { data, error: err } = await supabase.auth.signUp({
-  email: form.email,
-  password: form.password,
-  options: {
-    emailRedirectTo: `${window.location.origin}/dashboard`,
-  }
-});
-    if (err) {
-      setError(err.message);
-      setLoading(false);
-      return;
-    }
+      email: form.email,
+      password: form.password,
+      options: {
+        emailRedirectTo: `${window.location.origin}/dashboard`,
+      }
+    });
+    if (err) { setError(err.message); setLoading(false); return; }
     if (data.user) {
-      await supabase.from("clients").insert([{ user_id: data.user.id, email: form.email, business_name: form.company }]);
-      await fetch('/api/email/welcome', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: form.email, businessName: form.company }),
-      });
-      setConfirmed(true);
-      setLoading(false);
-    }
+  await fetch('/api/register', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ userId: data.user.id, email: form.email, businessName: form.company }),
+  });
+  window.location.href = '/pricing';
+  return;
+}
   };
 
   if (confirmed) {
