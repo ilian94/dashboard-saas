@@ -23,7 +23,8 @@ export async function GET() {
   url.searchParams.set('scope', 'https://www.googleapis.com/auth/calendar');
   url.searchParams.set('access_type', 'offline');
   url.searchParams.set('prompt', 'consent');
-  url.searchParams.set('state', user?.id || '');
+  console.log("User from cookie:", user?.id);
+url.searchParams.set('state', user?.id || '');
 
   return NextResponse.redirect(url.toString());
 }
