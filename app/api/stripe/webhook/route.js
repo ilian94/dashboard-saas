@@ -1,10 +1,10 @@
 import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
 import { createClient } from '@supabase/supabase-js';
-import twilio from 'twilio';
 import { Resend } from 'resend';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 const PLAN_MAP = {
   'price_1TZI4xFbv1QHIqBxM1ogpacl': 'starter',
@@ -84,45 +84,11 @@ function emailCancellation() {
 }
 
 export async function POST(req) {
+  // Supabase initialisé ici pour éviter le cache des env vars
   const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL,
     process.env.SUPABASE_SERVICE_KEY
   );
-  const twilioClient = twilio(
-    process.env.TWILIO_ACCOUNT_SID,
-    process.env.TWILIO_AUTH_TOKEN
-  );
-  const resend = new Resend(process.env.RESEND_API_KEY);
-
-  async function buyTwilioNumber() {
-    try {
-      const available = await twilioClient.availablePhoneNumbers('US')
-        .local.list({ voiceEnabled: true, limit: 1 });
-      if (!available.length) return null;
-      const purchased = await twilioClient.incomingPhoneNumbers.create({
-        phoneNumber: available[0].phoneNumber,
-        voiceUrl: 'https://voice-bot-saas.onrender.com/voice',
-        voiceMethod: 'POST',
-        statusCallback: 'https://voice-bot-saas.onrender.com/voice-status',
-        statusCallbackMethod: 'POST',
-      });
-      return purchased.phoneNumber;
-    } catch (err) {
-      console.error('Twilio buy number error:', err.message);
-      return null;
-    }
-  }
-
-  async function releaseTwilioNumber(phoneNumber) {
-    try {
-      const numbers = await twilioClient.incomingPhoneNumbers.list({ phoneNumber });
-      if (numbers.length > 0) {
-        await twilioClient.incomingPhoneNumbers(numbers[0].sid).remove();
-      }
-    } catch (err) {
-      console.error('Twilio release number error:', err.message);
-    }
-  }
 
   const body = await req.text();
   const sig = req.headers.get('stripe-signature');
@@ -173,24 +139,7 @@ export async function POST(req) {
       const activePriceId = subscription.items.data[0].price.id;
 
       if (activePriceId === ADDITIONAL_NUMBER_PRICE_ID) {
-        const { data: client } = await supabase
-          .from('clients').select('twilio_numbers, email, business_name')
-          .eq('user_id', userId).maybeSingle();
-
-        const newNumber = await buyTwilioNumber();
-        if (newNumber) {
-          const currentNumbers = client?.twilio_numbers || [];
-          await supabase.from('clients').update({ twilio_numbers: [...currentNumbers, newNumber] }).eq('user_id', userId);
-
-          if (client?.email) {
-            await resend.emails.send({
-              from: 'VoiceBot AI <hello@voicebotai.us>',
-              to: client.email,
-              subject: 'Your new VoiceBot number is active ✅',
-              html: emailAdditionalNumber({ newNumber, businessName: client.business_name }),
-            });
-          }
-        }
+        // TODO: réactiver Twilio quand crédit rechargé
         return NextResponse.json({ received: true });
       }
 
@@ -224,15 +173,15 @@ export async function POST(req) {
         console.log(`✅ Updated by user_id: ${userId} — plan: ${plan}`);
       }
 
-      if (!client?.twilio_number) {
-        (async () => {
-          const twilioNumber = await buyTwilioNumber();
-          if (twilioNumber) {
-            await supabase.from('clients').update({ twilio_number: twilioNumber }).eq('user_id', userId);
-            console.log(`✅ Twilio number assigned: ${twilioNumber} for ${userId}`);
-          }
-        })();
-      }
+      // TODO: réactiver achat Twilio quand crédit rechargé
+      // if (!client?.twilio_number) {
+      //   (async () => {
+      //     const twilioNumber = await buyTwilioNumber();
+      //     if (twilioNumber) {
+      //       await supabase.from('clients').update({ twilio_number: twilioNumber }).eq('user_id', userId);
+      //     }
+      //   })();
+      // }
 
       if (client?.email) {
         await resend.emails.send({
@@ -260,26 +209,10 @@ export async function POST(req) {
   if (event.type === 'customer.subscription.deleted') {
     const subscription = event.data.object;
     const customerId = subscription.customer;
-    const priceId = subscription.items.data[0]?.price?.id;
 
     const { data: client } = await supabase
-      .from('clients').select('twilio_number, twilio_numbers, email')
+      .from('clients').select('email')
       .eq('stripe_customer_id', customerId).maybeSingle();
-
-    if (priceId === ADDITIONAL_NUMBER_PRICE_ID) {
-      const numbers = client?.twilio_numbers || [];
-      if (numbers.length > 0) {
-        const numberToRelease = numbers[numbers.length - 1];
-        await releaseTwilioNumber(numberToRelease);
-        await supabase.from('clients').update({ twilio_numbers: numbers.slice(0, -1) }).eq('stripe_customer_id', customerId);
-      }
-      return NextResponse.json({ received: true });
-    }
-
-    if (client?.twilio_number) await releaseTwilioNumber(client.twilio_number);
-    if (client?.twilio_numbers?.length > 0) {
-      for (const num of client.twilio_numbers) await releaseTwilioNumber(num);
-    }
 
     if (client?.email) {
       await resend.emails.send({
