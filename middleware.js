@@ -32,8 +32,17 @@ export async function middleware(req) {
   const { data: { user } } = await supabase.auth.getUser();
 
   if (!user) {
-    const loginUrl = new URL('/login', req.url);
-    return NextResponse.redirect(loginUrl);
+    return NextResponse.redirect(new URL('/login', req.url));
+  }
+
+  const { data: client } = await supabase
+    .from('clients')
+    .select('plan')
+    .eq('user_id', user.id)
+    .single();
+
+  if (!client?.plan) {
+    return NextResponse.redirect(new URL('/pricing', req.url));
   }
 
   return response;
