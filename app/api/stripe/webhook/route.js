@@ -67,14 +67,6 @@ function emailExtraMinutes({ extraMinutes, currentExtra, businessName }) {
 </body></html>`;
 }
 
-function emailAdditionalNumber({ newNumber, businessName }) {
-  return `<!DOCTYPE html><html><body style="background:#080b12;font-family:sans-serif;padding:40px;">
-<h1 style="color:#f8fafc;">New number active ✅</h1>
-<p style="color:#64748b;">Hi ${businessName || 'there'} — your new number ${newNumber} is ready.</p>
-<a href="https://voicebotai.us/dashboard" style="background:#6366f1;color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;">View Dashboard</a>
-</body></html>`;
-}
-
 function emailCancellation() {
   return `<!DOCTYPE html><html><body style="background:#080b12;font-family:sans-serif;padding:40px;">
 <h1 style="color:#f8fafc;">We're sorry to see you go.</h1>
@@ -83,8 +75,38 @@ function emailCancellation() {
 </body></html>`;
 }
 
+// Helper pour update Supabase via REST direct (bypass client JS)
+async function supabaseUpdate(table, payload, filterKey, filterValue) {
+  const url = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/rest/v1/${table}?${filterKey}=eq.${encodeURIComponent(filterValue)}`;
+  const res = await fetch(url, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+      'apikey': process.env.SUPABASE_SERVICE_KEY,
+      'Authorization': `Bearer ${process.env.SUPABASE_SERVICE_KEY}`,
+      'Prefer': 'return=representation',
+    },
+    body: JSON.stringify(payload),
+  });
+  const data = await res.json();
+  return data;
+}
+
+// Helper pour select Supabase via REST direct
+async function supabaseSelect(table, filterKey, filterValue, columns = '*') {
+  const url = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/rest/v1/${table}?${filterKey}=eq.${encodeURIComponent(filterValue)}&select=${columns}`;
+  const res = await fetch(url, {
+    method: 'GET',
+    headers: {
+      'apikey': process.env.SUPABASE_SERVICE_KEY,
+      'Authorization': `Bearer ${process.env.SUPABASE_SERVICE_KEY}`,
+    },
+  });
+  const data = await res.json();
+  return data?.[0] || null;
+}
+
 export async function POST(req) {
-  // Supabase initialisé ici pour éviter le cache des env vars
   const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL,
     process.env.SUPABASE_SERVICE_KEY
@@ -112,12 +134,9 @@ export async function POST(req) {
       const extraMinutes = EXTRA_MINUTES_MAP[priceId];
 
       if (extraMinutes) {
-        const { data: client } = await supabase
-          .from('clients').select('extra_minutes, email, business_name')
-          .eq('user_id', userId).maybeSingle();
-
+        const client = await supabaseSelect('clients', 'user_id', userId, 'extra_minutes,email,business_name');
         const currentExtra = client?.extra_minutes || 0;
-        await supabase.from('clients').update({ extra_minutes: currentExtra + extraMinutes }).eq('user_id', userId);
+        await supabaseUpdate('clients', { extra_minutes: currentExtra + extraMinutes }, 'user_id', userId);
 
         if (client?.email) {
           await resend.emails.send({
@@ -139,21 +158,15 @@ export async function POST(req) {
       const activePriceId = subscription.items.data[0].price.id;
 
       if (activePriceId === ADDITIONAL_NUMBER_PRICE_ID) {
-        // TODO: réactiver Twilio quand crédit rechargé
         return NextResponse.json({ received: true });
       }
 
       const plan = PLAN_MAP[activePriceId] || 'starter';
 
-      let { data: client } = await supabase
-        .from('clients').select('twilio_number, email, business_name')
-        .eq('user_id', userId).maybeSingle();
-
+      // Fetch client par user_id d'abord, sinon par email
+      let client = await supabaseSelect('clients', 'user_id', userId, 'twilio_number,email,business_name');
       if (!client && customerEmail) {
-        const { data: clientByEmail } = await supabase
-          .from('clients').select('twilio_number, email, business_name')
-          .eq('email', customerEmail).maybeSingle();
-        client = clientByEmail;
+        client = await supabaseSelect('clients', 'email', customerEmail, 'twilio_number,email,business_name');
       }
 
       const updatePayload = {
@@ -163,25 +176,18 @@ export async function POST(req) {
         stripe_subscription_id: session.subscription,
       };
 
-      const { data: updateByUserId } = await supabase
-        .from('clients').update(updatePayload).eq('user_id', userId).select();
+      // Update par user_id d'abord
+      const updateResult = await supabaseUpdate('clients', updatePayload, 'user_id', userId);
+      console.log('Update by user_id result:', JSON.stringify(updateResult));
 
-      if (!updateByUserId || updateByUserId.length === 0) {
-        await supabase.from('clients').update(updatePayload).eq('email', customerEmail);
+      // Si vide, update par email
+      if (!updateResult || updateResult.length === 0) {
+        const updateByEmail = await supabaseUpdate('clients', updatePayload, 'email', customerEmail);
+        console.log('Update by email result:', JSON.stringify(updateByEmail));
         console.log(`✅ Updated by email: ${customerEmail} — plan: ${plan}`);
       } else {
         console.log(`✅ Updated by user_id: ${userId} — plan: ${plan}`);
       }
-
-      // TODO: réactiver achat Twilio quand crédit rechargé
-      // if (!client?.twilio_number) {
-      //   (async () => {
-      //     const twilioNumber = await buyTwilioNumber();
-      //     if (twilioNumber) {
-      //       await supabase.from('clients').update({ twilio_number: twilioNumber }).eq('user_id', userId);
-      //     }
-      //   })();
-      // }
 
       if (client?.email) {
         await resend.emails.send({
@@ -201,7 +207,7 @@ export async function POST(req) {
     const newPlan = PLAN_MAP[newPriceId];
 
     if (newPlan) {
-      await supabase.from('clients').update({ plan: newPlan }).eq('stripe_customer_id', customerId);
+      await supabaseUpdate('clients', { plan: newPlan }, 'stripe_customer_id', customerId);
       console.log(`✅ Plan updated to ${newPlan} for customer ${customerId}`);
     }
   }
@@ -210,9 +216,7 @@ export async function POST(req) {
     const subscription = event.data.object;
     const customerId = subscription.customer;
 
-    const { data: client } = await supabase
-      .from('clients').select('email')
-      .eq('stripe_customer_id', customerId).maybeSingle();
+    const client = await supabaseSelect('clients', 'stripe_customer_id', customerId, 'email');
 
     if (client?.email) {
       await resend.emails.send({
@@ -223,9 +227,7 @@ export async function POST(req) {
       });
     }
 
-    await supabase.from('clients')
-      .update({ plan: null, twilio_number: null, twilio_numbers: [], extra_minutes: 0 })
-      .eq('stripe_customer_id', customerId);
+    await supabaseUpdate('clients', { plan: null, twilio_number: null, twilio_numbers: [], extra_minutes: 0 }, 'stripe_customer_id', customerId);
   }
 
   return NextResponse.json({ received: true });
