@@ -1,16 +1,25 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(request) {
   const { searchParams } = new URL(request.url);
   const code = searchParams.get("code");
   const error = searchParams.get("error");
+  const userId = searchParams.get("state");
+
+  console.log("State reçu:", userId);
+  console.log("Tous les params:", Object.fromEntries(searchParams));
 
   if (error || !code) {
     return NextResponse.redirect(new URL("/dashboard?error=access_denied", request.url));
   }
 
-  // Échanger le code contre les tokens Google
+  if (!userId) {
+    return NextResponse.redirect(new URL("/dashboard?error=no_user", request.url));
+  }
+
   const tokenRes = await fetch("https://oauth2.googleapis.com/token", {
     method: "POST",
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
@@ -27,41 +36,22 @@ export async function GET(request) {
   console.log("Tokens reçus:", JSON.stringify(tokens));
 
   if (!tokens.access_token) {
-  console.error("Pas d'access_token:", tokens);
-  return NextResponse.redirect(new URL("/dashboard?error=no_token", request.url));
-}
+    console.error("Pas d'access_token:", tokens);
+    return NextResponse.redirect(new URL("/dashboard?error=no_token", request.url));
+  }
 
-  // Récupérer l'email Google pour trouver le bon user dans Supabase
-  const userInfoRes = await fetch("https://www.googleapis.com/oauth2/v2/userinfo", {
-    headers: { Authorization: `Bearer ${tokens.access_token}` },
-  });
-  const googleUser = await userInfoRes.json();
-  console.log("Google user:", googleUser.email);
-
-  // Chercher le client dans Supabase par email
   const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL,
     process.env.SUPABASE_SERVICE_KEY
   );
 
-  // D'abord chercher dans auth.users
-  const { data: authUsers } = await supabase.auth.admin.listUsers();
-  const matchedUser = authUsers?.users?.find(u => u.email === googleUser.email);
-
-  if (!matchedUser) {
-    console.error("Aucun user Supabase trouvé pour:", googleUser.email);
-    return NextResponse.redirect(new URL("/dashboard?error=user_not_found", request.url));
-  }
-
-  // Mettre à jour ou créer la ligne dans clients
   const { error: upsertError } = await supabase
     .from("clients")
     .upsert({
-      user_id: matchedUser.id,
-      email: matchedUser.email,
+      user_id: userId,
       google_refresh_token: tokens.refresh_token || null,
       google_connected: true,
-      calendar_type: 'google', // ✅
+      calendar_type: 'google',
     }, { onConflict: "user_id" });
 
   if (upsertError) {
