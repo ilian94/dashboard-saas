@@ -47,6 +47,7 @@ export default function Register() {
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
   const [error, setError] = useState("");
+  const [confirmed, setConfirmed] = useState(false);
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
@@ -60,8 +61,18 @@ export default function Register() {
 
   const handleSubmit = async (e) => {
     e.preventDefault(); setLoading(true); setError("");
-    const { data, error: err } = await supabase.auth.signUp({ email: form.email, password: form.password });
-    if (err) { setError(err.message); setLoading(false); return; }
+    const { data, error: err } = await supabase.auth.signUp({
+  email: form.email,
+  password: form.password,
+  options: {
+    emailRedirectTo: `${window.location.origin}/dashboard`,
+  }
+});
+    if (err) {
+      setError(err.message);
+      setLoading(false);
+      return;
+    }
     if (data.user) {
       await supabase.from("clients").insert([{ user_id: data.user.id, email: form.email, business_name: form.company }]);
       await fetch('/api/email/welcome', {
@@ -69,17 +80,40 @@ export default function Register() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: form.email, businessName: form.company }),
       });
-      window.location.href = "/pricing";
-    } else { setError("Check your email to confirm your account."); setLoading(false); }
+      setConfirmed(true);
+      setLoading(false);
+    }
   };
+
+  if (confirmed) {
+    return (
+      <div style={{ minHeight: '100vh', background: '#ffffff', fontFamily: "'DM Sans', system-ui, sans-serif", display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '40px 24px' }}>
+        <div style={{ maxWidth: '420px', width: '100%', textAlign: 'center' }}>
+          <Link href="/" style={{ fontWeight: 700, fontSize: '1rem', color: '#0f0f0f', textDecoration: 'none', display: 'block', marginBottom: '40px' }}>VoiceBot AI</Link>
+          <div style={{ width: 72, height: 72, background: '#f0fdf4', border: '2px solid #bbf7d0', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px' }}>
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#16a34a" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="20 6 9 17 4 12" />
+            </svg>
+          </div>
+          <h1 style={{ fontSize: '1.8rem', fontWeight: 700, color: '#0f0f0f', letterSpacing: '-0.03em', marginBottom: '12px' }}>Check your email</h1>
+          <p style={{ fontSize: '0.95rem', color: '#6b7280', lineHeight: 1.6, marginBottom: '32px' }}>
+            We sent a confirmation link to <strong style={{ color: '#0f0f0f' }}>{form.email}</strong>.<br />
+            Click the link to verify your account and get started.
+          </p>
+          <p style={{ fontSize: '0.82rem', color: '#9ca3af' }}>
+            Already confirmed?{' '}
+            <Link href="/login" style={{ color: '#6366f1', textDecoration: 'none', fontWeight: 600 }}>Sign in</Link>
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div style={{ minHeight: '100vh', background: '#ffffff', fontFamily: "'DM Sans', system-ui, sans-serif", display: 'flex', position: 'relative', overflow: 'hidden' }}>
 
-      {/* GRADIENT BG */}
       <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, background: 'radial-gradient(ellipse 80% 60% at 50% -10%, rgba(99,102,241,0.08) 0%, transparent 70%)', pointerEvents: 'none' }} />
 
-      {/* LEFT PANEL */}
       <div className="left-panel" style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '60px', background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)', position: 'relative', overflow: 'hidden' }}>
         <div style={{ position: 'absolute', top: '-100px', right: '-100px', width: '400px', height: '400px', background: 'rgba(255,255,255,0.05)', borderRadius: '50%' }} />
         <div style={{ position: 'absolute', bottom: '-80px', left: '-80px', width: '300px', height: '300px', background: 'rgba(255,255,255,0.05)', borderRadius: '50%' }} />
@@ -115,7 +149,6 @@ export default function Register() {
         </div>
       </div>
 
-      {/* RIGHT PANEL */}
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '40px 24px', minHeight: '100vh' }}>
         <div style={{ width: '100%', maxWidth: '400px' }}>
 
