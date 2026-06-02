@@ -321,7 +321,7 @@ function OnboardingBanner({ plan, googleConnected, twilioNumber, onDismiss }) {
   const steps = [
     { label: 'Account created', done: true, action: null },
     { label: 'Choose a plan', done: !!plan, action: !plan ? <a href="/pricing" style={{ fontSize: '0.78rem', fontWeight: 600, color: C.accent, textDecoration: 'none', whiteSpace: 'nowrap' }}>Choose</a> : null },
-    { label: 'Connect Google Calendar', done: googleConnected, action: !googleConnected ? <a href="/api/google/auth" style={{ fontSize: '0.78rem', fontWeight: 600, color: '#1a73e8', textDecoration: 'none', whiteSpace: 'nowrap' }}>Connect</a> : null },
+    { label: 'Connect Google Calendar', done: googleConnected, action: !googleConnected ? <a href={`/api/google/auth?userId=${user?.id}`} style={{ fontSize: '0.78rem', fontWeight: 600, color: '#1a73e8', textDecoration: 'none', whiteSpace: 'nowrap' }}>Connect</a> : null },
     { label: 'Phone number assigned', done: !!twilioNumber, action: !twilioNumber && !!plan ? <span style={{ fontSize: '0.78rem', color: C.text }}>Pending...</span> : null },
     { label: 'Forward your number', done: false, action: twilioNumber ? <a href="#" onClick={(e) => { e.preventDefault(); onDismiss(); }} style={{ fontSize: '0.78rem', fontWeight: 600, color: '#16a34a', textDecoration: 'none', whiteSpace: 'nowrap' }}>Mark done</a> : null },
   ];
@@ -808,7 +808,7 @@ const [darkMode, setDarkMode] = useState(false);
 
   const setupSteps = [
     { number: '01', title: 'Choose a plan', done: !!plan, desc: 'Subscribe to one of our plans to activate your VoiceBot.', action: !plan ? <a href="/pricing" style={{ display: 'inline-block', marginTop: '12px', padding: '8px 18px', background: C.accent, color: 'white', textDecoration: 'none', borderRadius: '8px', fontSize: '0.85rem', fontWeight: 600 }}>View plans</a> : null },
-    { number: '02', title: 'Connect Google Calendar', done: googleConnected, desc: 'Link your Google Calendar so your VoiceBot can automatically book appointments in real time.', action: !googleConnected ? <a href="/api/google/auth" style={{ display: 'inline-block', marginTop: '12px', padding: '8px 18px', background: '#1a73e8', color: 'white', textDecoration: 'none', borderRadius: '8px', fontSize: '0.85rem', fontWeight: 600 }}>Connect Google</a> : null },
+    { number: '02', title: 'Connect Google Calendar', done: googleConnected, desc: 'Link your Google Calendar so your VoiceBot can automatically book appointments in real time.', action: !googleConnected ? <a href={`/api/google/auth?userId=${user?.id}`} style={{ display: 'inline-block', marginTop: '12px', padding: '8px 18px', background: '#1a73e8', color: 'white', textDecoration: 'none', borderRadius: '8px', fontSize: '0.85rem', fontWeight: 600 }}>Connect Google</a> : null },
     { number: '03', title: 'Receive your phone number', done: !!clientData?.twilio_number, desc: clientData?.twilio_number ? `Your dedicated number is ${clientData.twilio_number}.` : 'Once your plan is active, we will assign you a dedicated phone number within 24 hours.' },
     {
       number: '04', title: 'Forward your business number to VoiceBot', done: false,
@@ -962,7 +962,7 @@ const [darkMode, setDarkMode] = useState(false);
                   <p style={{ fontSize: '0.85rem', color: C.text }}>{googleConnected ? 'Appointments are booked automatically.' : 'Connect your calendar for automatic scheduling.'}</p>
                 </div>
                 {!googleConnected
-                  ? <a href="/api/google/auth" style={{ padding: '9px 20px', background: '#1a73e8', color: 'white', textDecoration: 'none', borderRadius: '9px', fontSize: '0.875rem', fontWeight: 600, whiteSpace: 'nowrap' }}>Connect Google</a>
+                  ? <a href={`/api/google/auth?userId=${user?.id}`} style={{ padding: '9px 20px', background: '#1a73e8', color: 'white', textDecoration: 'none', borderRadius: '9px', fontSize: '0.875rem', fontWeight: 600, whiteSpace: 'nowrap' }}>Connect Google</a>
                   : <span style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '9px 16px', background: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: '9px', color: '#16a34a', fontSize: '0.875rem', fontWeight: 600 }}><IconCheck /> Connected</span>
                 }
               </div>
@@ -1064,7 +1064,7 @@ const [darkMode, setDarkMode] = useState(false);
                         {activeCalendar === 'google' ? (
                           <button onClick={handleDisconnectGoogle} style={{ padding: '8px 16px', background: '#f9fafb', border: `1px solid ${C.border}`, color: C.textPrimary, borderRadius: '8px', fontSize: '0.82rem', fontWeight: 600, cursor: 'pointer', whiteSpace: 'nowrap' }}>Disconnect</button>
                         ) : (
-                          <a href="/api/google/auth" style={{ padding: '8px 16px', background: '#1a73e8', color: 'white', textDecoration: 'none', borderRadius: '8px', fontSize: '0.82rem', fontWeight: 600, whiteSpace: 'nowrap' }}>Connect</a>
+                          <a href={`/api/google/auth?userId=${user?.id}`} style={{ padding: '8px 16px', background: '#1a73e8', color: 'white', textDecoration: 'none', borderRadius: '8px', fontSize: '0.82rem', fontWeight: 600, whiteSpace: 'nowrap' }}>Connect</a>
                         )}
                       </div>
 
