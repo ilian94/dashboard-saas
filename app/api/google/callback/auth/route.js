@@ -1,17 +1,8 @@
 import { NextResponse } from 'next/server';
-import { cookies } from 'next/headers';
-import { createServerClient } from '@supabase/ssr';
 
-export async function GET() {
-  const cookieStore = await cookies();
-  
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
-    { cookies: { getAll() { return cookieStore.getAll(); } } }
-  );
-
-  const { data: { user } } = await supabase.auth.getUser();
+export async function GET(request) {
+  const { searchParams } = new URL(request.url);
+  const userId = searchParams.get('userId');
 
   const clientId = process.env.GOOGLE_CLIENT_ID;
   const redirectUri = process.env.GOOGLE_REDIRECT_URI;
@@ -23,8 +14,7 @@ export async function GET() {
   url.searchParams.set('scope', 'https://www.googleapis.com/auth/calendar');
   url.searchParams.set('access_type', 'offline');
   url.searchParams.set('prompt', 'consent');
-  console.log("User from cookie:", user?.id);
-url.searchParams.set('state', user?.id || '');
+  url.searchParams.set('state', userId || '');
 
   return NextResponse.redirect(url.toString());
 }
