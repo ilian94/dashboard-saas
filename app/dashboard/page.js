@@ -4,17 +4,17 @@ import { createClient } from "@/lib/supabase/client";
 
 const supabase = createClient();
 
-const C = {
-  bg: '#ffffff',
-  sidebar: '#fafafa',
-  card: '#ffffff',
-  cardHover: '#f9fafb',
-  border: '#e5e7eb',
-  text: '#6b7280',
-  label: '#9ca3af',
-  textPrimary: '#0f0f0f',
+const getColors = (dark) => ({
+  bg: dark ? '#0f0f0f' : '#ffffff',
+  sidebar: dark ? '#111111' : '#fafafa',
+  card: dark ? '#1a1a1a' : '#ffffff',
+  cardHover: dark ? '#222222' : '#f9fafb',
+  border: dark ? '#2a2a2a' : '#e5e7eb',
+  text: dark ? '#9ca3af' : '#6b7280',
+  label: dark ? '#6b7280' : '#9ca3af',
+  textPrimary: dark ? '#f9fafb' : '#0f0f0f',
   accent: '#6366f1',
-};
+});
 
 const PLAN_LABELS = {
   starter: { label: "Starter Plan", color: "#6366f1", minutes: 500 },
@@ -686,6 +686,7 @@ function AnalyticsDashboard({ userId, calls, clientPlan }) {
 }
 
 export default function Dashboard() {
+  const C = getColors(darkMode);
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [calls, setCalls] = useState([]);
@@ -698,6 +699,7 @@ export default function Dashboard() {
   const [showChangePlan, setShowChangePlan] = useState(false);
   const [selectedNumber, setSelectedNumber] = useState('all');
   const [showNumberDropdown, setShowNumberDropdown] = useState(false);
+const [darkMode, setDarkMode] = useState(false);
 
   useEffect(() => {
     const check = () => setIsMobile(window.innerWidth < 768);
@@ -1264,7 +1266,12 @@ export default function Dashboard() {
       {!isMobile && (
         <aside style={{ width: '220px', minHeight: '100vh', background: '#fff', borderRight: `1px solid ${C.border}`, display: 'flex', flexDirection: 'column', padding: '24px 12px', position: 'fixed', top: 0, left: 0, zIndex: 100 }}>
           <div style={{ padding: '0 12px', marginBottom: '32px' }}>
-            <a href="/" style={{ fontWeight: 700, fontSize: '1rem', letterSpacing: '-0.02em', color: C.textPrimary, textDecoration: 'none' }}>VoiceBot AI</a>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+  <a href="/" style={{ fontWeight: 700, fontSize: '1rem', letterSpacing: '-0.02em', color: C.textPrimary, textDecoration: 'none' }}>VoiceBot AI</a>
+  <button onClick={() => setDarkMode(!darkMode)} style={{ background: 'none', border: `1px solid ${C.border}`, borderRadius: '8px', padding: '4px 8px', cursor: 'pointer', color: C.text, fontSize: '0.75rem' }}>
+    {darkMode ? '☀️' : '🌙'}
+  </button>
+</div>
           </div>
           <nav style={{ display: 'flex', flexDirection: 'column', gap: '2px', flex: 1 }}>
             {navItems.map(item => (
