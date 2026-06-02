@@ -216,35 +216,36 @@ export async function POST(req) {
         client = clientByEmail;
       }
 
-      let twilioNumber = client?.twilio_number;
-      if (!twilioNumber) {
-        twilioNumber = await buyTwilioNumber();
-      }
-
+      // Update le plan IMMÉDIATEMENT sans attendre Twilio
       const updatePayload = {
         plan,
         user_id: userId,
         stripe_customer_id: session.customer,
         stripe_subscription_id: session.subscription,
-        ...(twilioNumber && { twilio_number: twilioNumber }),
       };
 
-      // Update par user_id d'abord
       const { data: updateByUserId } = await supabase
         .from('clients')
         .update(updatePayload)
         .eq('user_id', userId)
         .select();
 
-      // Si pas trouvé, update par email
       if (!updateByUserId || updateByUserId.length === 0) {
-        await supabase
-          .from('clients')
-          .update(updatePayload)
-          .eq('email', customerEmail);
+        await supabase.from('clients').update(updatePayload).eq('email', customerEmail);
         console.log(`✅ Updated by email: ${customerEmail} — plan: ${plan}`);
       } else {
-        console.log(`✅ Updated by user_id: ${userId} — plan: ${plan} — number: ${twilioNumber}`);
+        console.log(`✅ Updated by user_id: ${userId} — plan: ${plan}`);
+      }
+
+      // Acheter le numéro Twilio EN ARRIÈRE-PLAN (non-bloquant)
+      if (!client?.twilio_number) {
+        (async () => {
+          const twilioNumber = await buyTwilioNumber();
+          if (twilioNumber) {
+            await supabase.from('clients').update({ twilio_number: twilioNumber }).eq('user_id', userId);
+            console.log(`✅ Twilio number assigned: ${twilioNumber} for ${userId}`);
+          }
+        })();
       }
 
       if (client?.email) {
@@ -252,7 +253,7 @@ export async function POST(req) {
           from: 'VoiceBot AI <hello@voicebotai.us>',
           to: client.email,
           subject: 'Your VoiceBot is now active ✅',
-          html: emailActivation({ plan, twilioNumber, businessName: client.business_name }),
+          html: emailActivation({ plan, twilioNumber: client?.twilio_number, businessName: client.business_name }),
         });
       }
     }
