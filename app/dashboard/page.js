@@ -16,6 +16,8 @@ const getColors = (dark) => ({
   accent: '#6366f1',
 });
 
+const C = getColors(false);
+
 const PLAN_LABELS = {
   starter: { label: "Starter Plan", color: "#6366f1", minutes: 500 },
   scale: { label: "Scale Plan", color: "#8b5cf6", minutes: 2000 },
