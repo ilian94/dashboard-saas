@@ -686,7 +686,6 @@ function AnalyticsDashboard({ userId, calls, clientPlan }) {
 }
 
 export default function Dashboard() {
-  const C = getColors(darkMode);
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [calls, setCalls] = useState([]);
@@ -700,6 +699,7 @@ export default function Dashboard() {
   const [selectedNumber, setSelectedNumber] = useState('all');
   const [showNumberDropdown, setShowNumberDropdown] = useState(false);
 const [darkMode, setDarkMode] = useState(false);
+  const C = getColors(darkMode);
 
   useEffect(() => {
     const check = () => setIsMobile(window.innerWidth < 768);
@@ -1233,8 +1233,7 @@ const [darkMode, setDarkMode] = useState(false);
   );
 
   return (
-    <div style={{ minHeight: '100vh', background: '#f9fafb', color: C.textPrimary, fontFamily: "'DM Sans', system-ui, sans-serif" }}>
-      {showChangePlan && <ChangePlanModal currentPlan={clientData?.plan} userId={user?.id} onClose={() => setShowChangePlan(false)} onSuccess={handlePlanChangeSuccess} />}
+    <div style={{ minHeight: '100vh', background: darkMode ? '#0a0a0a' : '#f9fafb', color: C.textPrimary, fontFamily: "'DM Sans', system-ui, sans-serif" }}>      {showChangePlan && <ChangePlanModal currentPlan={clientData?.plan} userId={user?.id} onClose={() => setShowChangePlan(false)} onSuccess={handlePlanChangeSuccess} />}
 
       {showCalendlyModal && (
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: '20px' }}>
@@ -1269,7 +1268,15 @@ const [darkMode, setDarkMode] = useState(false);
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
   <a href="/" style={{ fontWeight: 700, fontSize: '1rem', letterSpacing: '-0.02em', color: C.textPrimary, textDecoration: 'none' }}>VoiceBot AI</a>
   <button onClick={() => setDarkMode(!darkMode)} style={{ background: 'none', border: `1px solid ${C.border}`, borderRadius: '8px', padding: '4px 8px', cursor: 'pointer', color: C.text, fontSize: '0.75rem' }}>
-    {darkMode ? '☀️' : '🌙'}
+    {darkMode ? (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+  </svg>
+) : (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>
+  </svg>
+)}
   </button>
 </div>
           </div>
@@ -1300,8 +1307,20 @@ const [darkMode, setDarkMode] = useState(false);
       <div style={{ marginLeft: isMobile ? '0' : '220px' }}>
         {isMobile && (
           <div style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 100, background: '#fff', borderBottom: `1px solid ${C.border}`, padding: '0 16px', height: '56px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <a href="/" style={{ fontWeight: 700, fontSize: '0.95rem', color: C.textPrimary, textDecoration: 'none' }}>VoiceBot AI</a>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+<div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+  <a href="/" style={{ fontWeight: 700, fontSize: '0.95rem', color: C.textPrimary, textDecoration: 'none' }}>VoiceBot AI</a>
+  <button onClick={() => setDarkMode(!darkMode)} style={{ background: 'none', border: `1px solid ${C.border}`, borderRadius: '8px', padding: '4px 8px', cursor: 'pointer', color: C.text, fontSize: '0.75rem' }}>
+    {darkMode ? (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+  </svg>
+) : (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>
+  </svg>
+)}
+  </button>
+</div>            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
               {plan && <span style={{ fontSize: '0.7rem', fontWeight: 600, color: plan.color, background: '#f9fafb', padding: '3px 10px', borderRadius: '100px', border: `1px solid ${C.border}` }}>{plan.label}</span>}
               <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: plan ? '#22c55e' : '#ef4444' }} />
             </div>
