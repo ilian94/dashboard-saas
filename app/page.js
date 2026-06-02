@@ -279,8 +279,11 @@ const roi = potentialRevenue - recommendedPrice;
         <div style={{ display: 'flex', gap: '32px', alignItems: 'center' }}>
           <Link href="/pricing" style={{ color: '#6b7280', textDecoration: 'none', fontSize: '0.875rem' }}>Pricing</Link>
           {user ? (
-            <Link href="/dashboard" style={{ background: '#0f0f0f', color: '#fff', textDecoration: 'none', fontSize: '0.875rem', fontWeight: 600, padding: '9px 20px', borderRadius: '8px' }}>Dashboard</Link>
-          ) : (
+  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+    <Link href="/dashboard" style={{ background: '#0f0f0f', color: '#fff', textDecoration: 'none', fontSize: '0.875rem', fontWeight: 600, padding: '9px 20px', borderRadius: '8px' }}>Dashboard</Link>
+    <button onClick={async () => { await supabase.auth.signOut(); window.location.reload(); }} style={{ background: 'none', border: '1px solid #e5e7eb', color: '#6b7280', fontSize: '0.875rem', fontWeight: 500, padding: '9px 16px', borderRadius: '8px', cursor: 'pointer', fontFamily: 'inherit' }}>Sign out</button>
+  </div>
+) : (
             <>
               <Link href="/login" style={{ color: '#6b7280', textDecoration: 'none', fontSize: '0.875rem' }} className="mobile-hide">Sign in</Link>
               <Link href="/register" style={{ background: '#6366f1', color: '#fff', textDecoration: 'none', fontSize: '0.875rem', fontWeight: 600, padding: '9px 20px', borderRadius: '8px' }}>Start free trial</Link>
