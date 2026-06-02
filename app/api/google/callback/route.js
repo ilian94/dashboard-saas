@@ -26,10 +26,10 @@ export async function GET(request) {
   const tokens = await tokenRes.json();
   console.log("Tokens reçus:", JSON.stringify(tokens));
 
-  if (!tokens.refresh_token) {
-    console.error("Pas de refresh_token:", tokens);
-    return NextResponse.redirect(new URL("/dashboard?error=no_refresh_token", request.url));
-  }
+  if (!tokens.access_token) {
+  console.error("Pas d'access_token:", tokens);
+  return NextResponse.redirect(new URL("/dashboard?error=no_token", request.url));
+}
 
   // Récupérer l'email Google pour trouver le bon user dans Supabase
   const userInfoRes = await fetch("https://www.googleapis.com/oauth2/v2/userinfo", {
@@ -59,7 +59,7 @@ export async function GET(request) {
     .upsert({
       user_id: matchedUser.id,
       email: matchedUser.email,
-      google_refresh_token: tokens.refresh_token,
+      google_refresh_token: tokens.refresh_token || null,
       google_connected: true,
       calendar_type: 'google', // ✅
     }, { onConflict: "user_id" });
