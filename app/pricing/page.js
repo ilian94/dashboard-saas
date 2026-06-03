@@ -891,11 +891,11 @@ if (data.url) {
         ))}
       </div>
 
-      <RoiCalculator router={router} />
-
       <div className="plans-wrapper">
-<PlanCarousel plans={plans} getButtonState={getButtonState} handleSubscribe={handleSubscribe} loading={loading} C={C} />
+  <PlanCarousel plans={plans} getButtonState={getButtonState} handleSubscribe={handleSubscribe} loading={loading} C={C} />
 </div>
+
+<RoiCalculator router={router} />
 
       <div className="addons">
         <p className="eyebrow">Add-ons</p>
