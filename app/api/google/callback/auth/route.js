@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
 
 export const dynamic = 'force-dynamic';
-export const revalidate = 0;
 
 export async function GET(request) {
   const { searchParams } = new URL(request.url);
@@ -19,5 +18,7 @@ export async function GET(request) {
   url.searchParams.set('prompt', 'consent');
   url.searchParams.set('state', userId || '');
 
-  return NextResponse.redirect(url.toString());
+  const response = NextResponse.redirect(url.toString());
+  response.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate');
+  return response;
 }
