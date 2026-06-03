@@ -775,15 +775,16 @@ const [darkMode, setDarkMode] = useState(false);
   };
 
   const handleDisconnectGoogle = async () => {
-    await supabase.from('clients').update({ google_refresh_token: null, google_connected: false, calendar_type: null }).eq('user_id', user.id);
-    setGoogleConnected(false);
-    setClientData(prev => ({ ...prev, google_connected: false, calendar_type: null }));
-  };
-
+  if (!confirm('Are you sure you want to disconnect Google Calendar?')) return;
+  await supabase.from('clients').update({ google_refresh_token: null, google_connected: false, calendar_type: null }).eq('user_id', user.id);
+  setGoogleConnected(false);
+  setClientData(prev => ({ ...prev, google_connected: false, calendar_type: null }));
+};
   const handleDisconnectCalendly = async () => {
-    await supabase.from('clients').update({ calendly_token: null, calendly_uri: null, calendar_type: null }).eq('user_id', user.id);
-    setClientData(prev => ({ ...prev, calendly_token: null, calendar_type: null }));
-  };
+  if (!confirm('Are you sure you want to disconnect Calendly?')) return;
+  await supabase.from('clients').update({ calendly_token: null, calendly_uri: null, calendar_type: null }).eq('user_id', user.id);
+  setClientData(prev => ({ ...prev, calendly_token: null, calendar_type: null }));
+};
 
   if (loading) return (
     <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#fff' }}>
