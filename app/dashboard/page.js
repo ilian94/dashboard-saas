@@ -700,6 +700,7 @@ export default function Dashboard() {
   const [showChangePlan, setShowChangePlan] = useState(false);
   const [selectedNumber, setSelectedNumber] = useState('all');
   const [showNumberDropdown, setShowNumberDropdown] = useState(false);
+  const [confirmDialog, setConfirmDialog] = useState(null);
 const [darkMode, setDarkMode] = useState(false);
   const C = getColors(darkMode);
 
@@ -775,15 +776,25 @@ const [darkMode, setDarkMode] = useState(false);
   };
 
   const handleDisconnectGoogle = async () => {
-  if (!confirm('Are you sure you want to disconnect Google Calendar?')) return;
-  await supabase.from('clients').update({ google_refresh_token: null, google_connected: false, calendar_type: null }).eq('user_id', user.id);
-  setGoogleConnected(false);
-  setClientData(prev => ({ ...prev, google_connected: false, calendar_type: null }));
+  setConfirmDialog({
+    message: 'Disconnect Google Calendar?',
+    onConfirm: async () => {
+      await supabase.from('clients').update({ google_refresh_token: null, google_connected: false, calendar_type: null }).eq('user_id', user.id);
+      setGoogleConnected(false);
+      setClientData(prev => ({ ...prev, google_connected: false, calendar_type: null }));
+      setConfirmDialog(null);
+    }
+  });
 };
-  const handleDisconnectCalendly = async () => {
-  if (!confirm('Are you sure you want to disconnect Calendly?')) return;
-  await supabase.from('clients').update({ calendly_token: null, calendly_uri: null, calendar_type: null }).eq('user_id', user.id);
-  setClientData(prev => ({ ...prev, calendly_token: null, calendar_type: null }));
+const handleDisconnectCalendly = async () => {
+  setConfirmDialog({
+    message: 'Disconnect Calendly?',
+    onConfirm: async () => {
+      await supabase.from('clients').update({ calendly_token: null, calendly_uri: null, calendar_type: null }).eq('user_id', user.id);
+      setClientData(prev => ({ ...prev, calendly_token: null, calendar_type: null }));
+      setConfirmDialog(null);
+    }
+  });
 };
 
   if (loading) return (
@@ -1249,8 +1260,21 @@ const handleConnectGoogle = () => {
   window.location.href = url.toString();
 };
 
-  return (
-    <div style={{ minHeight: '100vh', background: darkMode ? '#0a0a0a' : '#f9fafb', color: C.textPrimary, fontFamily: "'DM Sans', system-ui, sans-serif" }}>      {showChangePlan && <ChangePlanModal currentPlan={clientData?.plan} userId={user?.id} onClose={() => setShowChangePlan(false)} onSuccess={handlePlanChangeSuccess} />}
+return (
+    <div style={{ minHeight: '100vh', background: darkMode ? '#0a0a0a' : '#f9fafb', color: C.textPrimary, fontFamily: "'DM Sans', system-ui, sans-serif" }}>
+      {confirmDialog && (
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: '20px' }}>
+          <div style={{ background: '#fff', border: `1px solid ${C.border}`, borderRadius: '20px', padding: '28px', width: '100%', maxWidth: '400px', boxShadow: '0 24px 64px rgba(0,0,0,0.12)' }}>
+            <p style={{ fontSize: '1rem', fontWeight: 700, color: C.textPrimary, marginBottom: '8px' }}>Are you sure?</p>
+            <p style={{ fontSize: '0.875rem', color: C.text, marginBottom: '24px' }}>{confirmDialog.message}</p>
+            <div style={{ display: 'flex', gap: '10px' }}>
+              <button onClick={() => setConfirmDialog(null)} style={{ flex: 1, padding: '11px', background: 'transparent', border: `1px solid ${C.border}`, color: C.text, borderRadius: '10px', fontWeight: 600, fontSize: '0.875rem', cursor: 'pointer' }}>Cancel</button>
+              <button onClick={confirmDialog.onConfirm} style={{ flex: 1, padding: '11px', background: '#ef4444', color: 'white', border: 'none', borderRadius: '10px', fontWeight: 700, fontSize: '0.875rem', cursor: 'pointer' }}>Disconnect</button>
+            </div>
+          </div>
+        </div>
+      )}
+      {showChangePlan && <ChangePlanModal currentPlan={clientData?.plan} userId={user?.id} onClose={() => setShowChangePlan(false)} onSuccess={handlePlanChangeSuccess} />}
 
       {showCalendlyModal && (
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: '20px' }}>
